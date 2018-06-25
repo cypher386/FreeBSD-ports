@@ -1,3 +1,3 @@
-TIMESTAMP = 1486415943
-SHA256 (xorg/data/xkeyboard-config-2.20.tar.bz2) = d1bfc72553c4e3ef1cd6f13eec0488cf940498b612ab8a0b362e7090c94bc134
-SIZE (xorg/data/xkeyboard-config-2.20.tar.bz2) = 978275
+TIMESTAMP = 1528483215
+SHA256 (xorg/data/xkeyboard-config-2.24.tar.bz2) = 91b18580f46b4e4ea913707f6c8d68ab5286879c3a6591462f3b9e760d3ac4d7
+SIZE (xorg/data/xkeyboard-config-2.24.tar.bz2) = 1057889

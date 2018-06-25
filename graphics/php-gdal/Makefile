@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	gdal
-PORTVERSION=	2.1.3
+PORTVERSION=	2.2.4
 CATEGORIES=	graphics
-MASTER_SITES=	http://download.osgeo.org/gdal/${PORTVERSION}/ \
+MASTER_SITES=	https://download.osgeo.org/gdal/${PORTVERSION}/ \
 		ftp://ftp.remotesensing.org/pub/gdal/${PORTVERSION}/ \
 		LOCAL/sunpoet
 PKGNAMEPREFIX=	php-
@@ -20,7 +20,7 @@ LIB_DEPENDS=	libgdal.so:graphics/gdal
 
 ALL_TARGET=	php_gdal.so php_gdalconst.so php_ogr.so php_osr.so
 CFLAGS+=	-fPIC
-IGNORE_WITH_PHP=70 71
+IGNORE_WITH_PHP=70 71 72
 MAKEFILE=	GNUmakefile
 PHP_MOD_NAME=	php_${PORTNAME}
 USES=		php:build gmake localbase tar:xz
@@ -33,8 +33,8 @@ post-patch:
 
 # GDALmake.opt and cpl_config.h are not available until configure phase
 post-configure:
-	${SED} -e '/^GDAL_ROOT/d' ${DATADIR}/GDALmake.opt > ${WRKSRC}/../../GDALmake.opt
-	${CP} ${LOCALBASE}/include/cpl_config.h ${WRKSRC}/../../port/
+	@${SED} -e '/^GDAL_ROOT/d' ${DATADIR}/GDALmake.opt > ${WRKSRC}/../../GDALmake.opt
+	@${CP} ${LOCALBASE}/include/cpl_config.h ${WRKSRC}/../../port/
 
 do-install:
 	${MKDIR} ${STAGEDIR}${PREFIX}/lib/php/${PHP_EXT_DIR}/ ${STAGEDIR}${PREFIX}/include/php/ext/${PORTNAME}/

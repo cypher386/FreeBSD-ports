@@ -4,9 +4,9 @@
 CATEGORIES=	textproc lang
 PKGNAMESUFFIX=	-libxml2
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Interface to xml2 library
 
+USES=		fpc
 USE_FPC=	rtl-objpas
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

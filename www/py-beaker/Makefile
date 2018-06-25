@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	beaker
-PORTVERSION=	1.8.1
+PORTVERSION=	1.10.0
 CATEGORIES=	www python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
@@ -14,13 +14,13 @@ COMMENT=	Session and Caching library with WSGI Middleware
 LICENSE=	BSD3CLAUSE
 
 USES=		python
-USE_PYTHON=	distutils autoplist
+USE_PYTHON=	autoplist distutils
 NO_ARCH=	yes
 
 .include <bsd.port.pre.mk>
 
 .if ${PYTHON_REL} <= 3200
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}funcsigs>=1.0.2:devel/py-funcsigs
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}funcsigs>=1.0.2:devel/py-funcsigs@${PY_FLAVOR}
 .endif
 
 .include <bsd.port.post.mk>

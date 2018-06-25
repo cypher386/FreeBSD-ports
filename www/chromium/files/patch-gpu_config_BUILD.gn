@@ -1,27 +1,14 @@
---- gpu/config/BUILD.gn.orig	2017-01-26 00:49:14 UTC
-+++ gpu/config/BUILD.gn
-@@ -8,7 +8,8 @@ import("//build/config/ui.gni")
+--- gpu/config/BUILD.gn.orig	2018-03-20 23:05:26.000000000 +0100
++++ gpu/config/BUILD.gn	2018-03-26 13:38:50.564110000 +0200
+@@ -107,6 +107,11 @@
+     "gpu_util.h",
+   ]
  
- declare_args() {
-   # Use the PCI lib to collect GPU information on Linux.
--  use_libpci = is_linux && (!is_chromecast || is_cast_desktop_build) &&
-+  use_libpci = (is_linux || is_bsd) &&
-+               (!is_chromecast || is_cast_desktop_build) &&
-                (use_x11 || use_ozone)
- }
- 
-@@ -97,6 +98,14 @@ source_set("config_sources") {
-       ]
-     }
-   }
-+
 +  if (is_bsd) {
-+    sources -= [
-+      "gpu_info_collector_linux.cc",
-+      "gpu_info_collector_linux.h"
-+    ]
++    sources -= [ "gpu_info_collector_linux.cc" ]
++    sources += [ "gpu_info_collector_freebsd.cc" ]
 +  }
 +
-   if (is_mac) {
-     libs = [
-       "IOKit.framework",
+   if (is_fuchsia) {
+     sources += [ "gpu_info_collector_fuchsia.cc" ]
+   }

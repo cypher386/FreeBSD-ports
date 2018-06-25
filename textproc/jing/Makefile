@@ -5,11 +5,14 @@ PORTNAME=	jing
 PORTVERSION=	2015.11.27
 CATEGORIES=	textproc java
 
-MAINTAINER=	gabor@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	RELAX NG validator in Java
 
 LICENSE=	BSD3CLAUSE
 LICENSE_FILE=	${WRKSRC}/copying.txt
+
+BROKEN_armv6=		fails to build: modbuild.xml: Java returned: 1
+BROKEN_armv7=		fails to build: modbuild.xml: Java returned: 1
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	relaxng

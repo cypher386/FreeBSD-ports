@@ -13,15 +13,15 @@ LF=$(printf '\nX')
 LF=${LF%X}
 
 notice() {
-	echo "Notice: $@" >&2
+	echo "Notice: $*" >&2
 }
 
 warn() {
-	echo "Warning: $@" >&2
+	echo "Warning: $*" >&2
 }
 
 err() {
-	echo "Error: $@" >&2
+	echo "Error: $*" >&2
 }
 
 list_stagedir_elfs() {
@@ -29,9 +29,9 @@ list_stagedir_elfs() {
 }
 
 shebangonefile() {
-	local f interp rc
+	local f interp interparg badinterp rc
 
-	f="$@"
+	f="$*"
 	rc=0
 
 	# whitelist some files
@@ -42,13 +42,23 @@ shebangonefile() {
 	esac
 
 	interp=$(sed -n -e '1s/^#![[:space:]]*\([^[:space:]]*\).*/\1/p;2q' "${f}")
+	badinterp=""
 	case "${interp}" in
 	"") ;;
+	/bin/rc)
+		# whitelist some interpreters
+		;;
+	${LOCALBASE}/bin/python|${PREFIX}/bin/python|${LOCALBASE}/bin/python2|${PREFIX}/bin/python2|${LOCALBASE}/bin/python3|${PREFIX}/bin/python3)
+		badinterp="${interp}"
+		;;
 	${LINUXBASE}/*) ;;
 	${LOCALBASE}/bin/perl5.* | ${PREFIX}/bin/perl5.*)
-		err "'${interp}' is an invalid shebang for '${f#${STAGEDIR}${PREFIX}/}' you must use ${LOCALBASE}/bin/perl."
-		err "Either pass \${PERL} to the build or use USES=shebangfix"
-		rc=1
+		# lang/perl5* are allowed to have these shebangs.
+		if ! expr ${PKGORIGIN} : '^lang/perl5.*' > /dev/null; then
+			err "'${interp}' is an invalid shebang for '${f#${STAGEDIR}${PREFIX}/}' you must use ${LOCALBASE}/bin/perl."
+			err "Either pass \${PERL} to the build or use USES=shebangfix"
+			rc=1
+		fi
 		;;
 	${LOCALBASE}/*) ;;
 	${PREFIX}/*) ;;
@@ -56,15 +66,26 @@ shebangonefile() {
 	/bin/sh) ;;
 	/bin/tcsh) ;;
 	/usr/bin/awk) ;;
-	/usr/bin/env) ;;
+	/usr/bin/env)
+		interparg=$(sed -n -e '1s/^#![[:space:]]*[^[:space:]]*[[:space:]]*\([^[:space:]]*\).*/\1/p;2q' "${f}")
+		case "${interparg}" in
+		python|python2|python3)
+			badinterp="${interp} ${interparg}"
+			;;
+		esac
+		;;
 	/usr/bin/nawk) ;;
 	/usr/bin/sed) ;;
 	/usr/sbin/dtrace) ;;
 	*)
-		err "'${interp}' is an invalid shebang you need USES=shebangfix for '${f#${STAGEDIR}${PREFIX}/}'"
-		rc=1
+		badinterp="${interp}"
 		;;
 	esac
+
+	if [ -n "${badinterp}" ]; then
+		err "'${badinterp}' is an invalid shebang you need USES=shebangfix for '${f#${STAGEDIR}${PREFIX}/}'"
+		rc=1
+	fi
 
 	return ${rc}
 }
@@ -74,36 +95,14 @@ shebang() {
 
 	rc=0
 
-	while read f; do
+	while read -r f; do
 		# No results presents a blank line from heredoc.
 		[ -z "${f}" ] && continue
 		shebangonefile "${f}" || rc=1
 	# Use heredoc to avoid losing rc from find|while subshell
 	done <<-EOF
-	$(find ${STAGEDIR}${PREFIX}/bin ${STAGEDIR}${PREFIX}/sbin \
-	    ${STAGEDIR}${PREFIX}/libexec ${STAGEDIR}${PREFIX}/www \
+	$(find ${STAGEDIR}${PREFIX} \
 	    -type f -perm +111 2>/dev/null)
-	EOF
-
-	# Split stat(1) result into 2 lines and read each line separately to
-	# retain spaces in filenames.
-	while read l; do
-		# No results presents a blank line
-		[ -z "${l}" ] && continue
-		read link
-
-		case "${link}" in
-		/*) f="${STAGEDIR}${link}" ;;
-		*) f="${l%/*}/${link}" ;;
-		esac
-		if [ -f "${f}" ]; then
-			shebangonefile "${f}" || rc=1
-		fi
-	# Use heredoc to avoid losing rc from find|while subshell
-	done <<-EOF
-	$(find ${STAGEDIR}${PREFIX}/bin ${STAGEDIR}${PREFIX}/sbin \
-	    ${STAGEDIR}${PREFIX}/libexec ${STAGEDIR}${PREFIX}/www \
-	    -type l -exec stat -f "%N${LF}%Y" {} + 2>/dev/null)
 	EOF
 
 	return ${rc}
@@ -114,7 +113,7 @@ baselibs() {
 	local found_openssl
 	local file
 	[ "${PKGBASE}" = "pkg" -o "${PKGBASE}" = "pkg-devel" ] && return
-	while read f; do
+	while read -r f; do
 		case ${f} in
 		File:\ .*)
 			file=${f#File: .}
@@ -149,10 +148,10 @@ symlinks() {
 
 	# Split stat(1) result into 2 lines and read each line separately to
 	# retain spaces in filenames.
-	while read l; do
+	while read -r l; do
 		# No results presents a blank line from heredoc.
 		[ -z "${l}" ] && continue
-		read link
+		read -r link
 		case "${link}" in
 			${STAGEDIR}*)
 				err "Bad symlink '${l#${STAGEDIR}${PREFIX}/}' pointing inside the stage directory"
@@ -182,7 +181,7 @@ paths() {
 
 	rc=0
 
-	while read f; do
+	while read -r f; do
 		# No results presents a blank line from heredoc.
 		[ -z "${f}" ] && continue
 		# Ignore false-positive/harmless files
@@ -209,10 +208,10 @@ stripped() {
 	# files with spaces are kept intact.
 	# Using readelf -h ... /ELF Header:/ will match on all ELF files.
 	find ${STAGEDIR} -type f ! -name '*.a' ! -name '*.o' \
-	    -exec readelf -S {} + 2>/dev/null | awk '\
-	    /File:/ {sub(/File: /, "", $0); file=$0} \
-	    /SYMTAB/ {print file}' |
-	    while read f; do
+	    -exec readelf -S {} + 2>/dev/null | awk '
+	    /File:/ {sub(/File: /, "", $0); file=$0}
+	    /[[:space:]]\.debug_info[[:space:]]*PROGBITS/ {print file}' |
+	    while read -r f; do
 		warn "'${f#${STAGEDIR}${PREFIX}/}' is not stripped consider trying INSTALL_TARGET=install-strip or using \${STRIP_CMD}"
 	done
 }
@@ -249,9 +248,9 @@ sharedmimeinfo() {
 suidfiles() {
 	local filelist
 
-	filelist=`find ${STAGEDIR} -type f \
+	filelist=$(find ${STAGEDIR} -type f \
 		\( -perm -u+x -or -perm -g+x -or -perm -o+x \) \
-		\( -perm -u+s -or -perm -g+s \)`
+		\( -perm -u+s -or -perm -g+s \))
 	if [ -n "${filelist}" ]; then
 		warn "setuid files in the stage directory (are these necessary?):"
 		ls -liTd ${filelist}
@@ -261,10 +260,11 @@ suidfiles() {
 
 libtool() {
 	if [ -z "${USESLIBTOOL}" ]; then
-		find ${STAGEDIR} -name '*.la' | while read f; do
-			grep -q 'libtool library' "${f}" &&
-				err ".la libraries found, port needs USES=libtool" &&
-				return 1 || true
+		find ${STAGEDIR} -name '*.la' | while read -r f; do
+			if grep -q 'libtool library' "${f}"; then
+				err ".la libraries found, port needs USES=libtool"
+				return 1
+			fi
 		done
 		# The return above continues here.
 	fi
@@ -275,16 +275,16 @@ libperl() {
 	if [ -n "${SITE_ARCH_REL}" -a -d "${STAGEDIR}${PREFIX}/${SITE_ARCH_REL}" ]; then
 		has_some_libperl_so=0
 		files=0
-		while read f; do
+		while read -r f; do
 			# No results presents a blank line from heredoc.
 			[ -z "${f}" ] && continue
 			files=$((files+1))
-			found=`readelf -d ${f} | awk "BEGIN {libperl=1; rpath=10; runpath=100}
+			found=$(readelf -d ${f} | awk "BEGIN {libperl=1; rpath=10; runpath=100}
 				/NEEDED.*${LIBPERL}/  { libperl = 0 }
 				/RPATH.*perl.*CORE/   { rpath   = 0 }
 				/RUNPATH.*perl.*CORE/ { runpath = 0 }
 				END {print libperl+rpath+runpath}
-				"`
+				")
 			case "${found}" in
 				*1)
 					warn "${f} is not linked with ${LIBPERL}, not respecting lddlflags?"
@@ -508,6 +508,16 @@ proxydeps_suggest_uses() {
 	elif [ ${pkg} = "x11/kf5-plasma-framework" ]; then warn "you need to use USE_KDE+=plasma-framework"
 	elif expr ${pkg} : '.*/kf5-.*' > /dev/null; then
 		warn "you need USE_KDE+=$(echo ${pkg} | sed -E 's|.*/kf5-k||')"
+	# GStreamer 0.10
+	elif [ ${pkg} = "multimedia/gstreamer" ]; then warn "you need to use USE_GSTREAMER+=yes"
+	elif [ ${pkg} = "multimedia/gstreamer-plugins" ]; then warn "you need to use USE_GSTREAMER+=yes"
+	elif [ ${pkg} = "multimedia/gstreamer-plugins-bad" ]; then warn "you need to use USE_GSTREAMER+=bad"
+	# GStreamer 1
+	elif [ ${pkg} = "multimedia/gstreamer1" ]; then warn "you need to use USE_GSTREAMER1+=yes"
+	elif [ ${pkg} = "multimedia/gstreamer1-plugins" ]; then warn "you need to use USE_GSTREAMER1+=yes"
+	elif [ ${pkg} = "multimedia/gstreamer1-plugins-bad" ]; then warn "you need to use USE_GSTREAMER1+=bad"
+	# boost related
+	elif [ ${pkg} = "devel/boost-python-libs" ]; then warn "you need to add LIB_DEPENDS+=\${PY_BOOST} and maybe USES+=python"
 	# sdl-related
 	elif [ ${pkg} = 'devel/sdl12' ]; then
 		warn "you need USE_SDL+=sdl"
@@ -518,13 +528,13 @@ proxydeps_suggest_uses() {
 	elif echo ${pkg} | grep -E '/sdl2_(gfx|image|mixer|net|ttf)$' > /dev/null; then
 		warn "you need USE_SDL+=$(echo ${pkg} | sed -E 's|.*/sdl2_||')2"
 	# gl-related
-	elif [ ${pkg} = 'graphics/libGL' ]; then
+	elif expr ${lib_file} : "${LOCALBASE}/lib/libGL.so.*$" > /dev/null; then
 		warn "you need USE_GL+=gl"
-	elif [ ${pkg} = 'graphics/gbm' ]; then
+	elif expr ${lib_file} : "${LOCALBASE}/lib/libgbm.so.*$" > /dev/null; then
 		warn "you need USE_GL+=gbm"
-	elif [ ${pkg} = 'graphics/libglesv2' ]; then
+	elif expr ${lib_file} : "${LOCALBASE}/lib/libGLESv2.so.*$" > /dev/null; then
 		warn "you need USE_GL+=glesv2"
-	elif [ ${pkg} = 'graphics/libEGL' ]; then
+	elif expr ${lib_file} : "${LOCALBASE}/lib/libEGL.so.*$" > /dev/null; then
 		warn "you need USE_GL+=egl"
 	elif [ ${pkg} = 'graphics/glew' ]; then
 		warn "you need USE_GL+=glew"
@@ -547,8 +557,6 @@ proxydeps_suggest_uses() {
 	# Qt5
 	elif expr ${pkg} : '.*/qt5-.*' > /dev/null; then
 		warn "you need USE_QT5+=$(echo ${pkg} | sed -E 's|.*/qt5-||')"
-	elif expr ${pkg} : '.*/.*-qt5' > /dev/null; then
-		warn "you need USE_QT5+=$(echo ${pkg} | sed -E 's|.*/(.*)-qt5|\1|')"
 	# MySQL
 	elif expr ${lib_file} : "${LOCALBASE}/lib/mysql/[^/]*$" > /dev/null; then
 		warn "you need USES+=mysql"
@@ -558,9 +566,6 @@ proxydeps_suggest_uses() {
 	# bdb
 	elif expr ${pkg} : "^databases/db[456]" > /dev/null; then
 		warn "you need USES+=bdb"
-	# execinfo
-	elif [ ${pkg} = "devel/libexecinfo" ]; then
-		warn "you need USES+=execinfo"
 	# fam/gamin
 	elif [ ${pkg} = "devel/fam" -o ${pkg} = "devel/gamin" ]; then
 		warn "you need USES+=fam"
@@ -577,7 +582,7 @@ proxydeps_suggest_uses() {
 		warn "you need USES+=gnustep and USE_GNUSTEP+=gui"
 	# iconv
 	elif [ ${pkg} = "converters/libiconv" ]; then
-		warn "you need USES+=iconv"
+		warn "you need USES+=iconv, USES+=iconv:wchar_t, or USES+=iconv:translit depending on needs"
 	# jpeg
 	elif [ ${pkg} = "graphics/jpeg" -o ${pkg} = "graphics/jpeg-turbo" ]; then
 		warn "you need USES+=jpeg"
@@ -643,17 +648,17 @@ proxydeps() {
 
 	# Check all dynamicaly linked ELF files
 	# Some .so are not executable, but we want to check them too.
-	while read file; do
+	while read -r file; do
 		# No results presents a blank line from heredoc.
 		[ -z "${file}" ] && continue
-		while read dep_file; do
+		while read -r dep_file; do
 			# No results presents a blank line from heredoc.
 			[ -z "${dep_file}" ] && continue
 			# Skip files we already checked.
 			if listcontains ${dep_file} "${already}"; then
 				continue
 			fi
-			if $(pkg which -q ${dep_file} > /dev/null 2>&1); then
+			if pkg which -q ${dep_file} > /dev/null 2>&1; then
 				dep_file_pkg=$(pkg which -qo ${dep_file})
 
 				# Check that the .so we need has a SONAME
@@ -665,6 +670,13 @@ proxydeps() {
 
 				# If we don't already depend on it, and we don't provide it
 				if ! listcontains ${dep_file_pkg} "${LIB_RUN_DEPENDS} ${PKGORIGIN}"; then
+					# If the package has a flavor, check that the dependency is not on that particular flavor.
+					flavor=$(pkg annotate -q -S "${dep_file_pkg}" flavor)
+					if [ -n "${flavor}" ]; then
+						if listcontains ${dep_file_pkg}@${flavor} "${LIB_RUN_DEPENDS} ${PKGORIGIN}"; then
+							continue
+						fi
+					fi
 					err "${file} is linked to ${dep_file} from ${dep_file_pkg} but it is not declared as a dependency"
 					proxydeps_suggest_uses ${dep_file_pkg} ${dep_file}
 					rc=1
@@ -675,10 +687,10 @@ proxydeps() {
 			fi
 			already="${already} ${dep_file}"
 		done <<-EOT
-		$(ldd -a "${STAGEDIR}${file}" | \
-			awk '\
-			BEGIN {section=0}\
-			/^\// {section++}\
+		$(env LD_LIBMAP_DISABLE=1 ldd -a "${STAGEDIR}${file}" | \
+			awk '
+			BEGIN {section=0}
+			/^\// {section++}
 			!/^\// && section<=1 && ($3 ~ "^'${PREFIX}'" || $3 ~ "^'${LOCALBASE}'") {print $3}')
 		EOT
 	done <<-EOT
@@ -696,7 +708,7 @@ proxydeps() {
 
 sonames() {
 	[ ! -d ${STAGEDIR}${PREFIX}/lib -o -n "${BUNDLE_LIBS}" ] && return 0
-	while read f; do
+	while read -r f; do
 		# No results presents a blank line from heredoc.
 		[ -z "${f}" ] && continue
 		# Ignore symlinks
@@ -744,7 +756,7 @@ perlcore() {
 			module=$(perlcore_port_module_mapping "${portname}")
 			version=$(expr "${dep}" : ".*>=*\([^:<]*\)")
 
-			while read l; do
+			while read -r l; do
 				case "${l}" in
 					*was\ not\ in\ CORE*)
 						# This never was with Perl
@@ -778,12 +790,138 @@ perlcore() {
 	fi
 }
 
+no_arch() {
+	[ -z "$NO_ARCH" ] && return
+	rc=0
+	while read -r f; do
+		[ -z "$f" ] && continue
+		if [ -n "$NO_ARCH_IGNORE" ]; then
+			skip=
+			for blacklist in $NO_ARCH_IGNORE; do
+				case $f in
+					*$blacklist) skip=1; break;;
+				esac
+			done
+			[ "$skip" ] && continue
+		fi
+		err "'${f#.}' is a architecture specific binary file and you have set NO_ARCH.  Either remove NO_ARCH or add '$(basename $f)' to NO_ARCH_IGNORE."
+		rc=1
+	done <<-EOF
+	$(list_stagedir_elfs  \
+		| file -F $'\1' -f - -N \
+		| grep -aE 'ELF .* [LM]SB .*, .*, version [0-9]+ \(FreeBSD\)' \
+		| cut -f 1 -d $'\1')
+	EOF
+	return $rc
+}
+
+gemdeps()
+{
+	rc=0
+	if [ "${PKGBASE%%-*}" = "rubygem" ]; then
+		# shellcheck disable=SC2153
+		# In the heredoc, ${PORTNAME} comes from the environment, not
+		# to be confused with ${portname}
+		while read -r l; do
+			if [ -n "${l}" ]; then
+				name=${l%% *}
+				vers=${l#* }
+				while read -r v; do
+					if ! while read -r p; do
+						${LOCALBASE}/bin/ruby -e "puts 'OK' if Gem::Dependency.new('${name}','${v}').match?('${name}','${p}')"
+					done | grep -qFx OK; then
+						err RubyGem dependency ${name} ${v} is not satisfied.
+						rc=1
+					fi <<-EOF
+					$(${LOCALBASE}/bin/gem list -e "${name}" \
+						| sed "s|.*(\(.*\))|\1|" \
+						| tr -d ' ' \
+						| tr , '\n')
+					EOF
+				done <<-EOF
+				$(while echo "${vers}" | grep -q '"'; do
+					echo "${vers}" | cut -d '"' -f2
+					vers=$(echo "${vers}"|cut -d '"' -f3-)
+				done)
+				EOF
+			fi
+		done <<-EOF
+		$(grep -a 'add_runtime_dependency' ${STAGEDIR}${PREFIX}/lib/ruby/gems/*/specifications/${PORTNAME}-*.gemspec \
+			| sed 's|.*<\(.*\)>.*\[\(.*\)\])|\1 \2|' \
+			| sort -u)
+		EOF
+	fi
+	return $rc
+}
+
+# If an non rubygem-port has a 'Gemfile' file
+# it is checked with bundle to be sure
+# all dependencies are satisfied.
+# Without the check missing/wrong dependencies
+# are just found when executing the application
+gemfiledeps()
+{
+	# skip check if port does not use ruby at all
+	if [ -z "$USE_RUBY" ]; then
+		return 0
+	fi
+	
+	# skip check if port is a rubygem-* one; they have no Gemfiles
+	if [ "${PKGBASE%%-*}" = "rubygem" ]; then
+		return 0
+	fi
+	
+	# advise install of bundler if its not present for check
+	if ! type bundle > /dev/null 2>&1; then
+		notice "Please install sysutils/rubygem-bundler for additional Gemfile-checks"
+		return 0
+	fi
+ 
+	# locate the Gemfile(s)
+	while read -r f; do
+	
+		# no results presents a blank line from heredoc
+		[ -z "$f" ] && continue
+	
+		# if there is no Gemfile everything is fine - stop here
+		[ ! -f "$f" ] && return 0;
+
+		# use bundle to check if Gemfile is satisfied
+		# if bundle returns 1 the Gemfile is not satisfied
+		# and so stage-qa isn't also
+		if ! bundle check --dry-run --gemfile $f > /dev/null 2>&1; then
+			warn "Dependencies defined in ${f} are not satisfied"
+		fi
+      
+	done <<-EOF
+		$(find ${STAGEDIR} -name Gemfile)
+		EOF
+	return 0
+}
+
+flavors()
+{
+	local rc pkgnames uniques
+	rc=0
+	if [ -n "${FLAVOR}" ]; then
+		pkgnames=$(make -C "${CURDIR}" flavors-package-names|sort)
+		uniques=$(echo "${pkgnames}"|uniq)
+		if [ "$pkgnames" != "${uniques}" ]; then
+			err "Package names are not uniques with flavors:"
+			make -C "${CURDIR}" pretty-flavors-package-names >&2
+			err "maybe use <flavor>_PKGNAMEPREFIX/SUFFIX".
+			rc=1
+		fi
+	fi
+	return ${rc}
+}
+
 checks="shebang symlinks paths stripped desktopfileutils sharedmimeinfo"
 checks="$checks suidfiles libtool libperl prefixvar baselibs terminfo"
-checks="$checks proxydeps sonames perlcore"
+checks="$checks proxydeps sonames perlcore no_arch gemdeps gemfiledeps flavors"
 
 ret=0
-cd ${STAGEDIR}
+cd ${STAGEDIR} || exit 1
 for check in ${checks}; do
 	${check} || ret=1
 done

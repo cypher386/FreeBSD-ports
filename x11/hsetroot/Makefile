@@ -3,15 +3,16 @@
 
 PORTNAME=	hsetroot
 PORTVERSION=	1.0.2
-PORTREVISION=	12
+PORTREVISION=	14
 CATEGORIES=	x11
 
-MAINTAINER=	ports@FreeBSD.org
+MAINTAINER=	danfe@FreeBSD.org
 COMMENT=	Wallpaper manipulation utility for X11
 
 LICENSE=	GPLv2
 
 LIB_DEPENDS=	libImlib2.so:graphics/imlib2
+RUN_DEPENDS=	xrandr:x11/xrandr
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	himdel

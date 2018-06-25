@@ -2,19 +2,26 @@
 # $FreeBSD$
 
 PORTNAME=	aubio
-PORTVERSION=	0.4.4
-CATEGORIES=	audio
+PORTVERSION=	0.4.6
+PORTREVISION?=	1
+CATEGORIES?=	audio
 MASTER_SITES=	http://aubio.org/pub/
 
-MAINTAINER=	ports@FreeBSD.org
-COMMENT=	Library for audio labelling
+PATCH_SITES=	https://github.com/${PORTNAME}/${PORTNAME}/commit/
+PATCHFILES=	5690daf759b4.patch:-p1
 
-LICENSE=	GPLv3
+MAINTAINER?=	jhale@FreeBSD.org
+COMMENT?=	Library for audio labelling
+
+LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+USES+=		pkgconfig tar:bzip2
+
+.if !defined(SLAVEPORT)
 BUILD_DEPENDS=	txt2man:textproc/txt2man
 
-USES=		pkgconfig tar:bzip2 waf
+USES+=		waf
 CONFIGURE_ARGS=	--mandir=${MANPREFIX}/man
 USE_LDCONFIG=	yes
 
@@ -48,5 +55,7 @@ post-install:
 	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/aubio${b}
 .endfor
 	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/libaubio.so
+
+.endif # !defined(SLAVEPORT)
 
 .include <bsd.port.mk>

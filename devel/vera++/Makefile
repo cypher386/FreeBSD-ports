@@ -3,7 +3,7 @@
 
 PORTNAME=	vera++
 PORTVERSION=	1.3.0
-PORTREVISION=	2
+PORTREVISION=	8
 CATEGORIES=	devel
 MASTER_SITES=	https://bitbucket.org/verateam/vera/downloads/
 DISTFILES=	${DISTNAME}${EXTRACT_SUFX} \
@@ -14,8 +14,6 @@ COMMENT=	Tool for verification of C++ source code
 
 LICENSE=	BSL
 LICENSE_FILE=	${WRKSRC}/LICENSE_1_0.txt
-
-BROKEN_powerpc64=	Does not build
 
 BUILD_DEPENDS=	boost-libs>=0:devel/boost-libs
 
@@ -36,7 +34,8 @@ OPTIONS_DEFAULT=	LUA PYTHON
 
 PYTHON_CMAKE_OFF=	-DVERA_PYTHON:BOOL=OFF
 PYTHON_CMAKE_ON=	-DVERA_PYTHON:BOOL=ON
-PYTHON_LIB_DEPENDS=	libboost_python.so:devel/boost-python-libs
+PYTHON_LIB_DEPENDS=	${PY_BOOST}
+PYTHON_USES=	python:2.7
 LUA_CMAKE_OFF=	-DVERA_LUA:BOOL=OFF
 LUA_CMAKE_ON=	-DVERA_LUA:BOOL=ON
 LUA_LIB_DEPENDS=	libluabind.so:devel/luabind

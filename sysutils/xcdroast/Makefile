@@ -22,7 +22,6 @@ BUILD_DEPENDS=	cdrecord:sysutils/cdrtools
 
 USES=		gettext gmake iconv pkgconfig
 GNU_CONFIGURE=	yes
-WANT_GNOME=	yes
 
 CONFIGURE_ENV+=	GTK_CONFIG="${GTK_CONFIG}" \
 		GLIB_CONFIG="${GLIB_CONFIG}"
@@ -68,7 +67,9 @@ pre-everything::
 	@${ECHO_MSG} "         wrapping utility which gets a SUID Bit after enabling"
 	@${ECHO_MSG} "         the non-root mode inside the application!"
 	@${ECHO_MSG}
+.  if !(defined(PACKAGE_BUILDING) || defined(BATCH))
 	sleep 5
+.  endif
 .endif
 
 .include <bsd.port.mk>

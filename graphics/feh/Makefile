@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	feh
-PORTVERSION=	2.18
+PORTVERSION=	2.26.3
 CATEGORIES=	graphics
 MASTER_SITES=	http://feh.finalrewind.org/ \
 		LOCAL/uqs
@@ -15,31 +15,35 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 
 LIB_DEPENDS=	libcurl.so:ftp/curl \
 		libImlib2.so:graphics/imlib2 \
-		libpng16.so:graphics/png
+		libpng.so:graphics/png
 
+USES=		compiler:c++11-lang cpe desktop-file-utils gmake localbase:ldflags \
+		perl5 shebangfix tar:bzip2
+SHEBANG_FILES=	cam/feh-cam
 USE_XORG=	x11 xt xinerama
-USES=		cpe desktop-file-utils gmake perl5 shebangfix tar:bzip2
-CPE_VENDOR=	daniel_friesel
 USE_PERL5=	run
+CPE_VENDOR=	daniel_friesel
 
-CPPFLAGS+=	-I${LOCALBASE}/include -std=c99
-LDFLAGS+=	-L${LOCALBASE}/lib
-MAKE_ENV+=	LDFLAGS="${LDFLAGS}"
+MAKE_ENV+=	LDFLAGS="${LDFLAGS}" verscmp=0
 
-OPTIONS_DEFINE=	CAM DOCS
+OPTIONS_DEFINE=	CAM DOCS EXAMPLES EXIF
 CAM_DESC=	Install feh-cam and related tools
-OPTIONS_DEFAULT=CAM
+EXIF_DESC=	Support EXIF tags
+OPTIONS_DEFAULT=CAM EXIF
+OPTIONS_SUB=	yes
 
-.include <bsd.port.options.mk>
+CAM_MAKE_ENV=	cam=1
 
-.if ${PORT_OPTIONS:MCAM}
-MAKE_ENV+=	cam=1
-SHEBANG_FILES=	${WRKSRC}/cam/feh-cam
-PLIST_SUB=	CAM=""
-.else
-MAKE_ENV+=	cam=0
-PLIST_SUB=	CAM="@comment "
-.endif
+EXIF_LIB_DEPENDS=	libexif.so:graphics/libexif
+EXIF_MAKE_ENV=	exif=1
+
+post-patch-DOCS-off:
+	@${REINPLACE_CMD} -e 's|install-doc||' \
+		${WRKSRC}/Makefile
+
+post-patch-EXAMPLES-off:
+	@${REINPLACE_CMD} -e 's|install-examples||' \
+		${WRKSRC}/Makefile
 
 post-install:
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/feh

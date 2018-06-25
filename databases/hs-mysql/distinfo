@@ -1,2 +1,3 @@
-SHA256 (cabal/mysql-0.1.1.8.tar.gz) = 90f02af1c81e2189f65dcef0f78327eba4b0ef40bea5bde5cb74920727f9bd84
-SIZE (cabal/mysql-0.1.1.8.tar.gz) = 14092
+TIMESTAMP = 1524151121
+SHA256 (cabal/mysql-0.1.5.tar.gz) = 49b367d07f6d93fd4cbd08390f83bbf8e40c66156a1d2b0f570b68921e6f3075
+SIZE (cabal/mysql-0.1.5.tar.gz) = 16389

@@ -27,33 +27,24 @@
 #include <sys/cdefs.h>
 __FBSDID("$FreeBSD$");
 
-#include <sys/param.h>
-#include <sys/proc.h>
-#include <sys/sysctl.h>
+#include "defs.h"
+#include "command.h"
+#include "elf-bfd.h"
+#include "filenames.h"
+#include "gdbcore.h"
+#include "gdbthread.h"
+#include "gdb_obstack.h"
+#include "inferior.h"
+#include "objfiles.h"
+#include "osabi.h"
+#include "solib.h"
+#include "target.h"
+#include "value.h"
+#include "readline/tilde.h"
+
 #include <sys/user.h>
-#include <err.h>
 #include <fcntl.h>
 #include <kvm.h>
-
-#include <defs.h>
-#include <readline/readline.h>
-#include <readline/tilde.h>
-#include <command.h>
-#include "elf-bfd.h"
-#include <exec.h>
-#include "filenames.h"
-#include <frame-unwind.h>
-#include <gdb.h>
-#include <gdbcore.h>
-#include <gdbthread.h>
-#include "gdb_obstack.h"
-#include <inferior.h>
-#include <language.h>
-#include "objfiles.h"
-#include <regcache.h>
-#include <solib.h>
-#include <target.h>
-#include <ui-out.h>
 
 #include "kgdb.h"
 
@@ -185,9 +176,30 @@ fbsd_kernel_osabi_sniffer(bfd *abfd)
 	bfd_byte buf[sizeof(KERNEL_INTERP)];
 	bfd_byte *bufp;
 
-	/* FreeBSD ELF kernels have a FreeBSD/ELF OS ABI. */
-	if (elf_elfheader(abfd)->e_ident[EI_OSABI] != ELFOSABI_FREEBSD)
+	/* First, determine if this is a FreeBSD/ELF binary. */
+	switch (elf_elfheader(abfd)->e_ident[EI_OSABI]) {
+	case ELFOSABI_FREEBSD:
+		break;
+	case ELFOSABI_NONE: {
+		enum gdb_osabi osabi = GDB_OSABI_UNKNOWN;
+
+		bfd_map_over_sections (abfd,
+		    generic_elf_osabi_sniff_abi_tag_sections,
+		    &osabi);
+
+		/*
+		 * aarch64 kernels don't have the right note tag for
+		 * kernels so just look for /red/herring anyway.
+		 */
+		if (osabi == GDB_OSABI_UNKNOWN &&
+		    elf_elfheader(abfd)->e_machine == EM_AARCH64)
+			break;
+		if (osabi != GDB_OSABI_FREEBSD)
+			return (GDB_OSABI_UNKNOWN);
+	}
+	default:
 		return (GDB_OSABI_UNKNOWN);
+	}
 
 	/* FreeBSD ELF kernels have an interpreter path of "/red/herring". */
 	bufp = buf;
@@ -195,7 +207,7 @@ fbsd_kernel_osabi_sniffer(bfd *abfd)
 	if (s != NULL && bfd_section_size(abfd, s) == sizeof(buf) &&
 	    bfd_get_full_section_contents(abfd, s, &bufp) &&
 	    memcmp(buf, KERNEL_INTERP, sizeof(buf)) == 0)
-		return (GDB_OSABI_FREEBSD_ELF_KERNEL);
+		return (GDB_OSABI_FREEBSD_KERNEL);
 
 	return (GDB_OSABI_UNKNOWN);
 }
@@ -362,7 +374,7 @@ kgdb_trgt_detach(struct target_ops *ops, const char *args, int from_tty)
 		printf_filtered("No vmcore file now.\n");
 }
 
-static char *
+static const char *
 kgdb_trgt_extra_thread_info(struct target_ops *ops, struct thread_info *ti)
 {
 
@@ -402,7 +414,7 @@ kgdb_trgt_update_thread_list(struct target_ops *ops)
 #endif
 }
 
-static char *
+static const char *
 kgdb_trgt_pid_to_str(struct target_ops *ops, ptid_t ptid)
 {
 	static char buf[33];
@@ -481,20 +493,18 @@ kgdb_trgt_remove_breakpoint(struct target_ops *ops, struct gdbarch *gdbarch,
 }
 
 static void
-kgdb_switch_to_thread(int tid)
+kgdb_switch_to_thread(const char *arg, int tid)
 {
-	char buf[16];
-	int thread_id;
+  struct thread_info *tp;
 
-	thread_id = ptid_to_global_thread_id(fbsd_vmcore_ptid(tid));
-	if (thread_id == 0)
-		error ("invalid tid");
-	snprintf(buf, sizeof(buf), "%d", thread_id);
-	gdb_thread_select(current_uiout, buf, NULL);
+  tp = find_thread_ptid (fbsd_vmcore_ptid (tid));
+  if (tp == NULL)
+    error ("invalid tid");
+  thread_select (arg, tp);
 }
 
 static void
-kgdb_set_proc_cmd (char *arg, int from_tty)
+kgdb_set_proc_cmd (const char *arg, int from_tty)
 {
 	CORE_ADDR addr;
 	struct kthr *thr;
@@ -516,11 +526,11 @@ kgdb_set_proc_cmd (char *arg, int from_tty)
 		if (thr == NULL)
 			error("invalid proc address");
 	}
-	kgdb_switch_to_thread(thr->tid);
+	kgdb_switch_to_thread(arg, thr->tid);
 }
 
 static void
-kgdb_set_tid_cmd (char *arg, int from_tty)
+kgdb_set_tid_cmd (const char *arg, int from_tty)
 {
 	CORE_ADDR addr;
 	struct kthr *thr;
@@ -536,7 +546,7 @@ kgdb_set_tid_cmd (char *arg, int from_tty)
 			error("invalid thread address");
 		addr = thr->tid;
 	}
-	kgdb_switch_to_thread(addr);
+	kgdb_switch_to_thread(arg, addr);
 }
 
 static int
@@ -545,8 +555,6 @@ kgdb_trgt_return_one(struct target_ops *ops)
 
 	return 1;
 }
-
-void _initialize_kgdb_target(void);
 
 void
 _initialize_kgdb_target(void)

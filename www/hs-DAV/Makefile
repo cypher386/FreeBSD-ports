@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	DAV
-PORTVERSION=	1.0.7
+PORTVERSION=	1.3.2
 CATEGORIES=	www haskell
 
 MAINTAINER=	haskell@FreeBSD.org

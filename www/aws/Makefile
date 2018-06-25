@@ -3,9 +3,10 @@
 
 PORTNAME=	aws
 PORTVERSION=	17.1
+PORTREVISION=	1
 CATEGORIES=	www
 
-MAINTAINER=	freebsd.contact@marino.st
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Adacore Ada Web Server and framework
 
 LICENSE=	GPLv3 GPLv3RLE
@@ -17,7 +18,7 @@ BUILD_DEPENDS=	gprbuild:devel/gprbuild \
 		gnatpython>=20101207:devel/gnatpython
 RUN_DEPENDS=	xmlada>=4.4:textproc/xmlada
 
-USES=		ada:run gmake python shebangfix tar:bzip2
+USES=		ada:run gmake python shebangfix
 USE_GITHUB=	yes
 GH_ACCOUNT=	AdaCore
 GH_TUPLE=	AdaCore:templates-parser:${PORTVERSION}:tp/templates_parser

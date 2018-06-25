@@ -2,14 +2,15 @@
 # $FreeBSD$
 
 PORTNAME=		siegfried
-PORTVERSION=		1.7.1
 DISTVERSIONPREFIX=	v
+DISTVERSION=		1.7.8
 CATEGORIES=		sysutils
 
 MAINTAINER=		steffen@fritz.wtf
 COMMENT=		File identification tool
 
 LICENSE=		APACHE20
+LICENSE_FILE=		${WRKSRC}/LICENSE.txt
 
 PLIST_FILES=		bin/sf
 
@@ -20,7 +21,5 @@ USES=	go
 
 GO_PKGNAME=	github.com/${GH_ACCOUNT}/${PORTNAME}
 GO_TARGET=	github.com/${GH_ACCOUNT}/${PORTNAME}/cmd/sf
-
-STRIP=		# stripping can break go binaries
 
 .include <bsd.port.mk>

@@ -2,13 +2,13 @@
 # $FreeBSD$
 
 PORTNAME=	wordpress
-PORTVERSION=	4.7.3
+PORTVERSION=	4.8.2
 DISTVERSIONSUFFIX=	-zh_TW
 CATEGORIES=	chinese www
 MASTER_SITES=	http://tw.wordpress.org/
 PKGNAMESUFFIX=	-zh_TW
 
-MAINTAINER=	joneum@bsdproject.de
+MAINTAINER=	joneum@FreeBSD.org
 COMMENT=	State-of-the-art semantic personal publishing platform
 
 LICENSE=	GPLv2+
@@ -33,7 +33,9 @@ SUB_FILES=	pkg-message
 pre-everything::
 	@${ECHO_CMD} "If you want to upgrade, you must read upgrade document."
 	@${ECHO_CMD} ""
+.  if !(defined(PACKAGE_BUILDING) || defined(BATCH))
 	@sleep 1
+.  endif
 
 pre-install:
 	${ECHO_CMD} '@owner www' > ${PLIST}

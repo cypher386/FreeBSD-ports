@@ -13,7 +13,7 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 
 BUILD_DEPENDS=	help2man:misc/help2man
 
-USES=		pathfix tar:xz
+USES=		tar:xz
 GNU_CONFIGURE=	yes
 
 INFO=		dateutils

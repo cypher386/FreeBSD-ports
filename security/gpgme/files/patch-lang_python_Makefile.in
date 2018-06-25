@@ -1,21 +1,29 @@
---- lang/python/Makefile.in.orig	2016-11-16 12:46:35 UTC
+First hunk:
+The swig executable from devel/swig30 is named 'swig3.0' and the build system
+only looks for an executable named 'swig':
+unable to execute 'swig': No such file or directory
+
+Second hunk:
+Fix staging and build the *.pyc and *.pyo files 
+
+--- lang/python/Makefile.in.orig	2017-12-12 11:56:08 UTC
 +++ lang/python/Makefile.in
-@@ -756,7 +756,7 @@ config.h:
- all-local: copystamp
- 	for PYTHON in $(PYTHONS); do \
+@@ -740,7 +740,7 @@ all-local: copystamp
  	  CFLAGS="$(CFLAGS)" \
--	    $$PYTHON setup.py build --verbose ; \
-+	    $$PYTHON setup.py build --verbose build_ext --swig=$(SWIG) ; \
+ 	  srcdir="$(srcdir)" \
+ 	  top_builddir="$(top_builddir)" \
+-	    $$PYTHON setup.py build --verbose --build-base="$$(basename "$${PYTHON}")-gpg" ; \
++	    $$PYTHON setup.py build --verbose --build-base="$$(basename "$${PYTHON}")-gpg" build_ext --swig=$(SWIG) ; \
  	done
  
- dist/gpg-$(VERSION).tar.gz dist/gpg-$(VERSION).tar.gz.asc: copystamp
-@@ -792,7 +792,8 @@ install-exec-local:
- 	rm -f install_files.txt
- 	for PYTHON in $(PYTHONS); do \
- 	  $$PYTHON setup.py install \
--	  --prefix $(DESTDIR)$(prefix) \
+ python$(PYTHON_VERSION)-gpg/dist/gpg-$(VERSION).tar.gz.asc: copystamp
+@@ -782,7 +782,8 @@ install-exec-local:
+ 	  build \
+ 	  --build-base="$$(basename "$${PYTHON}")-gpg" \
+ 	  install \
+-	  --prefix "$(DESTDIR)$(prefix)" \
 +	  -c -O1 --prefix=$(prefix) \
 +	  --root=$(DESTDIR) \
- 	  --record files.txt \
  	  --verbose ; \
- 	  cat files.txt >> install_files.txt ; \
+ 	done
+ 

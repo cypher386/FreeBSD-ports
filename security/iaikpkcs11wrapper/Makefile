@@ -10,6 +10,9 @@ DISTNAME=	${PORTNAME}_${PORTVERSION:S/./_/g}
 MAINTAINER=	ale@FreeBSD.org
 COMMENT=	PKCS\#11 Java wrapper
 
+BROKEN_aarch64=		fails to link: /tmp/pkcs11wrapper-01d033.o is incompatible with /usr/lib/crti.o
+BROKEN_powerpc64=	fails to link: cannot find -lgcc
+
 OPTIONS_DEFINE=	DOCS EXAMPLES
 
 USES=		dos2unix gmake zip
@@ -27,7 +30,7 @@ PORTEXAMPLES=	*
 
 .include <bsd.port.pre.mk>
 
-.if ${ARCH} == "amd64" || ${ARCH} == "ia64"
+.if ${ARCH} == "amd64"
 WRKSRC=		${WRKDIR}/src/native/unix/linux-x86_64
 .else
 WRKSRC=		${WRKDIR}/src/native/unix/linux-x86

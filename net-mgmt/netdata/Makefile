@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	netdata
-PORTVERSION=	1.6.0
+PORTVERSION=	1.10.0
+DISTVERSIONPREFIX=v
 CATEGORIES=	net-mgmt
 
 MAINTAINER=	mmokhi@FreeBSD.org
@@ -10,30 +11,31 @@ COMMENT=	Scalable distributed realtime performance and health monitoring
 
 LICENSE=	GPLv3
 
-BUILD_DEPENDS+=	${LOCALBASE}/include/uuid/uuid.h:misc/e2fsprogs-libuuid
-LIB_DEPENDS+=	libuuid.so:misc/e2fsprogs-libuuid
+BUILD_DEPENDS=	${LOCALBASE}/include/uuid/uuid.h:misc/e2fsprogs-libuuid
+LIB_DEPENDS=	libuuid.so:misc/e2fsprogs-libuuid
+RUN_DEPENDS=	bash:shells/bash \
+		curl:ftp/curl
+
+USES=		autoreconf pathfix pkgconfig:both python shebangfix
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	firehol
-GH_TAGNAME=	f5fa346
 
 NETDATA_CACHE=	/var/cache/${PORTNAME}
 NETDATA_LOG=	/var/log/${PORTNAME}
 NETDATA_PERST=	/var/db/${PORTNAME}
 
-USES=		autoreconf pathfix pkgconfig:both python shebangfix
 USE_LDCONFIG=	yes
-
 GNU_CONFIGURE=	yes
-CPPFLAGS+=	-I${LOCALBASE}/include
+CPPFLAGS+=	-D_WANT_VMMETER -I${LOCALBASE}/include
 LIBS+=		-L${LOCALBASE}/lib
 INSTALL_TARGET=	install-strip
 
-SUB_LIST+=	NETDATA_CACHE=${NETDATA_CACHE} \
+SUB_LIST=	NETDATA_CACHE=${NETDATA_CACHE} \
 		NETDATA_LOG=${NETDATA_LOG} \
 		NETDATA_PERST=${NETDATA_PERST}
 
-PLIST_SUB+=	NETDATA_CACHE=${NETDATA_CACHE} \
+PLIST_SUB=	NETDATA_CACHE=${NETDATA_CACHE} \
 		NETDATA_LOG=${NETDATA_LOG} \
 		NETDATA_PERST=${NETDATA_PERST}
 
@@ -42,6 +44,12 @@ SUB_FILES=	${PORTNAME}.conf.sample
 
 USERS=		netdata
 GROUPS=		netdata
+
+OPTIONS_DEFINE=	FREEIPMI
+OPTIONS_SUB=	YES
+FREEIPMI_DESC=	Enable support for freeipmi
+
+FREEIPMI_LIB_DEPENDS=	libfreeipmi.so:sysutils/freeipmi
 
 post-patch:
 	@${REINPLACE_CMD} -e 's|%%NETDATA_CACHE%%|${NETDATA_CACHE}|g' \
@@ -59,5 +67,8 @@ post-install:
 	${MKDIR} ${STAGEDIR}${NETDATA_CACHE}
 	${MKDIR} ${STAGEDIR}${NETDATA_LOG}
 	${MKDIR} ${STAGEDIR}${NETDATA_PERST}
+	(for file in ${STAGEDIR}${ETCDIR}/*.conf ${STAGEDIR}${ETCDIR}/*/*.conf; do \
+		${MV} $$file $$file".sample"; \
+	done)
 
 .include <bsd.port.mk>

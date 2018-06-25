@@ -2,11 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	adasockets
-PORTVERSION=	1.10.1
+DISTVERSION=	1.11.1
 CATEGORIES=	net
 MASTER_SITES=	http://www.rfc1149.net/download/adasockets/
 
-MAINTAINER=	freebsd.contact@marino.st
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	IPv4 socket library for Ada (TCP, UDP, and multicast)
 
 LICENSE=	GPLv2 GMGPL

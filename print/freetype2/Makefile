@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	freetype2
-PORTVERSION=	2.7.1
+PORTVERSION=	2.9.1
 CATEGORIES=	print
 MASTER_SITES=	http://savannah.nongnu.org/download/freetype/ \
 		SF/freetype/${PORTNAME}/${PORTVERSION:C/^([0-9]+\.[0-9]+\.[0-9]+).*/\1/}/ \
@@ -36,21 +36,38 @@ PORTDOCS=	reference CHANGES formats.txt LICENSE.TXT raster.txt
 CPE_PRODUCT=	freetype
 CPE_VENDOR=	freetype
 
-OPTIONS_DEFINE=		DEBUG DOCS LCD_FILTERING PNG TABLE_VALIDATION
+OPTIONS_DEFINE=		CONFIG DEBUG DOCS LONG_PCF_NAMES PNG \
+		TABLE_VALIDATION
 OPTIONS_GROUP=		SUBPIXEL_HINTING
 OPTIONS_GROUP_SUBPIXEL_HINTING=	V38 V40
-OPTIONS_DEFAULT=	LCD_FILTERING V40
+OPTIONS_SINGLE=	RENDERING
+OPTIONS_SINGLE_RENDERING=	LCD_FILTERING LCD_RENDERING
+OPTIONS_RADIO=		SIZE_METRICS_CHOICE
+OPTIONS_RADIO_SIZE_METRICS_CHOICE=	FIX_SIZE_METRICS TT_SIZE_METRICS
+OPTIONS_DEFAULT=	CONFIG LCD_RENDERING V40
+OPTIONS_SUB=	yes
 
+CONFIG_DESC=	Install freetype-config
+CONFIG_CONFIGURE_ENABLE=freetype-config
 PNG_DESC=		Png compressed OpenType embedded bitmaps support
 PNG_LIB_DEPENDS=	libpng.so:graphics/png
 PNG_CONFIGURE_WITH=	png
 
 TABLE_VALIDATION_DESC=	TrueType GX/AAT and OpenType table validation
 
-LCD_FILTERING_DESC?=	Sub-pixel rendering (patented)
-LCD_FILTERING_CFLAGS=	-DFT_CONFIG_OPTION_SUBPIXEL_RENDERING
+SIZE_METRICS_CHOICE_DESC=	Size metrics for TrueType fonts
+FIX_SIZE_METRICS_DESC=	Fix metrics on size request for scalable fonts (alternative method)
+FIX_SIZE_METRICS_EXTRA_PATCHES=	${FILESDIR}/extra-patch-fix_size_metrics.diff
+TT_SIZE_METRICS_DESC=	TrueType-like size metrics for 'light' auto-hinting
 
-SUBPIXEL_HINTING_DESC=	Sub-pixel hinting support 
+RENDERING_DESC=		Rendering technology
+LCD_FILTERING_DESC?=	Subpixel rendering (patented)
+LCD_FILTERING_CFLAGS=	-DFT_CONFIG_OPTION_SUBPIXEL_RENDERING
+LCD_RENDERING_DESC=	Harmony LCD rendering
+
+LONG_PCF_NAMES_DESC=	Enable long PCF family names
+
+SUBPIXEL_HINTING_DESC=	Subpixel hinting support
 V38_DESC=	v38 mode (Infinality code)
 V38_VARS=	SUBPIXEL_HINTING_MODE+=1
 V40_DESC=	v40 mode (minimal code, a.k.a. ClearType hinting, faster)
@@ -70,9 +87,6 @@ pre-patch:
 		${WRKSRC}/builds/unix/install.mk
 
 post-patch:
-# Check defined TT_CONFIG_OPTION_SUBPIXEL_HINTING
-	@${REINPLACE_CMD} -e 's|^#if \(TT_CONFIG_OPTION_SUBPIXEL_HINTING\)\(.*\)|#if defined(\1) \&\& (\1\2)|' \
-		${WRKSRC}/include/freetype/config/ftoption.h
 .if defined(SUBPIXEL_HINTING_MODE)
 	@${REINPLACE_CMD} -i '.hinting.bak' \
 		-e 's|^\(#define TT_CONFIG_OPTION_SUBPIXEL_HINTING\).*|\1 \
@@ -90,9 +104,19 @@ post-patch-DEBUG-on:
 		-e 's|.*\(#define FT_DEBUG_MEMORY\).*|\1|' \
 		${WRKSRC}/include/freetype/config/ftoption.h
 
+post-patch-LONG_PCF_NAMES-on:
+	@${REINPLACE_CMD} -i '.names.bak' \
+		-e 's|.*\(#define PCF_CONFIG_OPTION_LONG_FAMILY_NAMES\).*|\1|' \
+		${WRKSRC}/include/freetype/config/ftoption.h
+
 post-patch-TABLE_VALIDATION-on:
 	@${REINPLACE_CMD} -e '/valid$$/s|#.*\(AUX_MODULES\)|\1|' \
 		${WRKSRC}/modules.cfg
+
+post-patch-TT_SIZE_METRICS-on:
+	@${REINPLACE_CMD} -i '.metrics.bak' \
+		-e 's|.*\(#define AF_CONFIG_OPTION_TT_SIZE_METRICS\).*|\1|' \
+		${WRKSRC}/include/freetype/config/ftoption.h
 
 post-configure:
 	@(cd ${BUILD_WRKSRC}; ${SETENV} ${MAKE_ENV} \

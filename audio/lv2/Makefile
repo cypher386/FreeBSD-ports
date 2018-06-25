@@ -15,9 +15,9 @@ LICENSE_COMB=	multi
 # Only lv2specgen.py is under MIT
 LICENSE_FILE_ISCL=	${WRKSRC}/COPYING
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}lxml>0:devel/py-lxml \
-		${PYTHON_PKGNAMEPREFIX}pygments>0:textproc/py-pygments \
-		${PYTHON_PKGNAMEPREFIX}rdflib>0:textproc/py-rdflib
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}lxml>0:devel/py-lxml@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pygments>0:textproc/py-pygments@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}rdflib>0:textproc/py-rdflib@${PY_FLAVOR}
 
 CONFLICTS_INSTALL=	lv2core
 
@@ -28,7 +28,7 @@ OPTIONS_DEFINE=	DOXYGEN EXAMPLES
 OPTIONS_SUB=	yes
 
 DOXYGEN_BUILD_DEPENDS=	doxygen:devel/doxygen \
-			${PYTHON_PKGNAMEPREFIX}rdflib>0:textproc/py-rdflib
+			${PYTHON_PKGNAMEPREFIX}rdflib>0:textproc/py-rdflib@${PY_FLAVOR}
 DOXYGEN_CONFIGURE_ON=	--docs
 DOXYGEN_PORTDOCS=	*
 
@@ -39,10 +39,6 @@ EXAMPLES_USE=		GNOME=cairo,gtk20
 EXAMPLES_CONFIGURE_ENV=	CC='${CC} -Wl,--as-needed' # Gtk deps
 
 post-install:
-# Waf doesn't support changing pkg-config data install path
-	@${MV} ${STAGEDIR}${PREFIX}/lib/pkgconfig/*.pc \
-		${STAGEDIR}${PREFIX}/libdata/pkgconfig/
-	@${RMDIR} ${STAGEDIR}${PREFIX}/lib/pkgconfig/
 # Waf doesn't have built-in strip support
 	@${FIND} ${STAGEDIR}${PREFIX}/lib/${PORTNAME} \
 		-name '*.so' -exec ${STRIP_CMD} {} +

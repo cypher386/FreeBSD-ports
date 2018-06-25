@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	csv
-PORTVERSION=	1.4.4
+PORTVERSION=	2.1.1
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	CSV decoding and encoding for Elixir
 
 LICENSE=	MIT

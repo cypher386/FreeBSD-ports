@@ -2,14 +2,14 @@
 # $FreeBSD$
 
 PORTNAME=	fet
-PORTVERSION=	5.31.2
+DISTVERSION=	5.36.0
 CATEGORIES=	deskutils kde
 MASTER_SITES=	http://lalescu.ro/liviu/fet/download/ \
 		http://lalescu.ro/liviu/fet/download/old/ \
 		http://timetabling.de/download/ \
 		http://timetabling.de/download/old/
 
-MAINTAINER=	udvzsolt@gmail.com
+MAINTAINER=	uzsolt@uzsolt.hu
 COMMENT=	Free timetabling software
 
 LICENSE=	GPLv3+

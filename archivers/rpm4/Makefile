@@ -2,9 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	rpm
-PORTVERSION=	4.13.0.1
+PORTVERSION=	4.13.1
+PORTREVISION=	1
 CATEGORIES=	archivers
-MASTER_SITES=	http://ftp.rpm.org/releases/rpm-${PORTVERSION:R:R}.x/
+MASTER_SITES=	http://ftp.rpm.org/releases/rpm-${PORTVERSION:R}.x/
 PKGNAMESUFFIX=	4
 
 MAINTAINER=	rodrigo@FreeBSD.org
@@ -15,7 +16,6 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 
 LIB_DEPENDS=	libpopt.so:devel/popt \
 		libnss3.so:security/nss
-BUILD_DEPENDS=	${LOCALBASE}/bin/gsed:textproc/gsed
 
 USES=		alias bdb gmake libarchive libtool lua:51 pathfix pkgconfig \
 		shebangfix tar:bzip2
@@ -33,7 +33,8 @@ CONFIGURE_ARGS=	--with-external-db \
 		--with-popt-prefix="${LOCALBASE}" \
 		--sysconfdir=${PREFIX}/etc \
 		--localstatedir=/var \
-		--without-javaglue
+		--without-javaglue \
+		am_cv_python_version=${PYTHON_VER}${PYTHON_ABIVER}
 CONFIGURE_ENV=	LUA_CFLAGS=-I${LUA_INCDIR} \
 		LUA_LIBS="-L${LUA_LIBDIR} -llua-${LUA_VER} -lm"
 INSTALL_TARGET=	install-strip
@@ -50,11 +51,11 @@ PLIST_SUB=	VERSION=${PORTVERSION} \
 PORTDOCS=	*
 
 OPTIONS_DEFINE=	PYTHON PLUGINS NLS DOCS
-OPTIONS_DEFAULT=PYTHON PLUGINS
+OPTIONS_DEFAULT=PYTHON
 OPTIONS_SUB=	yes
 
 PYTHON_CONFIGURE_ENABLE=python
-PYTHON_USES=		python:2.7
+PYTHON_USES=		python
 
 NLS_CONFIGURE_ENABLE=	nls
 NLS_USES=		gettext

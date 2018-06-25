@@ -4,9 +4,9 @@
 CATEGORIES=	devel lang
 PKGNAMESUFFIX=	-fcl-db
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal Database Library (FCL)
 
+USES=		fpc
 USE_FPC=	fcl-base fcl-xml rtl-objpas rtl-extra ibase mysql odbc \
 		oracle postgres sqlite dblib pxlib fcl-json
 

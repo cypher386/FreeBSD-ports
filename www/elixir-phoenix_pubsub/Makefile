@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	phoenix_pubsub
-PORTVERSION=	1.0.1
+PORTVERSION=	1.0.2
 DISTVERSIONPREFIX=	v
 CATEGORIES=	www
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Distributed PubSub for Phoenix
 
 LICENSE=	MIT

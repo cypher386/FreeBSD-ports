@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	xmltv
-PORTVERSION=	0.5.68
-PORTREVISION=	1
+PORTVERSION=	0.5.70
 CATEGORIES=	textproc perl5
 MASTER_SITES=	SF
 PKGNAMEPREFIX=	p5-
@@ -15,6 +14,7 @@ LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 XMLTV_DEPENDS=	\
+	p5-CGI>=0:www/p5-CGI \
 	p5-XML-Parser>=0:textproc/p5-XML-Parser \
 	p5-XML-Twig>=0:textproc/p5-XML-Twig \
 	p5-XML-Writer>=0:textproc/p5-XML-Writer \
@@ -96,10 +96,4 @@ post-install:
 	${INSTALL_SCRIPT} ${WRKSRC}/choose/tv_pick/tv_pick_cgi \
 		${STAGEDIR}${PREFIX}/${CGIDIR}/tv_pick.cgi
 
-.include <bsd.port.pre.mk>
-
-.if ${PERL_LEVEL} >= 502100
-XMLTV_DEPENDS+= p5-CGI>=0:www/p5-CGI
-.endif
-
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

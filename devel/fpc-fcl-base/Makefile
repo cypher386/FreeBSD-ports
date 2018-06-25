@@ -4,9 +4,9 @@
 CATEGORIES=	devel lang
 PKGNAMESUFFIX=	-fcl-base
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal Component Library base
 
+USES=		fpc
 USE_FPC=	fcl-res rtl-objpas
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

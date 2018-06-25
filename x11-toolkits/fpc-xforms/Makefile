@@ -4,9 +4,9 @@
 CATEGORIES=	x11-toolkits lang
 PKGNAMESUFFIX=	-xforms
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	X-Forms interface for Free Pascal
 
+USES=		fpc
 USE_FPC=	x11
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

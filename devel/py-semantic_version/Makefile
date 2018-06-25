@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	semantic_version
-PORTVERSION=	2.4.2
+PORTVERSION=	2.6.0
 PORTREVISION=	1
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel python
@@ -14,21 +14,18 @@ COMMENT=	Python library provides a few tools to handle SemVer in Python
 LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}django18>0:www/py-django18
-
-OPTIONS_DEFINE=	TESTS
-
-TESTS_DESC=		Install test suite requirements
-TESTS_BUILD_DEPENDS=	${TEST_DEPENDS}
+TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}django111>0:www/py-django111@${PY_FLAVOR}
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	rbarrois
 GH_PROJECT=	python-semanticversion
 
-USES=		python
-USE_PYTHON=	autoplist distutils
+NO_ARCH=	yes
 
-regression-test: build
-	@cd ${WRKSRC} && ${PYTHON_CMD} ${PYDISTUTILS_SETUP} test
+USES=		python
+USE_PYTHON=	autoplist concurrent distutils
+
+do-test:
+	@(cd ${TEST_WRKSRC}; ${SETENV} ${TEST_ENV} ${PYTHON_CMD} ${PYDISTUTILS_SETUP} test)
 
 .include <bsd.port.mk>

@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	db_connection
-DISTVERSION=	1.1.2
+DISTVERSION=	1.1.3
 DISTVERSIONPREFIX=	v
 CATEGORIES=	databases
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Database connection behaviour for Elixir
 
 LICENSE=	APACHE20

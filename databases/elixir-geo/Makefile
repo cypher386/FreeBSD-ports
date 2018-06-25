@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	geo
-PORTVERSION=	1.2.1
+PORTVERSION=	2.1.0
 DISTVERSIONPREFIX=	v
 CATEGORIES=	databases
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Collection of GIS functions for Elixir
 
 LICENSE=	MIT

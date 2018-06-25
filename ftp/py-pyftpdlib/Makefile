@@ -1,8 +1,7 @@
-# Created by: Li-Wen Hsu <lwhsu@lwhsu.org>
 # $FreeBSD$
 
 PORTNAME=	pyftpdlib
-PORTVERSION=	1.5.1
+PORTVERSION=	1.5.4
 CATEGORIES=	ftp python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
@@ -12,16 +11,18 @@ COMMENT=	Python FTP server library
 
 LICENSE=	MIT
 
-USES=		python
+USES=		python shebangfix
 USE_PYTHON=	autoplist distutils
+SHEBANG_FILES=	demo/*.py
+NO_ARCH=	yes
 
 OPTIONS_DEFINE=		SENDFILE OPENSSL
 OPTIONS_DEFAULT=	SENDFILE OPENSSL
 SENDFILE_DESC=		Enable sendfile(2) support
 OPENSSL_DESC=		Enable FTP over SSL/TLS (RFC4217)
 
-SENDFILE_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pysendfile>0:net/py-pysendfile
-OPENSSL_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}openssl>0:security/py-openssl
+SENDFILE_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pysendfile>0:net/py-pysendfile@${PY_FLAVOR}
+OPENSSL_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}openssl>0:security/py-openssl@${PY_FLAVOR}
 
 EXAMPLESDIR=	${PREFIX}/share/examples/py-${PORTNAME}
 PORTEXAMPLES=	*

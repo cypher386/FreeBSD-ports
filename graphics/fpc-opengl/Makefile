@@ -4,9 +4,9 @@
 CATEGORIES=	graphics lang
 PKGNAMESUFFIX=	-opengl
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal interface to the OpenGL library
 
+USES=		fpc
 USE_FPC=	x11
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

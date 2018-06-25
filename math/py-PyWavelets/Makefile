@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	PyWavelets
-PORTVERSION=	0.5.1
+PORTVERSION=	0.5.2
+PORTREVISION=	1
 DISTVERSIONPREFIX=	v
 CATEGORIES=	math python
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
-DISTNAME=	pywt
 
 MAINTAINER=	eric@camachat.org
 COMMENT=	Discrete Wavelet Transforms in Python
@@ -14,17 +14,15 @@ LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 BUILD_DEPENDS=	${PYNUMPY} \
-		cython:lang/cython \
-		${PYTHON_PKGNAMEPREFIX}pillow>=1.7:graphics/py-pillow
+		${PYTHON_PKGNAMEPREFIX}pillow>=1.7:graphics/py-pillow@${PY_FLAVOR}
 RUN_DEPENDS=	${PYNUMPY} \
-		cython:lang/cython \
-		${PYTHON_PKGNAMEPREFIX}pillow>=1.7:graphics/py-pillow
+		${PYTHON_PKGNAMEPREFIX}pillow>=1.7:graphics/py-pillow@${PY_FLAVOR}
 
 USE_GITHUB=	yes
-GH_PROJECT=	${DISTNAME}
+GH_PROJECT=	pywt
 
 USES=		cpe python
-USE_PYTHON=	autoplist distutils
+USE_PYTHON=	autoplist distutils cython cython_run
 
 PYDISTUTILS_BUILD_TARGET=	build build_ext
 PYDISTUTILS_BUILDARGS+=		saveopts

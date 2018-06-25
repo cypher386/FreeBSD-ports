@@ -2,11 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=		nss-pam-ldapd
-PORTVERSION=		0.9.7
-PORTREVISION=		1
+PORTVERSION=		0.9.9
 CATEGORIES=		net
 MASTER_SITES=		http://arthurdejong.org/nss-pam-ldapd/ \
-			http://mirrors.rit.edu/zi/
+			ZI
 
 MAINTAINER?=		zi@FreeBSD.org
 COMMENT?=		Advanced fork of nss_ldap
@@ -21,7 +20,6 @@ USE_OPENLDAP=		yes
 USE_RC_SUBR=		nslcd
 PAM_LDAP_SHMAJOR=	1
 NSS_LDAP_SHMAJOR=	1
-PKGMESSAGE=		${WRKDIR}/pkg-message
 SUB_FILES+=		pkg-message
 
 NSLCD_PIDFILE?=		/var/run/nslcd.pid

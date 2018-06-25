@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	httpotion
-PORTVERSION=	3.0.2
+PORTVERSION=	3.0.3
 DISTVERSIONPREFIX=	v
 CATEGORIES=	www
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	The HTTP client for Elixir
 
 LICENSE=	MIT

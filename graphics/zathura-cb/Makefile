@@ -2,7 +2,7 @@
 
 PORTNAME=	zathura-cb
 PORTVERSION=	0.1.6
-PORTREVISION=	1
+PORTREVISION=	3
 CATEGORIES=	graphics
 MASTER_SITES=	https://pwmt.org/projects/zathura-cb/download/ \
 		http://www.madpilot.net/~mad/pwmt.org/
@@ -22,6 +22,6 @@ USES=		compiler:c11 desktop-file-utils gmake pkgconfig libarchive ssl
 USE_GNOME=	glib20 gtk30
 
 post-install:
-	${STRIP_CMD} ${STAGEDIR}${LOCALBASE}/lib/zathura/cb.so
+	@${STRIP_CMD} ${STAGEDIR}${LOCALBASE}/lib/zathura/cb.so
 
 .include <bsd.port.mk>

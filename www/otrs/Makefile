@@ -2,23 +2,20 @@
 # $FreeBSD$
 
 PORTNAME=	otrs
-PORTVERSION=	5.0.14
+PORTVERSION=	6.0.6
+PORTREVISION=	1
 CATEGORIES=	www
-MASTER_SITES=	http://ftp.otrs.org/pub/otrs/ \
-		ftp://ftp.samurai.com/pub/otrs/ \
-		http://ftp.gwdg.de/pub/misc/otrs/ \
-		http://mirror.xaranet.de/otrs/
 
 MAINTAINER=	m.tsatsenko@gmail.com
 COMMENT=	Open Ticket Request System
 
 LICENSE=	GPLv3
+LICENSE_FILE=	${WRKSRC}/COPYING
 
 BUILD_DEPENDS=	p5-Archive-Zip>=0:archivers/p5-Archive-Zip \
 		p5-DBI>=0:databases/p5-DBI \
 		p5-Crypt-Eksblowfish>=0:security/p5-Crypt-Eksblowfish \
 		p5-Crypt-PasswdMD5>=0:security/p5-Crypt-PasswdMD5 \
-		p5-Digest-SHA>=0:security/p5-Digest-SHA \
 		p5-MIME-Tools>=5.427:mail/p5-MIME-Tools \
 		p5-libwww>=0:www/p5-libwww \
 		p5-Net-DNS>=0.66:dns/p5-Net-DNS \
@@ -44,11 +41,20 @@ BUILD_DEPENDS=	p5-Archive-Zip>=0:archivers/p5-Archive-Zip \
 		p5-SOAP-Lite>=0:net/p5-SOAP-Lite \
 		p5-Class-Inspector>=0:devel/p5-Class-Inspector \
 		p5-Mozilla-CA>=0:www/p5-Mozilla-CA \
-		p5-Template-Toolkit>=0:www/p5-Template-Toolkit
-
+		p5-CGI>=0:www/p5-CGI \
+		p5-Lingua-Translit>=0:devel/p5-Lingua-Translit \
+		p5-Pod-Strip>=0:textproc/p5-Pod-Strip \
+		p5-Template-Toolkit>=0:www/p5-Template-Toolkit \
+		p5-XML-LibXML>=0:textproc/p5-XML-LibXML \
+		p5-Sisimai>=0:mail/p5-Sisimai
 RUN_DEPENDS:=	${BUILD_DEPENDS}
 
 USES=		cpe shebangfix perl5 tar:bzip2
+
+USE_GITHUB=	yes
+GH_ACCOUNT=	OTRS
+GH_TAGNAME=	51cbe50
+
 SHEBANG_FILES=	bin/cgi-bin/*.pl bin/cgi-bin/app.psgi bin/fcgi-bin/*.pl bin/*.pl \
 		scripts/tools/*.pl scripts/*.pl
 
@@ -71,7 +77,6 @@ GROUPS=		${USERS} www
 
 SUB_FILES=	pkg-message
 SUB_LIST=	OTRS_USER=${USERS} OTRS_GROUP=${USERS} WWWOWN=${WWWOWN}
-PKGMESSAGE=	${WRKDIR}/pkg-message
 NO_ARCH=	YES
 
 ROOT_DIRS_LIST=	Kernel bin scripts
@@ -82,52 +87,49 @@ PM_DIRS_LIST=	Kernel Kernel/Config Kernel/Config/Files Kernel/Language \
 		System/Crypt System/CustomerAuth System/CustomerUser \
 		System/CustomerUser/ System/
 
-SCRIPTS_DIRS_LIST=	"" database/update test tools
+SCRIPTS_DIRS_LIST=	"" database test tools DBUpdateTo6
 CRON_SCRIPTS=	${STAGEDIR}${OTRSDIR}/var/cron/
 CLEAN_FILES=	scripts/suse* scripts/redhat* \
 		var/httpd/htdocs/js/thirdparty/ckeditor-4.0/_source \
 		var/httpd/htdocs/skins/Agent/*/img/source
 
-PLIST_SUB+=	VER_CKEDITOR="4.5.6" OTRS_USER=${USERS} WWWOWN=${WWWOWN}
+PLIST_SUB=	VER_CKEDITOR="4.7.0" OTRS_USER=${USERS} WWWOWN=${WWWOWN}
 
-PGSQL_RUN_DEPENDS+=	p5-DBD-Pg>=0:databases/p5-DBD-Pg
+PGSQL_RUN_DEPENDS=	p5-DBD-Pg>=0:databases/p5-DBD-Pg
 PGSQL_USES=		pgsql
 
-MYSQL_RUN_DEPENDS+=	p5-DBD-mysql>=0:databases/p5-DBD-mysql
+MYSQL_RUN_DEPENDS=	p5-DBD-mysql>=0:databases/p5-DBD-mysql
 
-SSL_RUN_DEPENDS+=	p5-Crypt-SSLeay>=0:security/p5-Crypt-SSLeay
+SSL_RUN_DEPENDS=	p5-Crypt-SSLeay>=0:security/p5-Crypt-SSLeay
 
-APACHE_RUN_DEPENDS+=	${APACHE_PKGNAMEPREFIX}mod_perl2>=2.0.5:www/mod_perl2 \
+APACHE_RUN_DEPENDS=	${APACHE_PKGNAMEPREFIX}mod_perl2>=2.0.5:www/mod_perl2 \
 			p5-Apache-DBI>0:www/p5-Apache-DBI
+APACHE_USES=		apache:run,2.2+
 
-REPORTS_RUN_DEPENDS+=	p5-GD>=0:graphics/p5-GD \
+REPORTS_RUN_DEPENDS=	p5-GD>=0:graphics/p5-GD \
 			p5-GD-Graph>=0:graphics/p5-GD-Graph \
 			p5-GD-TextUtil>=0:graphics/p5-GD-TextUtil
 
-SMTP_RUN_DEPENDS+=	p5-Authen-SASL>=0:security/p5-Authen-SASL \
+SMTP_RUN_DEPENDS=	p5-Authen-SASL>=0:security/p5-Authen-SASL \
 			p5-Net-SSLGlue>=0:security/p5-Net-SSLGlue
 
-POP3_RUN_DEPENDS+=	p5-IO-Socket-SSL>=0:security/p5-IO-Socket-SSL \
+POP3_RUN_DEPENDS=	p5-IO-Socket-SSL>=0:security/p5-IO-Socket-SSL \
 			p5-Net-SSLGlue>=0:security/p5-Net-SSLGlue
 
-IMAP_RUN_DEPENDS+=	p5-Mail-IMAPClient>=0:mail/p5-Mail-IMAPClient \
+IMAP_RUN_DEPENDS=	p5-Mail-IMAPClient>=0:mail/p5-Mail-IMAPClient \
 			p5-Net-IMAP-Simple>=0:mail/p5-Net-IMAP-Simple
 
-LDAP_RUN_DEPENDS+=	p5-perl-ldap>=0:net/p5-perl-ldap
+LDAP_RUN_DEPENDS=	p5-perl-ldap>=0:net/p5-perl-ldap
 
-PDF_RUN_DEPENDS+=	p5-PDF-API2>=0.57:textproc/p5-PDF-API2
+PDF_RUN_DEPENDS=	p5-PDF-API2>=0.57:textproc/p5-PDF-API2
 
-ISPELL_RUN_DEPENDS+=	ispell:textproc/aspell-ispell
+ISPELL_RUN_DEPENDS=	ispell:textproc/aspell-ispell
 
-ASPELL_RUN_DEPENDS+=	aspell:textproc/aspell
+ASPELL_RUN_DEPENDS=	aspell:textproc/aspell
 
-GNUPG_RUN_DEPENDS+=	gpg:security/gnupg1
+GNUPG_RUN_DEPENDS=	gpg:security/gnupg1
 
 .include <bsd.port.pre.mk>
-
-.if ${PORT_OPTIONS:MAPACHE}
-USE_APACHE_RUN=	22+
-.endif
 
 post-patch:
 	@${FIND} ${WRKSRC} -name "*.pm" | \
@@ -142,18 +144,16 @@ do-build:
 	@${FIND} ${WRKSRC}/Kernel -type f | ${XARGS} ${CHMOD} ${SHAREMODE}
 	@${FIND} ${WRKSRC} -type f | ${XARGS} ${SED} -i '' \
 		-e "s=/opt/=${PREFIX}/=g;s=wwwrun=${WWWOWN}=g;"
-.if ${PORT_OPTIONS:MISPELL}
+
+do-build-ISPELL-on:
 	@${FIND} ${WRKSRC} -type f | ${XARGS} ${SED} -i '' \
 		-e "s=/usr/bin/ispell=${PREFIX}/bin/ispell=g"
-.endif
-.if ${PORT_OPTIONS:MASPELL}
+do-build-ASPELL-on:
 	@${FIND} ${WRKSRC} -type f | ${XARGS} ${SED} -i '' \
 		-e "s=/usr/bin/ispell=${PREFIX}/bin/aspell=g"
-.endif
-.if ${PORT_OPTIONS:MGNUPG}
+do-build-GNUPG-on:
 	@${FIND} ${WRKSRC} -type f | ${XARGS} ${SED} -i '' \
 		-e "s=/usr/bin/gpg=${PREFIX}/bin/gpg=g"
-.endif
 
 do-install:
 .for D in ${ROOT_DIRS_LIST:S!^!${OTRSDIR}/!} ${BIN_DIRS_LIST:S!^!${OTRSDIR}/bin/!} ${SCRIPTS_DIRS_LIST:S!^!${OTRSDIR}/scripts/!}
@@ -161,34 +161,26 @@ do-install:
 .endfor
 	${INSTALL_DATA} ${WRKSRC}/.*.dist ${STAGEDIR}${OTRSDIR}/
 	${INSTALL_DATA} ${WRKSRC}/RELEASE ${STAGEDIR}${OTRSDIR}/
-	${INSTALL_DATA} ${WRKSRC}/ARCHIVE ${STAGEDIR}${OTRSDIR}/
+	${INSTALL_DATA} ${WRKSRC}/*.md ${STAGEDIR}${OTRSDIR}/
 .for D in ${BIN_DIRS_LIST}
 	${INSTALL_SCRIPT} ${WRKSRC}/bin/${D}/*.* ${STAGEDIR}${OTRSDIR}/bin/${D}/
 .endfor
 	(cd ${WRKSRC} && ${PAX} -r -w Kernel var ${STAGEDIR}${OTRSDIR})
 	${INSTALL_SCRIPT} ${WRKSRC}/scripts/*.[ps][lh] ${STAGEDIR}${OTRSDIR}/scripts/
 	${INSTALL_DATA} ${WRKSRC}/scripts/apache* \
-		${WRKSRC}/scripts/*.sql ${STAGEDIR}${OTRSDIR}/scripts/
-	${INSTALL_DATA} ${WRKSRC}/scripts/database/update/*.* ${STAGEDIR}${OTRSDIR}/scripts/database/update/
+		${WRKSRC}/scripts/*.[pl][pm] ${STAGEDIR}${OTRSDIR}/scripts/
 	${INSTALL_DATA} ${WRKSRC}/scripts/database/*.* ${STAGEDIR}${OTRSDIR}/scripts/database/
 	${INSTALL_SCRIPT} ${WRKSRC}/scripts/test/*.t ${STAGEDIR}${OTRSDIR}/scripts/test/
 	${INSTALL_SCRIPT} ${WRKSRC}/scripts/tools/*.pl ${STAGEDIR}${OTRSDIR}/scripts/tools/
+	(cd ${WRKSRC}/scripts && ${PAX} -r -w DBUpdateTo6 ${STAGEDIR}${OTRSDIR}/scripts)
 	${FIND} ${CRON_SCRIPTS} -type f -name *.dist | ${SED} -e "p;s/\.dist//" | ${XARGS} -n2 ${MV}
 	${MKDIR} ${STAGEDIR}${PREFIX}/${PORTNAME}/var/article
 	${MKDIR} ${STAGEDIR}${PREFIX}/${PORTNAME}/var/httpd/htdocs/js/js-cache/
 	${MKDIR} ${STAGEDIR}${PREFIX}/${PORTNAME}/var/tmp
-
-# otrs.SetPermissions.pl does not work in stage environment due to missing otrs user
-#post-install:
-#	cd ${STAGEDIR}/${OTRSDIR} && ${PERL} ./bin/otrs.SetPermissions.pl \
-#	--web-group=${WWWOWN} \
-#	--otrs-user=${PORTNAME} \
-#	--admin-group=wheel  ${STAGEDIR}${OTRSDIR}
-
-x-generate-plist:
-	(${PORTSDIR}/Tools/scripts/plist -d -m ${MTREE_FILE} ${PREFIX} \
-	| ${SED} -E '\
-		s=share/doc/${PORTNAME}=%%DOCSDIR%%=; \
-	')> temp-pkg-plist
+	# Attemt to set permissions for OTRS. It will fail if there is no pre-existing otrs user
+	cd ${STAGEDIR}/${OTRSDIR} && ${PERL} ./bin/otrs.SetPermissions.pl \
+	--web-group=${WWWOWN} \
+	--otrs-user=${PORTNAME} \
+	--admin-group=wheel  ${STAGEDIR}${OTRSDIR} || true
 
 .include <bsd.port.post.mk>

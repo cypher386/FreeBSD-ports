@@ -3,17 +3,20 @@
 
 PORTNAME=	atkmm
 PORTVERSION=	2.24.2
+PORTREVISION=	1
 CATEGORIES=	accessibility gnome
 MASTER_SITES=	GNOME
 
 MAINTAINER=	gnome@FreeBSD.org
 COMMENT=	C++ wrapper for ATK API library
 
+LICENSE=	LGPL21+
+LICENSE_FILE=	${WRKSRC}/COPYING
+
 PORTSCOUT=	limitw:1,even
 
-LICENSE=	LGPL20
-
-USES=		gmake localbase libtool pathfix pkgconfig tar:xz
+USES=		compiler:c++11-lang gmake localbase libtool pathfix \
+		pkgconfig tar:xz
 USE_GNOME=	atk glibmm
 USE_LDCONFIG=	yes
 GNU_CONFIGURE=	yes

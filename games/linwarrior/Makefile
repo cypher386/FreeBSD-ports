@@ -3,7 +3,7 @@
 
 PORTNAME=	linwarrior
 PORTVERSION=	20100320
-PORTREVISION=	4
+PORTREVISION=	5
 CATEGORIES=	games
 MASTER_SITES=	http://www.hackcraft.de/games/linwarrior_3d/downloads/ \
 		http://mirror.amdmi3.ru/distfiles/
@@ -15,6 +15,8 @@ COMMENT=	Navigate a mech through a 3D world and fire at enemies
 USES=		gmake openal:al,alut
 USE_GL=		gl glu
 USE_SDL=	sdl
+
+CFLAGS+=	-Wno-c++11-narrowing
 
 WRKSRC=		${WRKDIR}/${PORTNAME}
 
@@ -29,8 +31,8 @@ DESKTOP_ENTRIES="LinWarrior 3D" \
 		false
 
 post-extract:
-	@${FIND} ${WRKSRC} -type d -exec chmod a+rx {} \;
-	@${FIND} ${WRKSRC} -type f -exec chmod a+r {} \;
+	@${FIND} ${WRKSRC} -type d -exec ${CHMOD} a+rx {} \;
+	@${FIND} ${WRKSRC} -type f -exec ${CHMOD} a+r {} \;
 
 post-patch:
 	@${REINPLACE_CMD} -e '/hash_set/ d' ${WRKSRC}/source/cAlert.h

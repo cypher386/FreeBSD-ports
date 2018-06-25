@@ -2,11 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	saga
-PORTVERSION=	3.0.0
-PORTREVISION=	2
+PORTVERSION=	6.3.0
 CATEGORIES=	math
 MASTER_SITES=	SF/saga-gis/SAGA%20-%20${PORTVERSION:C/\.[[:digit:]]\.[[:digit:]]*$//}/SAGA%20-%20${PORTVERSION}
-DISTNAME=	${PORTNAME}_${PORTVERSION}
 
 MAINTAINER=	rhurlin@gwdg.de
 COMMENT=	System for Automated Geoscientific Analyses
@@ -14,45 +12,53 @@ COMMENT=	System for Automated Geoscientific Analyses
 LICENSE=	GPLv2 LGPL21
 LICENSE_COMB=	multi
 
-BUILD_DEPENDS=	swig3.0:devel/swig30
+BUILD_DEPENDS=	clang50:devel/llvm50 \
+		swig3.0:devel/swig30
 LIB_DEPENDS=	libfftw3.so:math/fftw3 \
 		libgdal.so:graphics/gdal \
 		libhpdf.so:print/libharu \
 		libjasper.so:graphics/jasper \
-		liblas.so:devel/liblas12 \
+		liblas12.so:devel/liblas12 \
 		libodbc.so:databases/unixODBC \
-		libopencv_ml.so:graphics/opencv2 \
-		libopencv_core.so:graphics/opencv2-core \
+		libopencv_core.so:graphics/opencv-core \
+		libopencv_ml.so:graphics/opencv \
 		libproj.so:graphics/proj \
 		libsvm.so:science/libsvm \
 		libtbb.so:devel/tbb \
 		libtiff.so:graphics/tiff
-RUN_DEPENDS:=	${BUILD_DEPENDS}
+RUN_DEPENDS:=	swig3.0:devel/swig30
 
+USES=		autoreconf compiler:c++11-lib desktop-file-utils dos2unix \
+		iconv:wchar_t libtool localbase pkgconfig python:2.7
+USE_LDCONFIG=	yes
+USE_WX=		3.0+
 CONFIGURE_ARGS=	CFLAGS="${CFLAGS}" LDFLAGS="${LDFLAGS}" \
-		--enable-python
+		--enable-python --with-system-svm
 CONFIGURE_ENV=	SWIG="${LOCALBASE}/bin/swig3.0"
 GNU_CONFIGURE=	yes
-USE_LDCONFIG=	yes
-USE_CXXSTD=	c++11
-USE_WX=		3.0
-USES=		autoreconf desktop-file-utils libtool localbase compiler:gcc-c++11-lib \
-		iconv:wchar_t dos2unix pkgconfig python:2
 WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}
 
+CPP=		clang-cpp50
+CC=		clang50
+CXX=		clang++50
 INSTALLS_ICONS=	yes
 DOS2UNIX_GLOB=	*.cpp *.h
 PLIST_SUB=	PORTVERSION=${PORTVERSION}
 
 OPTIONS_DEFINE=	PGSQL OPENMP VIGRA
-OPTIONS_DEFAULT=	PGSQL OPENMP VIGRA
+OPTIONS_DEFAULT=	PGSQL VIGRA
+OPTIONS_DEFAULT_amd64=	OPENMP
+OPTIONS_DEFAULT_i386=	OPENMP
 NO_OPTIONS_SORT=	yes
 OPTIONS_SUB=	yes
-OPENMP_DESC=	Enable Multiprocessing
+OPENMP_DESC=	Enable Multiprocessing (only amd64 and i386)
 VIGRA_DESC=	Enable 'Vision with Generic Algorithms' Library
 
+## TODO: OPENMP_?= Only for archs amd64 and i386
 OPENMP_CONFIGURE_ENABLE=	openmp
-OPENMP_LDFLAGS=		-pthread
+OPENMP_LIB_DEPENDS=	libomp.so:devel/openmp
+OPENMP_LDFLAGS=		-L${LOCALBASE}/lib -lm -pthread
+#OPENMP_EXTRA_PATCHES=	${PATCHDIR}/
 PGSQL_CONFIGURE_OFF=	--with-postgresql=no
 PGSQL_CONFIGURE_ON=	--with-postgresql=${LOCALBASE}/bin/pg_config
 PGSQL_USES=		pgsql
@@ -92,10 +98,13 @@ post-patch:
 	@${REINPLACE_CMD} -e 's|PORTVERSION|${PORTVERSION}|' \
 		${WRKSRC}/src/saga_core/saga_gui/dlg_about.cpp
 
+post-patch-OPENMP-on:
+	@${REINPLACE_CMD} -e 's|-lgomp|-lomp|' ${WRKSRC}/configure.ac
+
 post-configure:
 	@${REINPLACE_CMD} -e 's|cd $$(pkgdatadir);|cd ${STAGEDIR}${DATADIR};|g' \
 		${WRKSRC}/src/saga_core/saga_gui/Makefile
-	@${REINPLACE_CMD} -e 's|^LDFLAGS = .*|& -lopencv_contrib|' \
+	@${REINPLACE_CMD} -e 's|^LDFLAGS = .*|& -lopencv_core|' \
 		${WRKSRC}/src/tools/imagery/imagery_opencv/Makefile
 
 post-install:

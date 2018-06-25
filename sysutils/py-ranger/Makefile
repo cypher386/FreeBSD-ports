@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	ranger
-PORTVERSION=	1.8.1
+PORTVERSION=	1.9.1
 CATEGORIES=	sysutils python
-MASTER_SITES=	http://ranger.nongnu.org/
+MASTER_SITES=	https://ranger.github.io/
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
 MAINTAINER=	linpct@gmail.com
@@ -13,7 +13,7 @@ COMMENT=	Ranger is a file manager with VI key bindings
 LICENSE=	GPLv3
 
 USES=		python shebangfix
-SHEBANG_FILES=	doc/tools/convert_papermode_to_metadata.py
+SHEBANG_FILES=	doc/tools/*.py
 python_OLD_CMD=	/bin/python
 USE_PYTHON=	autoplist distutils
 NO_ARCH=	yes

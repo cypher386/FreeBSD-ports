@@ -2,7 +2,7 @@
 
 PORTNAME=	usrp
 PORTVERSION=	3.4.3
-PORTREVISION=	10
+PORTREVISION=	17
 CATEGORIES=	comms hamradio
 MASTER_SITES=	LOCAL/adrian
 DISTNAME=	Ettus-USRP-3.4.3
@@ -10,18 +10,23 @@ DISTNAME=	Ettus-USRP-3.4.3
 MAINTAINER=	hamradio@FreeBSD.org
 COMMENT=	Ettus Research USRP driver framework
 
-LIB_DEPENDS=	libboost_python.so:devel/boost-python-libs
+BROKEN=		fails to build with boost 1.66, see bug 224088
+
+LIB_DEPENDS=	${PY_BOOST}
 BUILD_DEPENDS=	${LOCALBASE}/include/boost/tuple/tuple.hpp:devel/boost-libs \
 		cheetah-analyze:devel/py-cheetah \
 		rst2html:textproc/py-docutils \
 		orcc:devel/orc \
 		sdcc:lang/sdcc
 
-USES=			compiler:c++0x cmake:outsource gmake pkgconfig dos2unix
+USES=			compiler:c++0x cmake:outsource,noninja gmake pkgconfig python:run \
+			dos2unix shebangfix
 COMPILER_FEATURES=	libc++
 USE_LDCONFIG=		yes
 CMAKE_SOURCE_PATH=	${WRKSRC}/host
 MAKE_JOBS_UNSAFE=	yes
+
+SHEBANG_GLOB=	*.py
 
 # for excruciating debug use this -db
 #CMAKE_ARGS+=	--debug-output --trace

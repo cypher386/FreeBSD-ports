@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	exprotobuf
-DISTVERSION=	1.2.5
+DISTVERSION=	1.2.9
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Protocol Buffers in Elixir
 
 LICENSE=	APACHE20

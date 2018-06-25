@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	GraphicsMagick
-PORTVERSION=	1.3.25
-PORTREVISION=	2
+PORTVERSION=	1.3.29
 PORTEPOCH=	1
 CATEGORIES=	graphics
 MASTER_SITES=	SF \
@@ -11,6 +10,8 @@ MASTER_SITES=	SF \
 
 MAINTAINER=	sunpoet@FreeBSD.org
 COMMENT=	Fast image processing tools based on ImageMagick
+
+LICENSE=	MIT
 
 OPTIONS_DEFINE=	DOCS DPS FPX FREETYPE JASPER JBIG JPEG LCMS2 OPENMP Q8BIT PNG SSE TEST TIFF WEBP WMF X11 XML
 OPTIONS_DEFAULT=FREETYPE JASPER JBIG JPEG LCMS2 OPENMP PNG TIFF WEBP WMF X11 XML
@@ -26,9 +27,6 @@ INSTALL_TARGET=	install-strip
 TEST_TARGET=	check
 USE_LDCONFIG=	yes
 USES=		libtool localbase pathfix tar:bzip2
-
-PORTDATA=	*
-PORTDOCS=	*
 
 # Use fonts installed by x11-fonts/webfonts by default
 WINDOWS_FONT_DIR?=	${LOCALBASE}/share/fonts/webfonts
@@ -51,6 +49,7 @@ LCMS2_CONFIGURE=	lcms2
 LCMS2_LIB_DEPENDS=	liblcms2.so:graphics/lcms2
 OPENMP_CONFIGURE_OFF=	--disable-openmp --without-threads
 OPENMP_CONFIGURE_ON=	--disable-openmp-slow --enable-openmp --with-threads
+OPENMP_USE=		CXXSTD=c++03	# See PR/221065 for details
 OPENMP_USES=		compiler:gcc-c++11-lib
 PNG_CONFIGURE_WITH=	png
 PNG_LIB_DEPENDS=	libpng.so:graphics/png
@@ -65,10 +64,12 @@ TIFF_LIB_DEPENDS=	libtiff.so:graphics/tiff
 WEBP_CONFIGURE_WITH=	webp
 WEBP_LIB_DEPENDS=	libwebp.so:graphics/webp
 WMF_CONFIGURE_WITH=	wmf
+X11_CONFIGURE_OFF=	ac_cv_lib_ICE_IceConnectionNumber=no
 X11_CONFIGURE_WITH=	x
-X11_USE=		XORG=xext
+X11_USE=		XORG=ice,sm,x11,xext
 XML_CONFIGURE_WITH=	xml
 XML_USE=		GNOME=libxml2
+XML_USES=		gnome
 
 .include <bsd.port.options.mk>
 

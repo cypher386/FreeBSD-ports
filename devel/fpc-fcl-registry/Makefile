@@ -4,9 +4,9 @@
 CATEGORIES=	devel lang
 PKGNAMESUFFIX=	-fcl-registry
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal emulation of Windows registry (FCL)
 
+USES=		fpc
 USE_FPC=	fcl-base fcl-xml
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

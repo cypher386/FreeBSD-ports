@@ -1,24 +1,32 @@
---- ui/gl/sync_control_vsync_provider.h.orig	2017-01-26 00:49:32 UTC
-+++ ui/gl/sync_control_vsync_provider.h
-@@ -32,7 +32,7 @@ class GL_EXPORT SyncControlVSyncProvider
+--- ui/gl/sync_control_vsync_provider.h.orig	2017-12-15 02:04:52.000000000 +0100
++++ ui/gl/sync_control_vsync_provider.h	2017-12-24 20:29:58.843365000 +0100
+@@ -23,11 +23,11 @@
+   void GetVSyncParameters(const UpdateVSyncCallback& callback) override;
+ 
+   static constexpr bool IsSupported() {
+-#if defined(OS_LINUX)
++#if defined(OS_LINUX) || defined(OS_BSD)
+     return true;
+ #else
+     return false;
+-#endif  // defined(OS_LINUX)
++#endif  // defined(OS_LINUX) || defined(OS_BSD)
+   }
+ 
+  protected:
+@@ -38,7 +38,7 @@
    virtual bool GetMscRate(int32_t* numerator, int32_t* denominator) = 0;
  
   private:
--#if defined(OS_LINUX) || defined(OS_WIN)
-+#if defined(OS_LINUX) || defined(OS_BSD) || defined(OS_WIN)
-   bool AdjustSyncValues(int64_t* system_time, int64_t* media_stream_counter);
- 
-   base::TimeTicks last_timebase_;
-@@ -46,11 +46,11 @@ class GL_EXPORT SyncControlVSyncProvider
-   // from configuration change (monitor reconfiguration, moving windows
-   // between monitors, suspend and resume, etc.).
-   std::queue<base::TimeDelta> last_computed_intervals_;
--#endif  //  defined(OS_LINUX) || defined(OS_WIN)
-+#endif  //  defined(OS_LINUX) || defined(OS_BSD) || defined(OS_WIN)
- 
 -#if defined(OS_LINUX)
 +#if defined(OS_LINUX) || defined(OS_BSD)
-   bool invalid_msc_ = false;
+   base::TimeTicks last_timebase_;
+   uint64_t last_media_stream_counter_ = 0;
+   base::TimeDelta last_good_interval_;
+@@ -49,7 +49,7 @@
+   // from configuration change (monitor reconfiguration, moving windows
+   // between monitors, suspend and resume, etc.).
+   base::queue<base::TimeDelta> last_computed_intervals_;
 -#endif  // defined(OS_LINUX)
 +#endif  // defined(OS_LINUX) || defined(OS_BSD)
  

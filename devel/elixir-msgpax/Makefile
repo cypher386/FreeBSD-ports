@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	msgpax
-PORTVERSION=	1.0.0
+PORTVERSION=	2.1.1
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	MessagePack implementation for Elixir
 
 LICENSE=	ISCL

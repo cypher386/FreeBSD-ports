@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	arrows
-PORTVERSION=	0.4.4.1
-PORTREVISION=	9
+PORTVERSION=	0.4.4.2
 CATEGORIES=	devel haskell
 
 MAINTAINER=	haskell@FreeBSD.org

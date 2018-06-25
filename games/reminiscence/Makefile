@@ -2,18 +2,19 @@
 # $FreeBSD$
 
 PORTNAME=	REminiscence
-PORTVERSION=	0.3.2
+PORTVERSION=	0.3.7
 CATEGORIES=	games
 MASTER_SITES=	http://cyxdown.free.fr/reminiscence/ \
-		http://mirror.amdmi3.ru/distfiles/
+		https://mirror.amdmi3.ru/distfiles/
 
 MAINTAINER=	amdmi3@FreeBSD.org
 COMMENT=	Rewritten engine for Flashback
 
-LIB_DEPENDS=	libmodplug.so:audio/libmodplug
+LIB_DEPENDS=	libmodplug.so:audio/libmodplug \
+		libvorbisidec.so:audio/libtremor
 
 USES=		gmake pkgconfig tar:bzip2
-USE_SDL=	sdl
+USE_SDL=	sdl2
 
 ALL_TARGET=	rs
 

@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	sugarcrm
-PORTVERSION=	6.5.25
+PORTVERSION=	6.5.26
 CATEGORIES=	deskutils www
 MASTER_SITES=	SF/${PORTNAME}/1%20-%20SugarCRM%206.5.X/SugarCommunityEdition-6.5.X
 DISTNAME=	SugarCE-${PORTVERSION}
@@ -19,7 +19,6 @@ WRKSRC=		${WRKDIR}/SugarCE-Full-${PORTVERSION}
 PLIST=		${WRKDIR}/plist
 SUGARDIR=	www/sugarcrm
 
-PKGMESSAGE=	${WRKDIR}/pkg-message
 SUB_FILES+=	pkg-message pkg-install
 
 pre-install:

@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	haddock
-PORTVERSION=	2.16.1
+PORTVERSION=	2.19.0.1
 CATEGORIES=	devel haskell
 
 MAINTAINER=	haskell@FreeBSD.org

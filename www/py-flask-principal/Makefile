@@ -1,4 +1,4 @@
-# Created by: Kyle Evans <bsdports@kyle-evans.net>
+# Created by: Kyle Evans <kevans@FreeBSD.org>
 # $FreeBSD$
 
 PORTNAME=	Flask-Principal
@@ -7,13 +7,13 @@ CATEGORIES=	www python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
-MAINTAINER=	bsdports@kyle-evans.net
+MAINTAINER=	kevans@FreeBSD.org
 COMMENT=	Identity management for flask
 
 LICENSE=	MIT
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}Flask>=0:www/py-flask \
-		${PYTHON_PKGNAMEPREFIX}blinker>=0:devel/py-blinker
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}Flask>=0:www/py-flask@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}blinker>=0:devel/py-blinker@${PY_FLAVOR}
 
 USES=		python
 USE_PYTHON=	autoplist distutils

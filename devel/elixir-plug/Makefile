@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	plug
-PORTVERSION=	1.3.4
+PORTVERSION=	1.4.5
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Composable modules for Elixir web applications
 
 LICENSE=	APACHE20

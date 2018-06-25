@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	metasploit-payloads
-PORTVERSION=	1.2.18
+PORTVERSION=	1.3.37
 CATEGORIES=	security rubygems
 MASTER_SITES=	RG
 
@@ -12,9 +12,9 @@ LICENSE=	BSD3CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
 NO_ARCH=	yes
+NO_ARCH_IGNORE=	libndkstager.so
 STRIP=
-
-USE_RUBY=	yes
 USES=		gem
+USE_RUBY=	yes
 
 .include <bsd.port.mk>

@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	atomic-primops
-PORTVERSION=	0.8
+PORTVERSION=	0.8.2
 CATEGORIES=	devel haskell
 
 MAINTAINER=	haskell@FreeBSD.org

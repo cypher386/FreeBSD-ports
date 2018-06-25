@@ -1,7 +1,8 @@
 # $FreeBSD$
 
 PORTNAME=	gcc
-PORTVERSION=	6.1.0
+PORTVERSION=	7.2.0
+PORTREVISION=	4
 CATEGORIES=	devel
 PKGNAMEPREFIX=	riscv64-
 
@@ -17,25 +18,28 @@ LIB_DEPENDS=	libgmp.so:math/gmp \
 		libmpfr.so:math/mpfr \
 		libmpc.so:math/mpc
 
+USES=	iconv gmake libtool makeinfo
+
+USE_LDCONFIG=	yes
+
 USE_GITHUB=	yes
 GH_ACCOUNT=	freebsd-riscv
 GH_PROJECT=	riscv-gcc
-GH_TAGNAME=	095b1d6
-
-USES=	iconv gmake libtool makeinfo
+GH_TAGNAME=	2ea300e
 
 GCC_TARGET=	${PKGNAMEPREFIX}unknown-${OPSYS:tl}${OSREL}
 
 GNU_CONFIGURE=	yes
 CONFIGURE_OUTSOURCE=	yes
 CONFIGURE_ARGS=	--target=${GCC_TARGET} \
+		--with-gxx-include-dir=/usr/include/c++/v1/ \
 		--with-sysroot=/ \
 		--without-newlib \
 		--without-headers \
 		--with-pkgversion="FreeBSD Ports Collection for ${PKGNAMEPREFIX:C/-//g}" \
 		--with-system-zlib \
-		--with-as=${LOCALBASE}/bin/${PKGNAMEPREFIX}freebsd-as \
-		--with-ld=${LOCALBASE}/bin/${PKGNAMEPREFIX}freebsd-ld \
+		--with-as=${LOCALBASE}/bin/${PKGNAMEPREFIX}unknown-${OPSYS:tl}${OSREL}-as \
+		--with-ld=${LOCALBASE}/bin/${PKGNAMEPREFIX}unknown-${OPSYS:tl}${OSREL}-ld \
 		--disable-werror \
 		--disable-shared \
 		--enable-threads \
@@ -56,11 +60,23 @@ CONFIGURE_ARGS=	--target=${GCC_TARGET} \
 ALL_TARGET=	inhibit-libc=true all-gcc
 INSTALL_TARGET=	inhibit-libc=true install-gcc
 
+# Force build of a cross compiler even if the target matches the host.
+CFLAGS+=	-DCROSS_DIRECTORY_STRUCTURE
+
 PLIST_SUB=	GCC_TARGET=${GCC_TARGET} \
 		GCC_VERSION=${PORTVERSION}
+
+post-patch:
+	@${REINPLACE_CMD} -e '/LIBSTDCXX/ s/stdc\+\+/c\+\+/g ' \
+		${WRKSRC}//gcc/cp/g++spec.c
+	@${REINPLACE_CMD} -e '/LOCAL_INCLUDE_DIR/ d ' \
+		${WRKSRC}//gcc/Makefile.in
 
 post-install:
 	@if [ -d ${STAGEDIR}${PREFIX}/${INFO_PATH} ] ; then ${RM} -r ${STAGEDIR}${PREFIX}/${INFO_PATH}; fi
 	@${RM} ${STAGEDIR}${PREFIX}/man/man7/*
+	@${RM} -r ${STAGEDIR}${PREFIX}/lib/gcc/${GCC_TARGET}/${PORTVERSION}/include-fixed
+
+BROKEN_aarch64=		fails to package
 
 .include <bsd.port.mk>

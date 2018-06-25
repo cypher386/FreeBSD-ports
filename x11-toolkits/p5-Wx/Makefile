@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	Wx
-PORTVERSION=	0.9928
+PORTVERSION=	0.9932
 PORTREVISION=	1
 CATEGORIES=	x11-toolkits perl5
 MASTER_SITES=	CPAN
@@ -11,7 +11,7 @@ PKGNAMEPREFIX=	p5-
 MAINTAINER=	perl@FreeBSD.org
 COMMENT=	Perl5 interface to the wxWidgets cross-platform GUI toolkit
 
-LICENSE=	ART10 GPLv1
+LICENSE=	ART10 GPLv1+
 LICENSE_COMB=	dual
 
 BUILD_DEPENDS=	p5-ExtUtils-XSpp>=0.16.03:devel/p5-ExtUtils-XSpp \

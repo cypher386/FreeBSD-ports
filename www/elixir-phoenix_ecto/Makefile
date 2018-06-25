@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	phoenix_ecto
-PORTVERSION=	3.2.3
+PORTVERSION=	3.3.0
 DISTVERSIONPREFIX=	v
 CATEGORIES=	www
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Ecto integration for the Phoenix framework
 
 LICENSE=	MIT

@@ -3,6 +3,7 @@
 
 PORTNAME=	libgd
 PORTVERSION=	2.2.4
+PORTREVISION=	1
 PORTEPOCH=	1
 CATEGORIES+=	graphics
 MASTER_SITES=	https://github.com/${PORTNAME}/${PORTNAME}/releases/download/gd-${PORTVERSION}/
@@ -11,6 +12,7 @@ MAINTAINER?=	dinoex@FreeBSD.org
 COMMENT?=	Graphics library for fast creation of images
 
 LICENSE=	MIT
+LICENSE_FILE=	${WRKSRC}/COPYING
 
 LIB_DEPENDS=	libtiff.so:graphics/tiff \
 		libpng.so:graphics/png \
@@ -74,11 +76,11 @@ pre-configure:
 	${REINPLACE_CMD} \
 		-e 's|^GDLIB_LT_CURRENT=3|GDLIB_LT_CURRENT=6|' \
 		${WRKSRC}/configure
-.if ! ${PORT_OPTIONS:MICONV}
+
+pre-configure-ICONV-off:
 	${REINPLACE_CMD} \
 		-e 's|iconv|noiconv|' \
 		${WRKSRC}/configure
-.endif
 
 .if defined(GD_FONTS)
 pre-build:

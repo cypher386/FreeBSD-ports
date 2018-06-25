@@ -44,6 +44,7 @@ share/X11/xkb/geometry/sgi_vndr/O2
 share/X11/xkb/geometry/sgi_vndr/indigo
 share/X11/xkb/geometry/sgi_vndr/indy
 share/X11/xkb/geometry/sony
+share/X11/xkb/geometry/steelseries
 share/X11/xkb/geometry/sun
 share/X11/xkb/geometry/teck
 share/X11/xkb/geometry/thinkpad
@@ -97,7 +98,6 @@ share/X11/xkb/symbols/ba
 share/X11/xkb/symbols/bd
 share/X11/xkb/symbols/be
 share/X11/xkb/symbols/bg
-share/X11/xkb/symbols/bn
 share/X11/xkb/symbols/br
 share/X11/xkb/symbols/brai
 share/X11/xkb/symbols/bt
@@ -265,6 +265,7 @@ share/X11/xkb/symbols/th
 share/X11/xkb/symbols/tj
 share/X11/xkb/symbols/tm
 share/X11/xkb/symbols/tr
+share/X11/xkb/symbols/trans
 share/X11/xkb/symbols/tw
 share/X11/xkb/symbols/typo
 share/X11/xkb/symbols/tz
@@ -302,6 +303,7 @@ share/X11/xkb/types/pc
 %%NLS%%share/locale/es/LC_MESSAGES/xkeyboard-config.mo
 %%NLS%%share/locale/fi/LC_MESSAGES/xkeyboard-config.mo
 %%NLS%%share/locale/fr/LC_MESSAGES/xkeyboard-config.mo
+%%NLS%%share/locale/fur/LC_MESSAGES/xkeyboard-config.mo
 %%NLS%%share/locale/gl/LC_MESSAGES/xkeyboard-config.mo
 %%NLS%%share/locale/hr/LC_MESSAGES/xkeyboard-config.mo
 %%NLS%%share/locale/hu/LC_MESSAGES/xkeyboard-config.mo

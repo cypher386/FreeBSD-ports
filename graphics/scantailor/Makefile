@@ -3,20 +3,21 @@
 
 PORTNAME=	scantailor
 PORTVERSION=	0.9.11.1
-PORTREVISION=	8
+PORTREVISION=	13
 CATEGORIES=	graphics
 MASTER_SITES=	SF
 
-MAINTAINER=	vg@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Interactive post-processing tool for scanned pages
 
 LICENSE=	GPLv3
 
-LIB_DEPENDS=	libtiff.so:graphics/tiff \
-		libjbig.so:graphics/jbigkit \
-		libpng.so:graphics/png \
+BROKEN_powerpc64=	fails to compile: core.hpp:69: boost::lambda::<unnamed>::_1 causes a section type conflict
 
 BUILD_DEPENDS=	${LOCALBASE}/include/boost/shared_ptr.hpp:devel/boost-libs
+LIB_DEPENDS=	libtiff.so:graphics/tiff \
+		libjbig.so:graphics/jbigkit \
+		libpng.so:graphics/png
 
 #MAKE_JOBS_UNSAFE=	yes
 USES=		cmake gettext jpeg

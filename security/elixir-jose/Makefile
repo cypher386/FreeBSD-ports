@@ -1,14 +1,14 @@
 # $FreeBSD$
 
 PORTNAME=	jose
-PORTVERSION=	1.8.2
+PORTVERSION=	1.8.4
 CATEGORIES=	security
 PKGNAMEPREFIX=	elixir-
 
 MAINTAINER=	vanilla@FreeBSD.org
 COMMENT=	JSON Object Signing and Encryption (JOSE) for Elixir
 
-LICENSE=	MPL
+LICENSE=	MPL20
 
 USES=		elixir
 USE_GITHUB=	yes

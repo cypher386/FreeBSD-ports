@@ -3,7 +3,7 @@
 
 PORTNAME=	love
 PORTVERSION=	0.7.2
-PORTREVISION=	11
+PORTREVISION=	17
 CATEGORIES=	devel games
 MASTER_SITES=	http://cdn.bitbucket.org/rude/love/downloads/ \
 		http://mirror.amdmi3.ru/distfiles/
@@ -18,7 +18,9 @@ LIB_DEPENDS=	libIL.so:graphics/devil \
 		libmpg123.so:audio/mpg123 \
 		libvorbisfile.so:audio/libvorbis \
 		libphysfs.so:devel/physfs \
-		libfreetype.so:print/freetype2
+		libfreetype.so:print/freetype2 \
+		libtiff.so:graphics/tiff \
+		libmng.so:graphics/libmng
 BUILD_DEPENDS=	${LOCALBASE}/include/boost/shared_ptr.hpp:devel/boost-libs
 
 PORTSCOUT=	limit:^0\.7\.
@@ -30,6 +32,7 @@ GNU_CONFIGURE=	yes
 CPPFLAGS+=	-I${LOCALBASE}/include -I${LOCALBASE}/include/freetype2 \
 		-I${LUA_INCDIR} `${SDL_CONFIG} --cflags`
 LDFLAGS+=	-L${LOCALBASE}/lib -L${LUA_LIBDIR}
+LLD_UNSAFE=	yes
 CONFIGURE_ARGS=	--bindir=${PREFIX}/bin --libdir=${PREFIX}/lib \
 		--program-suffix=07
 WRKSRC=		${WRKDIR}/love-HEAD
@@ -48,7 +51,7 @@ post-patch:
 		${WRKSRC}/configure
 
 post-install-DOCS-on:
-	${MKDIR} ${STAGEDIR}${DOCSDIR}
+	@${MKDIR} ${STAGEDIR}${DOCSDIR}
 .for f in changes.txt readme.txt
 	${INSTALL_DATA} ${WRKSRC}/${f} ${STAGEDIR}${DOCSDIR}
 .endfor

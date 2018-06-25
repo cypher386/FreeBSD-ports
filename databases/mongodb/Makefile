@@ -3,16 +3,26 @@
 
 PORTNAME=	mongodb
 PORTVERSION=	2.6.12
+PORTREVISION=	4
 CATEGORIES=	databases net
 MASTER_SITES=	http://downloads.mongodb.org/src/
 DISTNAME=	${PORTNAME}-src-r${PORTVERSION}
 
+PATCH_SITES=	https://github.com/${PORTNAME}/${PORTNAME:S|db$||}/commit/
+PATCHFILES=	0ee4735ab8fb.patch:-p1
+
 MAINTAINER=	ale@FreeBSD.org
 COMMENT=	NOSQL distributed document-oriented database
+
+EXPIRATION_DATE=	2018-07-23
+DEPRECATED=	End of Life October 2016
 
 # mongodb is AGPLv3, C++ driver is APACHE20
 LICENSE=	AGPLv3 APACHE20
 LICENSE_COMB=	multi
+
+BROKEN_SSL=	openssl-devel
+BROKEN_SSL_REASON_openssl-devel=	use of undeclared identifier 'BIO_s_file_internal'
 
 LIB_DEPENDS=	libpcre.so:devel/pcre \
 		libsnappy.so:archivers/snappy \
@@ -31,7 +41,7 @@ OPTIONS_DEFINE=	SSL SASL TEST
 OPTIONS_DEFAULT=SSL
 TEST_DESC=	Add support for running regression test
 
-USES=		cpe execinfo scons
+USES=		cpe scons
 MAKE_ARGS=	--prefix=${STAGEDIR}${PREFIX} --cc=${CC} --cxx=${CXX} \
 		--use-system-pcre --use-system-snappy --use-system-v8
 
@@ -56,7 +66,7 @@ LIB_DEPENDS+=	libsasl2.so:security/cyrus-sasl2
 
 .if ${PORT_OPTIONS:MTEST}
 USES+=		python:build
-BUILD_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pymongo>=2.5:databases/pymongo
+BUILD_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pymongo>=2.5:databases/pymongo@${PY_FLAVOR}
 TEST_TARGET=	smokeAll smokeCppUnittests
 .	if ${PORT_OPTIONS:MSSL}
 TEST_TARGET+=	smokeSsl

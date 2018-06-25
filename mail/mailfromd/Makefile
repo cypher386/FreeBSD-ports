@@ -2,16 +2,18 @@
 # $FreeBSD$
 
 PORTNAME=	mailfromd
-PORTVERSION=	8.1
+PORTVERSION=	8.5
 CATEGORIES=	mail
-MASTER_SITES=	http://download.gnu.org.ua/pub/release/${PORTNAME}/
+MASTER_SITES=	http://download.gnu.org.ua/pub/release/${PORTNAME}/ \
+		http://download.gnu.org.ua/pub/alpha/${PORTNAME}/
 
 MAINTAINER=	zeus@gnu.org.ua
 COMMENT=	Mail filtering daemon for Sendmail, Postfix, and MeTA1
 
 LICENSE=	GPLv3+
 
-LIB_DEPENDS=	libmailutils.so:mail/mailutils
+LIB_DEPENDS=	libmailutils.so:mail/mailutils \
+		libadns.so:dns/adns
 
 USES=		gmake localbase readline tar:xz
 GNU_CONFIGURE=	yes
@@ -31,14 +33,16 @@ SUB_LIST+=	MFD_RUN_DIR=${MFD_RUN_DIR}
 INFO=		${PORTNAME}
 PORTDOCS=	AUTHORS ChangeLog NEWS README THANKS TODO
 
-OPTIONS_DEFINE=		DOCS DSPAM GEOIP NLS
-OPTIONS_DEFAULT=	BDB
+OPTIONS_DEFINE=		DEBUG DOCS DSPAM GEOIP NLS
+OPTIONS_DEFAULT=	GDBM
 OPTIONS_MULTI=		DB
 OPTIONS_MULTI_DB=	BDB GDBM
 OPTIONS_SUB=		yes
 
 BDB_DESC=		Berkeley DB v4.8 support (last working one)
 DB_DESC=		Database configuration
+
+DEBUG_CONFIGURE_ON=	--enable-debug
 
 DSPAM_DESC=		DSPAM spam filter library support
 DSPAM_LIB_DEPENDS=	libdspam.so:mail/dspam

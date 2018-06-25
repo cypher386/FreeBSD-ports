@@ -15,6 +15,7 @@ DIST_SUBDIR=	bdb
 MAINTAINER=	mandree@FreeBSD.org
 COMMENT=	Oracle Berkeley DB, revision ${BDBVER}
 
+LICENSE=	SLEEPYCAT
 LICENSE_NAME=	Sleepycat
 LICENSE_PERMS=	dist-mirror dist-sell pkg-mirror pkg-sell auto-accept
 LICENSE_FILE=	${WRKSRC}/../LICENSE
@@ -69,7 +70,7 @@ DOCS_INSTALL_TARGET=	install_docs
 
 .include <bsd.port.options.mk>
 
-.if ${ARCH} == "aarch64" || ${ARCH:Marmv6*}
+.if ${ARCH} == aarch64 || ${ARCH:Marmv*}
 # db5 uses a deprecated instruction for mutexes on ARM, fbsd bug#197227
 # and also bug#205001
 CONFIGURE_ARGS+=	--enable-posixmutexes

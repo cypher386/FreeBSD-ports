@@ -2,15 +2,13 @@
 # $FreeBSD$
 
 PORTNAME=	snappy
-PORTVERSION=	1.1.4
+PORTVERSION=	1.1.6
 CATEGORIES=	archivers
 
 MAINTAINER=	vanilla@FreeBSD.org
 COMMENT=	Fast compressor/decompressor library
 
 LICENSE=	BSD3CLAUSE
-
-OPTIONS_DEFINE=	DOCS
 
 USES=		autoreconf libtool pathfix pkgconfig
 CONFIGURE_ARGS=	--disable-gtest
@@ -19,10 +17,11 @@ USE_LDCONFIG=	yes
 CFLAGS+=	-DNDEBUG
 USE_GITHUB=	yes
 GH_ACCOUNT=	google
+TEST_TARGET=	check
 
-BROKEN_sparc64=	Does not compile on sparc64
+OPTIONS_DEFINE=	DOCS
 
 post-install:
-	@${STRIP_CMD} ${STAGEDIR}${LOCALBASE}/lib/libsnappy.so.1.3.1
+	@${STRIP_CMD} ${STAGEDIR}${LOCALBASE}/lib/libsnappy.so.1.1.6
 
 .include <bsd.port.mk>

@@ -3,7 +3,7 @@
 
 PORTNAME=	dia2code+
 PORTVERSION=	1.0.0
-PORTREVISION=	1
+PORTREVISION=	3
 CATEGORIES=	devel
 MASTER_SITES=	SF/dia2code/dia2code+/${PORTVERSION}
 DISTNAME=	dia2code-${PORTVERSION}
@@ -13,6 +13,8 @@ COMMENT=	Complete rewrite of dia2code in C++
 
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/COPYING
+
+BROKEN_powerpc64=	fails to compile: GenerateCodePhp.cpp: 'stoi' is not a member of 'std'
 
 USES=		autoreconf:build compiler:gcc-c++11-lib iconv
 USE_GNOME=	libxml2

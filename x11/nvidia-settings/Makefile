@@ -2,13 +2,15 @@
 # $FreeBSD$
 
 PORTNAME=	nvidia-settings
-PORTVERSION=	378.13
+PORTVERSION=	396.24
 CATEGORIES=	x11
 
 MAINTAINER=	bland@FreeBSD.org
 COMMENT=	Display Control Panel for X NVidia driver
 
 LICENSE=	GPLv2
+
+BUILD_DEPENDS=	${LOCALBASE}/include/dbus-1.0/dbus/dbus.h:devel/dbus
 
 LIB_DEPENDS=	libfontconfig.so:x11-fonts/fontconfig \
 		libfreetype.so:print/freetype2 \
@@ -30,6 +32,7 @@ PLIST_FILES=	bin/nvidia-settings \
 		share/pixmaps/nvidia-settings.png
 
 LDFLAGS+=	-pthread
+LLD_UNSAFE=	yes
 MAKE_ENV=	NV_USE_BUNDLED_LIBJANSSON=0 \
 		NV_VERBOSE= \
 		GTK3_AVAILABLE=0 \

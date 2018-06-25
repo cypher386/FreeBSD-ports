@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME?=	percona
-DISTVERSION=	5.7.16-10
-PORTREVISION?=	4
+DISTVERSION=	5.7.21-20
+PORTREVISION?=	0
 CATEGORIES=	databases ipv6
 MASTER_SITES=	http://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-${DISTVERSION}/source/tarball/:percona \
 		SF/boost/boost/1.59.0:boost
@@ -24,7 +24,7 @@ BROKEN_powerpc64=	Does not build
 
 SLAVEDIRS=	databases/percona57-client \
 		databases/percona57-pam-for-mysql
-USES=		bison:build cmake compiler:c11 compiler:c++11-lib \
+USES=		bison:build cmake:noninja compiler:c11 compiler:c++11-lib \
 		cpe libedit localbase perl5 shebangfix
 
 MY_DBDIR=	/var/db/mysql
@@ -83,6 +83,7 @@ USES+=		libedit
 # Currently do nothing special
 USES+=		libedit
 .else
+LIB_DEPENDS+=	libcurl.so:ftp/curl
 # MySQL-Server part
 OPTIONS_DEFINE=	OPENSSL FASTMTX INNODBMEMCACHED TOKUDB
 OPTIONS_DEFAULT=	OPENSSL INNODBMEMCACHED
@@ -101,6 +102,7 @@ TOKUDB_EXTRA_PATCHES=${PATCHDIR}/extrapatch-tokudb
 USES+=mysql:57p
 
 CONFLICTS_INSTALL=	mysql*-server-* \
+			mysqlwsrep* \
 			mariadb*-server-* \
 			percona5[0-68-9]-server-*
 
@@ -121,6 +123,9 @@ MANPAGES=	my_print_defaults.1 myisam_ftdump.1 myisamchk.1 myisamlog.1 myisampack
 		mysqltest.1 perror.1 replace.1 resolve_stack_dump.1 resolveip.1
 
 CMAKE_ARGS+=	-DWITH_EMBEDDED_SERVER="ON"
+# issue 220865: Currently there's no source to be built with server-side support.
+# But this keeps the pkg-plist not overlaping
+CMAKE_ARGS+=	-DWITH_AUTHENTICATION_LDAP=0
 
 post-install:
 	${MKDIR} ${STAGEDIR}/var/db/mysql
@@ -131,6 +136,9 @@ post-install:
 
 post-patch:
 	@${REINPLACE_CMD} 's/*.1/${MANPAGES}/' ${WRKSRC}/man/CMakeLists.txt
+	# issue 220865: MySQL developers forgot that FreeBSD != Linux
+	@${REINPLACE_CMD} -e 's|%%FREEBSD_LOCAL_LIB%%|${LOCALBASE}/lib|g' \
+	${WRKSRC}/configure.cmake
 
 .include <bsd.port.pre.mk>
 

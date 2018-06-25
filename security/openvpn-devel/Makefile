@@ -1,12 +1,12 @@
 # Created by: Matthias Andree <mandree@FreeBSD.org>
 # $FreeBSD$
 
-PORTNAME=			openvpn
-DISTVERSION=		201652
-PORTREVISION?=		0
-CATEGORIES=			security net
+PORTNAME=		openvpn
+DISTVERSION=		201821
+PORTREVISION=		1
+CATEGORIES=		security net
 MASTER_SITES=		https://secure-computing.net/files/openvpn/ \
-					ftp://ftp2.secure-computing.net/pub/FreeBSD/openvpn-devel/
+			ftp://ftp2.secure-computing.net/pub/FreeBSD/openvpn-devel/
 PKGNAMESUFFIX=		-devel
 
 MAINTAINER=		ecrist@secure-computing.net
@@ -14,14 +14,14 @@ COMMENT?=		Secure IP/Ethernet tunnel daemon
 
 LICENSE=		GPLv2
 
-CONFLICTS_INSTALL=	openvpn-2.[!4].* openvpn-[!2].* openvpn-beta-[0-9]*
+CONFLICTS_INSTALL=	openvpn-2.[!4].* openvpn-[!2].* openvpn-beta-[0-9]* openvpn-devel-[0-9]*
 
 GNU_CONFIGURE=		yes
-WRKSRC=				${WRKDIR}/${PORTNAME}${PKGNAMESUFFIX}
-USES=				cpe libtool pkgconfig shebangfix tar:xz
+WRKSRC=			${WRKDIR}/${PORTNAME}${PKGNAMESUFFIX}
+USES=			cpe libtool pkgconfig shebangfix tar:xz
 SHEBANG_FILES=		sample/sample-scripts/verify-cn \
-					sample/sample-scripts/auth-pam.pl \
-					sample/sample-scripts/ucn.pl
+			sample/sample-scripts/auth-pam.pl \
+			sample/sample-scripts/ucn.pl
 CONFIGURE_ARGS+=	--enable-strict
 # avoid picking up CMAKE, we don't have cmocka in the tarballs..
 CONFIGURE_ENV+=		ac_cv_prog_CMAKE= CMAKE=
@@ -35,13 +35,14 @@ LDFLAGS+=		-L${LOCALBASE}/lib
 CPPFLAGS+=		-DPLUGIN_LIBDIR=\\\"${PREFIX}/lib/openvpn/plugins\\\"
 
 OPTIONS_DEFINE=		PKCS11 EASYRSA DOCS EXAMPLES X509ALTUSERNAME \
-			TEST LZ4 SMALL
+			TEST LZ4 SMALL TUNNELBLICK
 OPTIONS_DEFAULT=	EASYRSA OPENSSL TEST LZ4
 OPTIONS_SINGLE=		SSL
 OPTIONS_SINGLE_SSL=	OPENSSL MBEDTLS
 PKCS11_DESC=		Use security/pkcs11-helper
 EASYRSA_DESC=		Install security/easy-rsa RSA helper package
 MBEDTLS_DESC=		SSL/TLS via mbedTLS
+TUNNELBLICK_DESC=	Tunnelblick XOR scramble patch (READ HELP!)
 X509ALTUSERNAME_DESC=	Enable --x509-username-field (OpenSSL only)
 SMALL_DESC=		Build a smaller executable with fewer features
 
@@ -49,6 +50,10 @@ EASYRSA_RUN_DEPENDS=	easy-rsa>=0:security/easy-rsa
 
 PKCS11_LIB_DEPENDS=	libpkcs11-helper.so:security/pkcs11-helper
 PKCS11_CONFIGURE_ENABLE=	pkcs11
+PKCS11_PREVENTS=	MBEDTLS
+PKCS11_PREVENTS_MSG=	OpenVPN cannot use pkcs11-helper with mbedTLS. Disable PKCS11, or use OpenSSL instead
+
+TUNNELBLICK_EXTRA_PATCHES=	${FILESDIR}/extra-tunnelblick-openvpn_xorpatch
 
 X509ALTUSERNAME_CONFIGURE_ENABLE=	x509-alt-username
 
@@ -107,6 +112,22 @@ post-configure:
 	    ${WRKSRC}/src/plugins/auth-pam/Makefile \
 	    ${WRKSRC}/src/plugins/down-root/Makefile
 
+.include <bsd.port.options.mk>
+
+.if ${PORT_OPTIONS:MMBEDTLS}
+_tlslibs=libmbedtls libmbedx509 libmbedcrypto
+.else
+# OpenSSL
+_tlslibs=libssl libcrypto
+.endif
+
+# sanity check that we don't inherit incompatible SSL libs through,
+# for instance, pkcs11-helper:
+post-build:
+	   @a=$$(LC_ALL=C ldd -f '%o\n' ${WRKSRC}/src/openvpn/openvpn \
+       |	${SORT} -u) ; set -- $$(for i in ${_tlslibs} ; do ${PRINTF} '%s\n' "$$a" | ${GREP} $${i}.so | wc -l ; done | ${SORT} -u) ;\
+       if test "$$*" != "1" ; then ${ECHO_CMD} >&2 "${.CURDIR} FAILED: either of ${_tlslibs} libraries linked multiple times" ; ${PRINTF} '%s\n' "$$a"; ${RM} ${BUILD_COOKIE} ; exit 1 ; fi
+
 post-install:
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/openvpn/plugins/openvpn-plugin-auth-pam.so
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/openvpn/plugins/openvpn-plugin-down-root.so
@@ -119,7 +140,7 @@ post-install:
 post-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}/
 .for i in AUTHORS ChangeLog PORTS
-	${INSTALL_MAN} ${WRKSRC}/${i} ${STAGEDIR}${DOCSDIR}/
+	${INSTALL_DATA} ${WRKSRC}/${i} ${STAGEDIR}${DOCSDIR}/
 .endfor
 
 post-install-EXAMPLES-on:

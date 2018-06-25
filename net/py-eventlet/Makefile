@@ -2,21 +2,20 @@
 # $FreeBSD$
 
 PORTNAME=	eventlet
-PORTVERSION=	0.20.1
-PORTREVISION=	1
+PORTVERSION=	0.22.0
 CATEGORIES=	net python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
-MAINTAINER=	cs@FreeBSD.org
+MAINTAINER=	mmokhi@FreeBSD.org
 COMMENT=	Concurrent networking library for Python
 
 LICENSE=	MIT
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}greenlet>=0.3:devel/py-greenlet \
-		${PYTHON_PKGNAMEPREFIX}enum-compat>=0.0.2:devel/py-enum-compat \
-		${PYTHON_PKGNAMEPREFIX}enum34>=1.1.6:devel/py-enum34
-TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}nose>0:devel/py-nose
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}greenlet>=0.3:devel/py-greenlet@${PY_FLAVOR} \
+		${PY_ENUM_COMPAT} \
+		${PY_ENUM34}
+TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}nose>0:devel/py-nose@${PY_FLAVOR}
 
 USES=		python
 USE_PYTHON=	distutils autoplist

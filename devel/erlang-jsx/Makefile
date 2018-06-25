@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	jsx
-PORTVERSION=	2.8.2
+PORTVERSION=	2.9.0
 CATEGORIES=	devel
 PKGNAMEPREFIX=	erlang-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Erlang application for consuming, producing and manipulating JSON
 
 LICENSE=	MIT

@@ -1,19 +1,15 @@
 # $FreeBSD$
 
 PORTNAME=	ibus-table-chinese
-PORTVERSION=	1.4.6
-PORTREVISION=	1
+PORTVERSION=	1.8.2
+PORTREVISION=	2
 CATEGORIES=	chinese
-MASTER_SITES=	GOOGLE_CODE
-PROJECTHOST=	ibus
-DISTNAME=	${PORTNAME}-${PORTVERSION}-Source
 
-MAINTAINER=	dennylin93@hs.ntnu.edu.tw
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Chinese input tables for IBus
 
-BROKEN=		Unfetchable (google code has gone away)
-DEPRECATED=	Unfetchable for more than six months (google code has gone away)
-EXPIRATION_DATE=	2017-04-30
+LICENSE=	GPLv3
+LICENSE_FILE=	${WRKSRC}/COPYING
 
 BUILD_DEPENDS=	${LOCALBASE}/share/cmake/Modules/ManageEnvironment.cmake:devel/cmake-fedora \
 		ibus-daemon:textproc/ibus \
@@ -21,9 +17,16 @@ BUILD_DEPENDS=	${LOCALBASE}/share/cmake/Modules/ManageEnvironment.cmake:devel/cm
 RUN_DEPENDS=	ibus-daemon:textproc/ibus \
 		${LOCALBASE}/libexec/ibus-engine-table:textproc/ibus-table
 
-USES=		cmake pkgconfig
+USES=		cmake:noninja pkgconfig
+
+USE_GITHUB=	yes
+GH_ACCOUNT=	definite
+
 INSTALL_TARGET=	install
 DATADIR=	${PREFIX}/share/ibus-table
-PLIST_SUB+=	PORTVERSION=${PORTVERSION}
+CMAKE_ARGS+=	-DDATA_DIR:PATH="${PREFIX}/share" \
+		-DPRJ_DOC_DIR:PATH="${DOCSDIR}" \
+		-DCMAKE_FEDORA_TMP_DIR:PATH="${WRKSRC}"
+MAKE_ENV+=	PYTHONDONTWRITEBYTECODE=1
 
 .include <bsd.port.mk>

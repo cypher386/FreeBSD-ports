@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	byobu
-PORTVERSION=	5.113
+PORTVERSION=	5.119
+PORTREVISION=	1
 CATEGORIES=	sysutils
 MASTER_SITES=	http://launchpad.net/${PORTNAME}/trunk/${PORTVERSION}/+download/
 DISTNAME=	${PORTNAME}_${PORTVERSION}.orig
@@ -22,6 +23,8 @@ SHEBANG_FILES=	usr/lib/byobu/include/notify_osd
 WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}
 
 OPTIONS_DEFINE=	DOCS
+
+NO_ARCH=	yes
 
 post-patch:
 	${FIND} ${WRKSRC} -type f | ${XARGS} \

@@ -1,6 +1,6 @@
---- chromecast/browser/cast_content_browser_client.cc.orig	2017-03-09 20:04:31 UTC
+--- chromecast/browser/cast_content_browser_client.cc.orig	2017-06-05 19:03:05 UTC
 +++ chromecast/browser/cast_content_browser_client.cc
-@@ -285,7 +285,7 @@ void CastContentBrowserClient::AppendExt
+@@ -316,7 +316,7 @@ void CastContentBrowserClient::AppendExtraCommandLineS
        command_line->AppendSwitch(switches::kAllowHiddenMediaPlayback);
    }
  

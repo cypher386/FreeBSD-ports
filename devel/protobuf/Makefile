@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	protobuf
-PORTVERSION=	3.2.0
-PORTREVISION=	1
+PORTVERSION=	3.5.2
 DISTVERSIONPREFIX=	v
+PORTEPOCH=	1
 CATEGORIES=	devel
 
 MAINTAINER=	sunpoet@FreeBSD.org
@@ -13,17 +13,20 @@ COMMENT=	Data interchange format library
 LICENSE=	BSD3CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
+BROKEN_sparc64=	fails to compile: no atomic ops available
+
 TEST_DEPENDS=	googlemock>=0:devel/googlemock \
 		googletest>=0:devel/googletest
 
-BROKEN_sparc64=	fails to compile: no atomic ops available
-
-CFLAGS+=	-DGOOGLE_PROTOBUF_NO_RTTI
+CFLAGS+=	-DGOOGLE_PROTOBUF_NO_RTTI -I${WRKSRC}/src
+CONFIGURE_ENV=	CC_FOR_BUILD="${CC}" CFLAGS_FOR_BUILD="${CFLAGS}" \
+		CPPFLAGS_FOR_BUILD="${CPPFLAGS}" \
+		CXX_FOR_BUILD="${CXX}" CXXFLAGS_FOR_BUILD="${CXXFLAGS}" \
+		LDFLAGS_FOR_BUILD="${LDFLAGS}"
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
 TEST_ARGS=	${MAKE_ARGS} ${_MAKE_JOBS}
 TEST_TARGET=	check
-USE_CSTD=	c99	# for audio/clementine-player support
 USE_LDCONFIG=	yes
 USES=		autoreconf compiler:c++11-lang gmake libtool localbase pathfix pkgconfig
 

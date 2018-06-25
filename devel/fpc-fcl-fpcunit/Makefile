@@ -4,9 +4,9 @@
 CATEGORIES=	devel lang
 PKGNAMESUFFIX=	-fcl-fpcunit
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal unit testing library (FCL)
 
+USES=		fpc
 USE_FPC=	fcl-base fcl-xml
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

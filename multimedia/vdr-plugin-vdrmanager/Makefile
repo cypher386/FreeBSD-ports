@@ -3,7 +3,7 @@
 
 PORTNAME=	vdr-plugin-vdrmanager
 PORTVERSION=	0.6
-PORTREVISION=	4
+PORTREVISION=	5
 CATEGORIES=	multimedia
 MASTER_SITES=	http://projects.vdr-developer.org/attachments/download/828/
 DISTNAME=	${PORTNAME:S/-plugin//}-${PORTVERSION}
@@ -14,6 +14,7 @@ COMMENT=	Video Disk Recorder - VDR-Manager server plugin
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+BROKEN_FreeBSD_12= does not build with newer clang6
 PATCH_STRIP=	-p1
 
 PORTDOCS=	README HISTORY

@@ -3,6 +3,7 @@
 
 PORTNAME=	gchemutils
 PORTVERSION=	0.14.16
+PORTREVISION=	1
 CATEGORIES=	science
 MASTER_SITES=	SAVANNAH/${PORTNAME}/${PORTVERSION:R}
 DISTNAME=	gnome-chemistry-utils-${PORTVERSION}
@@ -46,6 +47,7 @@ OPTIONS_SUB=	yes
 GNUMERIC_DESC=	Build gnumeric plugin
 XUL_DESC=	Build browser plugin (requires libxul)
 
+XUL_BROKEN=	No gecko type specified (firefox, seamonkey, thunderbird)	
 XUL_USES=	gecko
 XUL_CONFIGURE_ON=--enable-mozilla-plugin \
 		--with-mozilla-libdir=${PREFIX}/lib/xulrunner

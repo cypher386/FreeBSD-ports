@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	jobs
-PORTVERSION=	0.5
+PORTVERSION=	0.7.1
 CATEGORIES=	devel
 PKGNAMEPREFIX=	erlang-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Job scheduler and load regulation for Erlang
 
 USES=		erlang:rebar

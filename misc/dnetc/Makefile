@@ -18,7 +18,7 @@ COMMENT=	Distributed.net distributed computing project client
 WRKSRC=		${WRKDIR}/dnetc${PORTVERSION:E}-freebsd-${ARCH:S/i386/x86/}-elf
 DISTINFO_FILE=	${MASTERDIR}/distinfo.${ARCH}
 
-ONLY_FOR_ARCHS=	i386 sparc64 amd64 powerpc
+ONLY_FOR_ARCHS=	amd64 i386 powerpc sparc64
 
 USE_RC_SUBR=	dnetc
 NO_BUILD=	yes
@@ -27,8 +27,6 @@ BINDIR=		${PREFIX}/distributed.net
 
 USERS=		dnetc
 GROUPS=		dnetc
-
-PKGMESSAGE=	${WRKDIR}/pkg-message
 
 SUB_FILES=	pkg-message
 SUB_LIST=	BINDIR="${BINDIR}"
@@ -56,6 +54,10 @@ VERSION=	2.9109.518
 REVISION=	1
 DISTNAME=	dnetc${PORTVERSION:E}-freebsd8-${ARCH}
 WRKSRC=		${WRKDIR}/dnetc${PORTVERSION:E}-freebsd8-${ARCH}
+
+.else
+# create a backstop for PORTVERSION for unimplemented arches to get a sane PKGNAME
+VERSION=	0
 .endif
 
 do-install:

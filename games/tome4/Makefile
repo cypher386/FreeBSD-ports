@@ -1,11 +1,9 @@
-# Created by: Nikolai Lifanov <lifanov@mail.lifanov.com>
 # $FreeBSD$
 
 PORTNAME=	tome4
-PORTVERSION=	1.5.2
+PORTVERSION=	1.5.10
 CATEGORIES=	games
 MASTER_SITES=	https://te4.org/dl/t-engine/ \
-		http://te4.org/dl/t-engine/ \
 		SF/lifanov-ports-distfiles/${PORTNAME}/:icons
 DISTFILES=	t-engine4-src-${PORTVERSION}${EXTRACT_SUFX} \
 		${PORTNAME}.png:icons
@@ -19,7 +17,7 @@ LICENSE_FILE=	${WRKSRC}/COPYING
 
 BUILD_DEPENDS=	premake4:devel/premake4
 LIB_DEPENDS=	libvorbisfile.so:audio/libvorbis \
-		libpng16.so:graphics/png
+		libpng.so:graphics/png
 
 DESKTOP_ENTRIES="ToME 4" "" "${PORTNAME}" \
 		"${PORTNAME}" "Game;RolePlaying;" ""
@@ -32,6 +30,7 @@ USE_SDL=	image2 sdl2 ttf2
 USE_GL=		gl glu
 USE_CSTD=	gnu89
 SUB_FILES=	tome4
+LLD_UNSAFE=	yes
 
 .include <bsd.port.pre.mk>
 

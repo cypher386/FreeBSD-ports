@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	ipython
-PORTVERSION=	5.3.0
-PORTREVISION=	1
+PORTVERSION=	5.5.0
+PORTREVISION=	2
 CATEGORIES=	devel python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
@@ -14,17 +14,17 @@ COMMENT=	Enhanced Interactive Python shell
 LICENSE=	BSD3CLAUSE
 LICENSE_FILE=	${WRKSRC}/COPYING.rst
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pexpect>=0:misc/py-pexpect \
-		${PYTHON_PKGNAMEPREFIX}sqlite3>=2:databases/py-sqlite3 \
-		${PYTHON_PKGNAMEPREFIX}decorator>=0:devel/py-decorator \
-		${PYTHON_PKGNAMEPREFIX}pickleshare>=0:databases/py-pickleshare \
-		${PYTHON_PKGNAMEPREFIX}prompt_toolkit>=1.0.4:devel/py-prompt_toolkit \
-		${PYTHON_PKGNAMEPREFIX}pygments>=0:textproc/py-pygments \
-		${PYTHON_PKGNAMEPREFIX}simplegeneric>0.8:devel/py-simplegeneric \
-		${PYTHON_PKGNAMEPREFIX}traitlets>=4.2:devel/py-traitlets
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pexpect>=0:misc/py-pexpect@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}sqlite3>=2:databases/py-sqlite3@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}decorator>=0:devel/py-decorator@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pickleshare>=0:databases/py-pickleshare@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}prompt_toolkit>=1.0.4:devel/py-prompt_toolkit@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pygments>=0:textproc/py-pygments@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}simplegeneric>0.8:devel/py-simplegeneric@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}traitlets>=4.2:devel/py-traitlets@${PY_FLAVOR}
 
 USES=		python
-USE_PYTHON=	autoplist distutils
+USE_PYTHON=	autoplist concurrent distutils
 USE_GCC=	yes # To be removed - Needed as a work-around for numpy, see PR ports/188114
 NO_ARCH=	yes
 
@@ -34,10 +34,10 @@ PORTEXAMPLES=	*
 .include <bsd.port.pre.mk>
 
 .if ${PYTHON_REL} < 3000
-RUN_DEPENDS+=	${PYTHON_PKGNAMEPREFIX}backports.shutil_get_terminal_size>=0:devel/py-backports.shutil_get_terminal_size
+RUN_DEPENDS+=	${PYTHON_PKGNAMEPREFIX}backports.shutil_get_terminal_size>=0:devel/py-backports.shutil_get_terminal_size@${PY_FLAVOR}
 .endif
 .if ${PYTHON_REL} < 3400
-RUN_DEPENDS+=	${PYTHON_PKGNAMEPREFIX}pathlib2>=0:devel/py-pathlib2
+RUN_DEPENDS+=	${PYTHON_PKGNAMEPREFIX}pathlib2>=0:devel/py-pathlib2@${PY_FLAVOR}
 .endif
 
 post-install:

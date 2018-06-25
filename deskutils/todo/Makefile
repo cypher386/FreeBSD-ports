@@ -2,9 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	todo
-PORTVERSION=	2.10
+PORTVERSION=	2.11.0
 DISTVERSIONPREFIX=	v
-PORTREVISION=	2
 CATEGORIES=	deskutils
 
 MAINTAINER=	sunpoet@FreeBSD.org
@@ -15,7 +14,8 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 
 RUN_DEPENDS=	bash:shells/bash
 
-CONFLICTS_INSTALL=	devtodo-[0-9]*
+# bin/todo
+CONFLICTS_INSTALL=	deforaos-todo devtodo
 
 NO_ARCH=	yes
 NO_BUILD=	yes

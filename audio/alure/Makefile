@@ -3,7 +3,7 @@
 
 PORTNAME=	alure
 PORTVERSION=	1.2
-PORTREVISION=	4
+PORTREVISION=	5
 CATEGORIES=	audio
 MASTER_SITES=	http://kcat.strangesoft.net/alure-releases/
 
@@ -14,6 +14,7 @@ LICENSE=	MIT
 
 USES=		cmake openal:soft pkgconfig
 USE_LDCONFIG=	yes
+LLD_UNSAFE=	yes	# lld disallows preemption of protected visibility syms
 CMAKE_ARGS=	-DBUILD_STATIC:BOOL=FALSE
 
 PORTDOCS=	*

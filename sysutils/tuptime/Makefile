@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	tuptime
-DISTVERSION=	3.2.4
+DISTVERSION=	3.3.3
 CATEGORIES=	sysutils
 
 MAINTAINER=	jeremy@smart-serv.net
@@ -10,16 +10,14 @@ COMMENT=	Historical and statistical system running time report tool
 
 LICENSE=	GPLv2
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}sqlite3>=2.7:databases/py-sqlite3
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}sqlite3>=2.7:databases/py-sqlite3@${PY_FLAVOR}
 
 USES=		python:run shebangfix
-
 USE_GITHUB=	yes
 GH_ACCOUNT=	rfrail3
-
 NO_BUILD=	yes
+NO_ARCH=	yes
 USE_RC_SUBR=	${PORTNAME}
-
 SHEBANG_FILES=	${WRKSRC}/src/tuptime ${WRKSRC}/scripts/*
 SUB_FILES=	pkg-message
 

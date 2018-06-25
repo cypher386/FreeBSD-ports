@@ -3,7 +3,7 @@
 
 PORTNAME=	animorph
 PORTVERSION=	0.3
-PORTREVISION=	3
+PORTREVISION=	5
 CATEGORIES=	graphics
 MASTER_SITES=	SF/makehuman/MakeHuman%20Source/MakeHuman_091
 
@@ -12,11 +12,14 @@ COMMENT=	Morphing engine for MakeHuman
 
 LICENSE=	LGPL21
 
+BROKEN_powerpc64=	fails to compile: unrecognized command line option "-std=gnu++03"
+
 GNU_CONFIGURE=	yes
 USES=		pkgconfig gmake libtool
 USE_LDCONFIG=	yes
 INSTALL_TARGET=	install-strip
 USE_GCC=	any # otherwise graphics/makehuman won't link
+USE_CXXSTD=	gnu++03  # The port is not compatible with C++11 and later.
 
 CPPFLAGS+=	-I${LOCALBASE}/include
 LDFLAGS+=	-L${LOCALBASE}/lib

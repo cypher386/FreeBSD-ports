@@ -10,12 +10,12 @@
     SUBDIR += antiwm
     SUBDIR += awesome
     SUBDIR += awesome-vicious
-    SUBDIR += awesome2
     SUBDIR += bbkeys
     SUBDIR += bbpager
     SUBDIR += blackbox
     SUBDIR += bspwm
     SUBDIR += ccsm
+    SUBDIR += cde
     SUBDIR += clementine-wm
     SUBDIR += compiz
     SUBDIR += compiz-fusion
@@ -96,6 +96,8 @@
     SUBDIR += phluid
     SUBDIR += piewm
     SUBDIR += plank
+    SUBDIR += plasma5-kdecoration
+    SUBDIR += plasma5-kwin
     SUBDIR += plwm
     SUBDIR += pwm
     SUBDIR += qlwm
@@ -109,6 +111,7 @@
     SUBDIR += selectwm
     SUBDIR += simple-ccsm
     SUBDIR += spectrwm
+    SUBDIR += stumpwm
     SUBDIR += subtle
     SUBDIR += swm
     SUBDIR += tinywm

@@ -1,14 +1,11 @@
---- default.mk.orig	2015-07-18 04:15:03 UTC
+--- default.mk.orig	2018-06-03 00:38:37 UTC
 +++ default.mk
-@@ -71,11 +71,3 @@ EMACSOLD := $(shell $(BATCH) --eval \
- ifeq "$(EMACSOLD)" "true"
-   $(error At least version 24.4 of Emacs is required)
- endif
+@@ -89,8 +89,6 @@ ELGS = magit-autoloads.el magit-version.
+ 
+ ## Versions ##########################################################
+ 
+-VERSION ?= $(shell test -e $(TOP).git && git describe --tags --abbrev=0)
 -
--VERSION := $(shell \
--  test -e $(TOP).git\
--  && git describe --tags --dirty 2> /dev/null\
--  || $(BATCH) --eval "(progn\
--  (fset 'message (lambda (&rest _)))\
--  (load-file \"magit-version.el\")\
--  (princ magit-version))")
+ ASYNC_VERSION       = 1.9.3
+ DASH_VERSION        = 2.14.1
+ GHUB_VERSION        = 2.0.1

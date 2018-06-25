@@ -4,9 +4,9 @@
 CATEGORIES=	security lang
 PKGNAMESUFFIX=	-openssl
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal unit for OpenSSL
 
+USES=		fpc
 USE_FPC=	rtl-extra
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

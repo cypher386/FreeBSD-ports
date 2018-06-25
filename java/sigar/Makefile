@@ -3,7 +3,7 @@
 
 PORTNAME=	sigar
 PORTVERSION=	1.7.3
-PORTREVISION=	4
+PORTREVISION=	6
 CATEGORIES=	java devel
 PKGNAMEPREFIX=	java-
 
@@ -12,6 +12,10 @@ COMMENT=	Java bindings for the Sigar system information API
 
 LICENSE=	APACHE20
 LICENSE_FILE=	${WRKSRC}/NOTICE
+
+BROKEN_armv6=		fails to compile: jni-build.xml: gcc failed with return code 1
+BROKEN_armv7=		fails to compile: jni-build.xml: gcc failed with return code 1
+BROKEN_powerpc64=	fails to install: bindings/java/sigar-bin/lib/libsigar-powerpc64-freebsd-1.so: No such file or directory
 
 BUILD_DEPENDS=	${ANT_CMD}:devel/apache-ant
 LIB_DEPENDS=	libsigar.so:devel/sigar
@@ -33,13 +37,9 @@ ANT=		${SETENV} JAVA_HOME=${JAVA_HOME} ${ANT_CMD}
 .include <bsd.port.pre.mk>
 
 .if ${OPSYS} == FreeBSD
-.  if ${OSVERSION} >= 1000000
 PLATFORM_VER=	1
-.  else
-PLATFORM_VER=	9
-.  endif
 .else
-BROKEN=		${OPSYS} platform is not supported
+IGNORE=		${OPSYS} platform is not supported
 .endif
 
 LIBNAME=	libsigar-${ARCH:S,i386,x86,}-${OPSYS:tl}-${PLATFORM_VER}.so

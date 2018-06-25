@@ -7,7 +7,7 @@ COMMENT=	X Clients under Wayland
 
 LICENSE=	MIT
 
-BUILD_DEPENDS=	/usr/local/libdata/pkgconfig/wayland-protocols.pc:graphics/wayland-protocols
+BUILD_DEPENDS=	${LOCALBASE}/libdata/pkgconfig/wayland-protocols.pc:graphics/wayland-protocols
 LIB_DEPENDS=	libwayland-client.so:graphics/wayland \
 		libinput.so:x11/libinput
 
@@ -27,6 +27,17 @@ CONFIGURE_ARGS+=	--disable-docs --disable-devel-docs \
 			--disable-xquartz --disable-xwin
 
 PLIST_FILES=	bin/Xwayland
+
+EXTRA_PATCHES=	${MASTERDIR}/files/patch-CVE-2017-12176 \
+		${MASTERDIR}/files/patch-CVE-2017-12177 \
+		${MASTERDIR}/files/patch-CVE-2017-12178 \
+		${MASTERDIR}/files/patch-CVE-2017-12179 \
+		${MASTERDIR}/files/patch-CVE-2017-12183 \
+		${MASTERDIR}/files/patch-CVE-2017-1218x \
+		${MASTERDIR}/files/patch-CVE-2017-1218y \
+		${MASTERDIR}/files/patch-CVE-2017-13721 \
+		${MASTERDIR}/files/patch-CVE-2017-13723 \
+		${MASTERDIR}/files/patch-os_io.c
 
 do-install:
 	cd ${WRKSRC}/hw/xwayland; DESTDIR=${STAGEDIR} ${MAKE_CMD} install

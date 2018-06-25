@@ -2,6 +2,7 @@
 
 PORTNAME=	pastebinit
 PORTVERSION=	1.5
+PORTREVISION=	1
 CATEGORIES=	misc python
 MASTER_SITES=	https://launchpad.net/pastebinit/trunk/${PORTVERSION}/+download/
 
@@ -11,7 +12,7 @@ COMMENT=	Command line utility for pastebing
 LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}configobj>=4.3.2:devel/py-configobj
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}configobj>=4.3.2:devel/py-configobj@${PY_FLAVOR}
 
 USES=		python:run shebangfix tar:bzip2
 SHEBANG_FILES=	pastebinit

@@ -2,11 +2,11 @@
 
 PORTNAME=	xiphos
 PORTVERSION=	3.1.6
-PORTREVISION=	5
+PORTREVISION=	6
 CATEGORIES=	misc gnome
 MASTER_SITES=	SF/gnomesword/Xiphos/${PORTVERSION}
 
-MAINTAINER=	tabthorpe@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Bible interface utilizing the sword framework
 
 LICENSE=	GPLv2

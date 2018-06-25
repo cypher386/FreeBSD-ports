@@ -3,13 +3,14 @@
 
 PORTNAME=	dwm
 PORTVERSION=	6.1
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	x11-wm
 MASTER_SITES=	http://dl.suckless.org/${PORTNAME}/ \
 		http://schot.a-eskwadraat.nl/files/
+
 PATCH_SITES=	http://dwm.suckless.org/patches/
 
-MAINTAINER=	schot@a-eskwadraat.nl
+MAINTAINER=	0mp@FreeBSD.org
 COMMENT=	Dynamic, small, fast and simple window manager
 
 LICENSE=	MIT
@@ -17,19 +18,26 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 
 LIB_DEPENDS=	libfontconfig.so:x11-fonts/fontconfig
 
-OPTIONS_DEFINE=	XINERAMA DOCS
-OPTIONS_DEFAULT=XINERAMA
-
-XINERAMA_USE=	XORG=xinerama
-XINERAMA_MAKE_ARGS_OFF=	XINERAMAFLAGS= XINERAMALIBS=
-
 USE_XORG=	x11 xft
+
 MAKE_ARGS=	CC="${CC}" PREFIX="${PREFIX}" MANPREFIX="${MANPREFIX}/man" \
 		X11INC="${LOCALBASE}/include" X11LIB="${LOCALBASE}/lib"
 
 PLIST_FILES=	bin/dwm \
 		man/man1/dwm.1.gz
 PORTDOCS=	README
+
+OPTIONS_DEFINE=	XINERAMA DOCS SUPERASMODKEY VOLUMECONTROL
+OPTIONS_DEFAULT=XINERAMA
+
+SUPERASMODKEY_DESC=	Use Super instead of Alt for the dwm mod key
+VOLUMECONTROL_DESC=	Use keys on keyboard to raise or lower volume
+
+SUPERASMODKEY_EXTRA_PATCHES=	${PATCHDIR}/superasmodkey-patch-config.def.h
+VOLUMECONTROL_EXTRA_PATCHES=	${PATCHDIR}/volumecontrol-patch-config.def.h
+
+XINERAMA_USE=	XORG=xinerama
+XINERAMA_MAKE_ARGS_OFF=	XINERAMAFLAGS= XINERAMALIBS=
 
 pre-everything::
 	@${ECHO_MSG} "You can build dwm with your own config.h using the DWM_CONF knob:"
@@ -43,6 +51,9 @@ post-extract:
 	fi
 
 post-install:
+	${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/dwm
+
+post-install-DOCS-on:
 	@${MKDIR} ${STAGEDIR}${DOCSDIR}
 	${INSTALL_DATA} ${WRKSRC}/README ${STAGEDIR}${DOCSDIR}
 

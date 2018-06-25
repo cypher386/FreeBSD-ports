@@ -2,8 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	libpsl
-PORTVERSION=	0.17.0
+PORTVERSION=	0.20.2
 DISTVERSIONPREFIX=	${PORTNAME}-
+PORTREVISION=	1
 CATEGORIES=	dns
 
 MAINTAINER=	sunpoet@FreeBSD.org
@@ -18,7 +19,7 @@ BUILD_DEPENDS=	public_suffix_list>=0:dns/public_suffix_list \
 OPTIONS_DEFINE=	NLS
 OPTIONS_SINGLE=	IDNA
 OPTIONS_SINGLE_IDNA=	ICU IDN IDN2
-OPTIONS_DEFAULT=ICU
+OPTIONS_DEFAULT=IDN2
 ICU_DESC=	Use devel/icu (IDNA2008 UTS\#46 library)
 IDN_DESC=	Use dns/libidn (IDNA2003 library)
 IDN2_DESC=	Use dns/libidn2 (IDNA2008 library)
@@ -29,6 +30,7 @@ CONFIGURE_ARGS=	--enable-man \
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
 USE_LDCONFIG=	yes
+USE_LOCALE=	en_US.UTF-8
 USES=		autoreconf libtool localbase:ldflags pathfix pkgconfig python:build shebangfix
 
 GH_ACCOUNT=	rockdaboot
@@ -46,7 +48,7 @@ IDN2_CONFIGURE_ON=	--enable-builtin=libidn2 --enable-runtime=libidn2
 IDN2_LIB_DEPENDS=	libidn2.so:dns/libidn2 \
 			libunistring.so:devel/libunistring
 IDN2_USES=		iconv
-NLS_CPPFLAGS=		-DENABLE_NLS=1
+NLS_CONFIGURE_ENABLE=	nls
 NLS_USES=		gettext
 NLS_USES_OFF=		gettext-tools
 

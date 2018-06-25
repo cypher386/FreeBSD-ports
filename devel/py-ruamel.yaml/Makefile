@@ -2,18 +2,20 @@
 # $FreeBSD$
 
 PORTNAME=	ruamel.yaml
-PORTVERSION=	0.12.15
-PORTREVISION=	0
+DISTVERSION=	0.15.40
 CATEGORIES=	devel python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
-MAINTAINER=	feld@FreeBSD.org
+MAINTAINER=	pi@FreeBSD.org
 COMMENT=	YAML 1.2 loader/dumper package for Python
 
 LICENSE=	MIT
 
 USES=		python
-USE_PYTHON=	distutils
+USE_PYTHON=	distutils autoplist
+
+post-extract:
+	@${RM} ${WRKSRC}/LICENSE
 
 .include <bsd.port.mk>

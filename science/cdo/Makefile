@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	cdo
-PORTVERSION=	1.8.0
+PORTVERSION=	1.9.4
 CATEGORIES=	science
-MASTER_SITES=	https://code.zmaw.de/attachments/download/13772/ \
+MASTER_SITES=	https://code.mpimet.mpg.de/attachments/download/17374/ \
 		LOCAL/sunpoet
 
 MAINTAINER=	sunpoet@FreeBSD.org
@@ -12,6 +12,8 @@ COMMENT=	Climate Data Operators
 
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/COPYING
+
+BROKEN_powerpc64=	fails to compile: remaplib.cc:1504:6: internal compiler error: in gsi_insert_seq_nodes_after, at gimple-iterator.c:283
 
 OPTIONS_DEFINE=	CGRIBEX HDF5 JASPER NETCDF PROJ SZIP UDUNITS UUID
 OPTIONS_DEFAULT=CGRIBEX HDF5 JASPER NETCDF PROJ SZIP UDUNITS UUID
@@ -34,9 +36,11 @@ CONFIGURE_ARGS=	--disable-data \
 		--with-zlib=/usr
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
+MAKE_JOBS_UNSAFE=	yes
 TEST_TARGET=	check
+USES=		compiler:c++11-lib gmake libtool localbase pathfix
+USE_CXXSTD=	c++11
 USE_LDCONFIG=	yes
-USES=		execinfo gmake libtool localbase pathfix
 
 CGRIBEX_CONFIGURE_WITH=	cgribex
 CGRIBEX_LIB_DEPENDS=	libcgribex.so:science/cgribex

@@ -3,7 +3,7 @@
 
 PORTNAME=	htmltolatex
 PORTVERSION=	1
-PORTREVISION=	21
+PORTREVISION=	23
 CATEGORIES=	textproc
 MASTER_SITES=	http://people.FreeBSD.org/~foxfair/distfiles/
 DISTNAME=	${PORTNAME}
@@ -15,6 +15,8 @@ LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/copying.txt
 
 LIB_DEPENDS=	libGraphicsMagick++.so:graphics/GraphicsMagick
+
+BROKEN_powerpc64=	fails to link: libGraphicsMagick++.so: undefined reference to std::__cxx11::basic_string
 
 USES=		bison gmake
 MAKEFILE=	GNUmakefile

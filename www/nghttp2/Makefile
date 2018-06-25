@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	nghttp2
-PORTVERSION=	1.21.0
-PORTREVISION=	1
+PORTVERSION=	1.32.0
 DISTVERSIONPREFIX=	v
 CATEGORIES=	www net
 
@@ -13,17 +12,18 @@ COMMENT=	HTTP/2.0 C Library
 LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+BROKEN_SSL=	openssl-devel
+BROKEN_SSL_REASON_openssl-devel=	error: use of undeclared identifier 'SSL_get0_next_proto_negotiated'
+
 BUILD_DEPENDS=	libnghttp2>=${PORTVERSION}:www/libnghttp2
 LIB_DEPENDS=	libnghttp2.so:www/libnghttp2
 
-OPTIONS_DEFINE=	APP ASIO DOCS EXAMPLES HPACK SPDY
-OPTIONS_DEFAULT=APP HPACK SPDY
+OPTIONS_DEFINE=	APP ASIO DOCS EXAMPLES HPACK
+OPTIONS_DEFAULT=APP HPACK
 OPTIONS_SUB=	yes
 APP_DESC=	Build h2load, nghttp, nghttpd and nghttpx
-SPDY_DESC=	Enable SPDY in h2load and nghttpx
-SPDY_IMPLIES=	APP
 
-CONFIGURE_ARGS=	--disable-python-bindings
+CONFIGURE_ARGS=	--disable-python-bindings --with-jemalloc
 CONFIGURE_ENV=	OPENSSL_CFLAGS="-I${OPENSSLINC}" \
 		OPENSSL_LIBS="-L${OPENSSLLIB} -lcrypto -lssl"
 GNU_CONFIGURE=	yes
@@ -57,30 +57,17 @@ EXAMPLES_LIB_DEPENDS=	libevent_openssl.so:devel/libevent
 HPACK_BUILD_DEPENDS=	jansson>=2.5:devel/jansson
 HPACK_CONFIGURE_ENABLE=	hpack-tools
 HPACK_LIB_DEPENDS=	libjansson.so:devel/jansson
-SPDY_BUILD_DEPENDS=	spdylay>=1.3.2:www/spdylay
-SPDY_CONFIGURE_WITH=	spdylay
-SPDY_LIB_DEPENDS=	libspdylay.so:www/spdylay
-
-.include <bsd.port.pre.mk>
-
-.if ${OPSYS} == FreeBSD
-CONFIGURE_ARGS+=--with-jemalloc
-.endif
 
 post-patch:
 	@${REINPLACE_CMD} -e '/^SUBDIRS = / s| lib||' ${WRKSRC}/Makefile.am
 	@${REINPLACE_CMD} -e 's|$$[({]top_builddir[})]/lib/libnghttp2.la|-lnghttp2|' ${WRKSRC}/*/Makefile.am
+	@${REINPLACE_CMD} -e '1d' ${WRKSRC}/script/fetch-ocsp-response
 
 # lib/libnghttp2.* are not available until configure phase
 post-configure:
 	@${MKDIR} ${WRKSRC}/lib/.libs/
 	@${CP} ${LOCALBASE}/lib/libnghttp2.so* ${WRKSRC}/lib/.libs/
 	@cd ${WRKSRC}/lib/.libs/ && ${AR} x ${LOCALBASE}/lib/libnghttp2.a
-# Disable thread_local support for hosts without __cxa_thread_atexit()
-# See PR/192320 for details
-.if (${OSVERSION} < 1003506) || ((${OSVERSION} >= 1100000) && (${OSVERSION} < 1100122)) || (${OSVERSION} == 1100500)
-	@${REINPLACE_CMD} -e '/HAVE_THREAD_LOCAL/d' ${WRKSRC}/config.h
-.endif
 
 post-install:
 	${MKDIR} ${STAGEDIR}${PREFIX}/etc/nghttpx/
@@ -91,4 +78,4 @@ post-install-EXAMPLES-on:
 	${INSTALL_DATA} ${WRKSRC}/examples/*.c* ${STAGEDIR}${EXAMPLESDIR}/
 	cd ${WRKSRC}/examples/ && ${INSTALL_PROGRAM} client deflate libevent-client libevent-server ${STAGEDIR}${EXAMPLESDIR}/
 
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

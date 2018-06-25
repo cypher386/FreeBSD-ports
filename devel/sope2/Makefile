@@ -2,12 +2,13 @@
 # $FreeBSD$
 
 PORTNAME=		sope2
-PORTVERSION=		2.3.20
+PORTVERSION=		2.3.23
+PORTREVISION=	1
 CATEGORIES=		devel gnustep
 MASTER_SITES=		http://www.sogo.nu/files/downloads/SOGo/Sources/
 DISTNAME=		SOPE-${PORTVERSION}
 
-MAINTAINER=		euan@potensol.com
+MAINTAINER=		acm@FreeBSD.org
 COMMENT=		Extensive set of GNUstep web application frameworks
 
 LICENSE=		LGPL20

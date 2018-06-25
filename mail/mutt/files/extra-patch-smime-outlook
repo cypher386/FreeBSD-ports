@@ -1,6 +1,6 @@
---- crypt.c.orig	Fri Mar  7 09:23:44 2003
-+++ crypt.c	Fri Mar 21 00:06:48 2003
-@@ -440,7 +440,7 @@
+--- crypt.c.orig	2018-05-19 20:33:53 UTC
++++ crypt.c
+@@ -501,7 +501,7 @@
      {
        len++;
        if (!ascii_strcasecmp ((t+len), "p7m"))

@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	test-framework-quickcheck2
-PORTVERSION=	0.3.0.3
+PORTVERSION=	0.3.0.4
 PORTREVISION=	2
 CATEGORIES=	devel haskell
 

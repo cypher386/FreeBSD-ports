@@ -3,7 +3,6 @@
 
 PORTNAME=	thrift
 PORTVERSION=	${THRIFT_PORTVERSION} # to keep in sync with thrift
-PORTREVISION=	2
 PORTEPOCH=	1
 CATEGORIES=	devel
 MASTER_SITES=	APACHE/thrift/${PORTVERSION}
@@ -13,6 +12,8 @@ MAINTAINER=	ports@FreeBSD.org
 COMMENT=	C glib interface to Thrift
 
 PKGNAMESUFFIX=	-c_glib
+
+BROKEN_powerpc64=	fails to link: Internal error: Segmentation fault (program ld)
 
 BUILDIR=	${WRKDIR}/${DISTNAME}/lib/c_glib
 

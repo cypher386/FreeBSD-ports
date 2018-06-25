@@ -2,42 +2,46 @@
 # $FreeBSD$
 
 PORTNAME=	jira
-PORTVERSION=	0.32
+PORTVERSION=	1.0.15
 CATEGORIES=	devel python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
-MAINTAINER=	akosiaris+ports@gmail.com
+MAINTAINER=	swills@FreeBSD.org
 COMMENT=	Library to ease use of the JIRA 5 REST APIs
 
 LICENSE=	BSD2CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}requests>=1.2.3:www/py-requests \
-		${PYTHON_PKGNAMEPREFIX}requests-oauthlib>=0.3.3:www/py-requests-oauthlib \
-		${PYTHON_PKGNAMEPREFIX}tlslite>=0.4.4:security/py-tlslite \
-		${PYTHON_PKGNAMEPREFIX}six>=1.5.2:devel/py-six \
-		${PYTHON_PKGNAMEPREFIX}pycrypto>=0:security/py-pycrypto
+BUILD_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pytest-runner>0:devel/py-pytest-runner@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pbr>=1.9:devel/py-pbr@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}sphinx>=1.6.5:textproc/py-sphinx@${PY_FLAVOR}
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}requests>=1.2.3:www/py-requests@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}requests-oauthlib>=0.3.3:www/py-requests-oauthlib@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}tlslite>=0.4.4:security/py-tlslite@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}six>=1.5.2:devel/py-six@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pycrypto>=0:security/py-pycrypto@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pbr>=1.9:devel/py-pbr@${PY_FLAVOR}
 TEST_DEPENDS:=	${RUN_DEPENDS} \
-		${PYTHON_PKGNAMEPREFIX}nose>0:devel/py-nose
+		${PYTHON_PKGNAMEPREFIX}nose>0:devel/py-nose@${PY_FLAVOR}
 
 OPTIONS_DEFINE=		MAGIC PARALLEL SHELL TESTS
-OPTIONS_DEFAULT=	MAGIC PARALLEL
+OPTIONS_DEFAULT=	MAGIC PARALLEL SHELL
 
 MAGIC_DESC=	Enable Content-Type Auto-detection
 PARALLEL_DESC=	Enable asynchronous requests
 SHELL_DESC=	Enable interactive shell
 TESTS_DESC=	Install test suite dependencies
 
-MAGIC_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}filemagic>=1.6:devel/py-filemagic
-PARALLEL_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}grequests>0:www/py-grequests
-SHELL_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}ipython>=0.13:devel/ipython
+MAGIC_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}filemagic>=1.6:devel/py-filemagic@${PY_FLAVOR}
+PARALLEL_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}grequests>0:www/py-grequests@${PY_FLAVOR}
+SHELL_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}ipython>=0.13:devel/ipython@${PY_FLAVOR}
 TESTS_BUILD_DEPENDS=	${TEST_DEPENDS}
 
 TEST_DEPENDS:=	${RUN_DEPENDS} \
-		${PYTHON_PKGNAMEPREFIX}nose>0:devel/py-nose
+		${PYTHON_PKGNAMEPREFIX}nose>0:devel/py-nose@${PY_FLAVOR}
 
-USES=		python
+USES=		python:2.7
 USE_PYTHON=	distutils autoplist
 
 .include <bsd.port.mk>

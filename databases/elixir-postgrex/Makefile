@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	postgrex
-PORTVERSION=	0.13.2
+PORTVERSION=	0.13.5
 DISTVERSIONPREFIX=	v
 CATEGORIES=	databases
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Database driver for PostgreSQL written in Elixir
 
 LICENSE=	APACHE20

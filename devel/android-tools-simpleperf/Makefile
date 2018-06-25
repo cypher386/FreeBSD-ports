@@ -2,8 +2,8 @@
 
 PORTNAME=	android-tools-simpleperf
 DISTVERSIONPREFIX=	android-
-DISTVERSION=	7.1.1_r4
-PORTREVISION=	1
+DISTVERSION=	7.1.2_r17
+PORTREVISION=	3
 CATEGORIES=	devel
 
 MAINTAINER=	jbeich@FreeBSD.org
@@ -19,7 +19,7 @@ GH_PROJECT=	platform_bionic:bionic platform_system_core:core \
 		platform_system_extras
 GH_SUBDIR=	bionic:bionic
 
-USES=		compiler:c++11-lib uidfix
+USES=		compiler:c++11-lib ncurses uidfix
 BUILD_WRKSRC=	${WRKSRC}/simpleperf
 INSTALL_WRKSRC=	${BUILD_WRKSRC}
 TEST_WRKSRC=	${BUILD_WRKSRC}
@@ -30,7 +30,7 @@ TEST_TARGET=	test
 LDFLAGS+=	-Wl,--as-needed # avoid overlinking (llvm deps)
 PLIST_FILES=	bin/simpleperf
 
-LLVM_VER?=	38 # XXX Move to DEFAULT_VERSIONS
+LLVM_VER?=	60 # XXX Move to DEFAULT_VERSIONS
 
 OPTIONS_DEFINE=	TEST
 

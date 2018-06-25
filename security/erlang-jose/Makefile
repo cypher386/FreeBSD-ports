@@ -1,14 +1,14 @@
 # $FreeBSD$
 
 PORTNAME=	jose
-PORTVERSION=	1.8.2
+PORTVERSION=	1.8.4
 CATEGORIES=	security
 PKGNAMEPREFIX=	erlang-
 
 MAINTAINER=	vanilla@FreeBSD.org
 COMMENT=	JSON Object Signing and Encryption (JOSE) for Erlang
 
-LICENSE=	MPL
+LICENSE=	MPL20
 
 USES=		erlang:rebar
 USE_GITHUB=	yes

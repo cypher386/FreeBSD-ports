@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	mutt
-PORTVERSION=	1.8.0
-PORTREVISION?=	1
+DISTVERSION=	1.10.0
+PORTREVISION?=	0
 CATEGORIES+=	mail ipv6
 MASTER_SITES=	ftp://ftp.mutt.org/pub/mutt/ \
 		ftp://ftp.fu-berlin.de/pub/unix/mail/mutt/ \
@@ -11,18 +11,13 @@ MASTER_SITES=	ftp://ftp.mutt.org/pub/mutt/ \
 		ftp://ftp.demon.co.uk/pub/mirrors/mutt/ \
 		http://www.mutt.org.ua/download/mutt-${VVV_PATCH_VERSION}/:vvv \
 		http://www2.mutt.org.ua/download/mutt-${VVV_PATCH_VERSION}/:vvv
-DISTFILES=	${DISTNAME}${EXTRACT_SUFX}
 DIST_SUBDIR=	mutt
 EXTRACT_ONLY=	${DISTNAME}${EXTRACT_SUFX}
 
 PATCH_SITES+=	http://www.mutt.org.ua/download/mutt-${VVV_PATCH_VERSION}/:vvv \
 		http://www2.mutt.org.ua/download/mutt-${VVV_PATCH_VERSION}/:vvv \
-		http://home.uchicago.edu/~dgc/sw/mutt/:dgc \
-		https://www.schrab.com/aaron/mutt/:ats \
 		http://vc.org.ua/mutt/:vc
 PATCH_DIST_STRIP=	-p1
-PATCHFILES=	patch-1.5.1.dgc.deepif.1:dgc \
-			patch-1.7.0.ats.date_conditional.1:ats
 
 MAINTAINER?=	dereks@lifeofadishwasher.com
 COMMENT?=	Small but powerful text based program for read/writing e-mail
@@ -38,18 +33,16 @@ CONFIGURE_ENV=	CC="${CC} -I${LOCALBASE}/include"
 CONFIGURE_ARGS=	--disable-fcntl --with-ssl=${OPENSSLBASE} \
 		--with-docdir=${DOCSDIR} --sysconfdir=${PREFIX}/etc \
 		--enable-external-dotlock --enable-pop --enable-imap \
-		--enable-compressed
+		--enable-compressed --enable-sidebar
 
-USES+=		cpe shebangfix ssl
+USES+=		cpe ncurses shebangfix ssl
 SHEBANG_FILES=	doc/gen-map-doc smime_keys.pl contrib/smime_keys_test.pl
 
 .if defined(MUTT_CONFIGURE_ARGS)
 CONFIGURE_ARGS+=	${MUTT_CONFIGURE_ARGS}
 .endif
 
-USES+=		autoreconf
 GNU_CONFIGURE=	yes
-AUTOMAKE_ARGS=	--add-missing --foreign
 
 OPTIONS_SUB=	yes
 
@@ -59,9 +52,8 @@ OPTIONS_EXCLUDE=	NLS DOCS EXAMPLES
 OPTIONS_DEFINE=	SASL DEBUG DOCS EXAMPLES FLOCK \
 		FORCEBASE64 GPGME GREETING_PATCH HTML ICONV IDN IFDEF_PATCH \
 		LOCALES_FIX MAILBOX_MANPAGES MAILDIR_MTIME_PATCH \
-		NLS NNTP PARENT_CHILD_MATCH_PATCH QUOTE_PATCH \
-		REVERSE_REPLY_PATCH SIDEBAR SMART_DATE SMIME_OUTLOOK_COMPAT \
-		SMTP URLVIEW XML
+		NLS NNTP QUOTE_PATCH REVERSE_REPLY_PATCH SMART_DATE \
+		SMIME_OUTLOOK_COMPAT SMTP URLVIEW XML
 
 OPTIONS_SINGLE=	GSSAPI HCACHE SCREEN
 OPTIONS_RADIO=	SPELL
@@ -77,17 +69,15 @@ FORCEBASE64_DESC=	Option to force base64 encoding for compose
 GPGME_DESC=	Gpgme interface
 GREETING_PATCH_DESC=	Greeting support
 HTML_DESC=	HTML documentation
-IDN_DESC+=	International Domain Names (implies ICONV)
+IDN_DESC=	International Domain Names (implies ICONV)
 IFDEF_PATCH_DESC=	ifdef feature
 LOCALES_FIX_DESC=	Locales fix
 MAILBOX_MANPAGES_DESC=	Install mbox.5/mmdf.5 manpages
 MAILDIR_MTIME_PATCH_DESC=	Maildir mtime patch
 NCURSES_DESC=	Ncurses support
 NLS_DESC=	Native language support (implies ICONV)
-PARENT_CHILD_MATCH_PATCH_DESC=	Parent/child match
 QUOTE_PATCH_DESC=	Extended quoting
 REVERSE_REPLY_PATCH_DESC=	Reverse_reply
-SIDEBAR_DESC=	Sidebar support
 SLANG_DESC=	SLANG support
 SMART_DATE_DESC=	Dynamic date formatting with "%@"
 SMIME_OUTLOOK_COMPAT_DESC=	SMIME outlook compatibility
@@ -102,9 +92,8 @@ XML_DESC=	Use XML tools for rebuilding documentation
 
 OPTIONS_DEFAULT=	GPGME HTML HCACHE_BDB ICONV IDN \
 		IFDEF_PATCH LOCALES_FIX MAILBOX_MANPAGES MAILDIR_MTIME_PATCH \
-		NLS NCURSES PARENT_CHILD_MATCH_PATCH QUOTE_PATCH \
-		REVERSE_REPLY_PATCH SMART_DATE SMIME_OUTLOOK_COMPAT SASL SMTP \
-		URLVIEW XML GSSAPI_NONE
+		NLS NCURSES QUOTE_PATCH REVERSE_REPLY_PATCH SMART_DATE \
+		SMIME_OUTLOOK_COMPAT SASL SMTP URLVIEW XML GSSAPI_NONE
 .endif
 
 RUN_DEPENDS+=	${LOCALBASE}/etc/mime.types:misc/mime-support
@@ -144,7 +133,6 @@ NCURSES_USES=	ncurses
 
 NLS_USES=	gettext
 NLS_CONFIGURE_ENABLE=	nls
-#NLS_CONFIGURE_OFF=	--disable-nls
 NLS_IMPLIES=	ICONV
 
 # Handle GSSAPI from various places
@@ -173,7 +161,6 @@ ICONV_CONFIGURE_ON=	${ICONV_CONFIGURE_ARG}
 ICONV_CONFIGURE_OFF=	--disable-iconv
 
 ASPELL_EXTRA_PATCHES=	${PATCHDIR}/extra-patch-aspell
-PARENT_CHILD_MATCH_PATCH_EXTRA_PATCHES=	${PATCHDIR}/extra-patch-parent-child-match
 REVERSE_REPLY_PATCH_EXTRA_PATCHES=	${PATCHDIR}/extra-patch-reverse_reply
 
 SASL_LIB_DEPENDS=	libsasl2.so:security/cyrus-sasl2
@@ -186,9 +173,11 @@ FLOCK_CONFIGURE_ENABLE=	flock
 
 LOCALES_FIX_CONFIGURE_ON=	--enable-locales-fix
 
-IDN_LIB_DEPENDS=	libidn.so:dns/libidn
-IDN_CONFIGURE_WITH=	idn
+IDN_LIB_DEPENDS=	libidn2.so:dns/libidn2
+IDN_CONFIGURE_WITH=	idn2
 IDN_IMPLIES=	ICONV
+
+IFDEF_PATCH_EXTRA_PATCHES=	${PATCHDIR}/extra-patch-ifdef
 
 GPGME_LIB_DEPENDS+=	libgpgme.so:security/gpgme
 GPGME_LIB_DEPENDS+=	libgpg-error.so:security/libgpg-error
@@ -202,21 +191,20 @@ GREETING_PATCH_PATCHFILES=	mutt-${GREETING_PATCH_VERSION}.vc.greeting:vc
 QUOTE_PATCH_PATCHFILES=	patch-${VVV_PATCH_VERSION}.vvv.initials.gz:vvv \
 			patch-${VVV_PATCH_VERSION}.vvv.quote.gz:vvv
 
-NNTP_DISTFILES=	patch-${VVV_PATCH_VERSION}.vvv.nntp.gz:vvv \
-		patch-${VVV_PATCH_VERSION}.vvv.nntp_ru.gz:vvv
+NNTP_BROKEN=	NNTP Patch needs updated for 1.10.x
+NNTP_PATCHFILES=	patch-${VVV_PATCH_VERSION}.vvv.nntp.gz:-p1:vvv
 NNTP_CONFIGURE_ON=	--enable-nntp
 NNTP_VARS=	XML_NEEDED=yes
 NNTP_CATEGORIES=	news
-
-SIDEBAR_CONFIGURE_ENABLE=	sidebar
+NNTP_USES=	perl5
 
 DOCS_EXTRA_PATCHES=	${PATCHDIR}/extra-patch-doc-ref
 
 .include <bsd.port.options.mk>
 
 # un/comment as each VERSION is created for PORTVERSION
-VVV_PATCH_VERSION=	1.8.0
-GREETING_PATCH_VERSION=	1.8.0
+VVV_PATCH_VERSION=	1.9.5
+GREETING_PATCH_VERSION=	1.9.5
 
 .if !defined(VVV_PATCH_VERSION)
 VVV_PATCH_VERSION=	${PORTVERSION}
@@ -225,27 +213,12 @@ VVV_PATCH_VERSION=	${PORTVERSION}
 GREETING_PATCH_VERSION=	${PORTVERSION}
 .endif
 
-# XXX
-# this should be done automagically by aclocal but ....
-# for now, this will have to do
-pre-build::
-	@${REINPLACE_CMD} -E -e "s|^(ACLOCAL = ).+|\1${ACLOCAL}|" \
-			-e "s|^(AUTOCONF = ).+|\1${AUTOCONF}|" \
-			-e "s|^(AUTOMAKE = ).+|\1${AUTOMAKE}|" \
-			-e "s|^(AUTOHEADER = ).+|\1${AUTOHEADER}|" \
-		${BUILD_WRKSRC}/Makefile
-
 LDFLAGS+=		-L${LOCALBASE}/lib -Wl,-rpath=${LOCALBASE}/lib:/usr/lib -ltinfow
-CFLAGS+=		${CFLAGS_ADD}
-LDFLAGS+=		${LDFLAGS_ADD}
-
-pre-patch-NNTP-on:
-	@${GUNZIP_CMD} -c ${DISTDIR}/${DIST_SUBDIR}/patch-${VVV_PATCH_VERSION}.vvv.nntp.gz > ${WRKDIR}/patch-nntp
-	@${REINPLACE_CMD} -E '/^diff.*\/doc\/manual.txt$$/,/^diff/d' \
-		${WRKDIR}/patch-nntp
-	@${PATCH} -d ${PATCH_WRKSRC} ${PATCH_ARGS} -p1 < ${WRKDIR}/patch-nntp
 
 post-patch-NNTP-on:
+# Restore timestamps for autotools sources
+	@${TOUCH} -r ${WRKSRC}/configure.ac.orig ${WRKSRC}/configure.ac
+	@${TOUCH} -r ${WRKSRC}/Makefile.am.orig ${WRKSRC}/Makefile.am
 .if ${PORT_OPTIONS:MMAILDIR_MTIME_PATCH}
 	@${PATCH} -d ${PATCH_WRKSRC} ${PATCH_ARGS} -p1 < ${PATCHDIR}/extra-patch-maildir-mtime-nntp
 .endif
@@ -267,32 +240,28 @@ post-install:
 post-install-NNTP-on:
 	${INSTALL_DATA} ${WRKSRC}/ChangeLog.nntp ${STAGEDIR}${DOCSDIR}
 
-post-patch-IFDEF_PATCH-on:
-	@${PATCH} -d ${PATCH_WRKSRC} ${PATCH_ARGS} -p1 < ${PATCHDIR}/extra-patch-ifdef
-
 WRKSRC=		${WRKDIR}/${DISTNAME:S/i$//}
 
-post-patch:
+pre-configure::
+	@${REINPLACE_CMD} -e 's,?eimdal\*),?eimdal*|\"FreeBSD heimdal\"*),' \
+		${CONFIGURE_WRKSRC}/${CONFIGURE_SCRIPT}
 	@${REINPLACE_CMD} -e 's,/usr/bin/gpg,${LOCALBASE}/bin/gpg,g' \
 		${WRKSRC}/contrib/gpg.rc
 	@${REINPLACE_CMD} -e 's,pgp6,pgp,g' \
 		${WRKSRC}/contrib/pgp6.rc
-	@${REINPLACE_CMD} -E -e 's|@samplesdir@|${EXAMPLESDIR}|g' \
-		${WRKSRC}/contrib/Makefile.am
+	@${REINPLACE_CMD} -E -e 's#(/samples|samples/)#share/examples/mutt#g' \
+		${WRKSRC}/doc/reference.html \
+		${WRKSRC}/doc/manual.html \
+		${WRKSRC}/doc/manual.txt \
+		${WRKSRC}/doc/Muttrc \
+		${WRKSRC}/INSTALL \
+		${WRKSRC}/init.h
+	@${REINPLACE_CMD} -e 's#$$(docdir)/samples#${EXAMPLESDIR}#g' \
+		${WRKSRC}/contrib/Makefile.in
 
-pre-configure::
-	@${RM} ${WRKSRC}/missing
-.if defined(WITH_KRB5_SYS)
-	@${ECHO_CMD} "#define HAVE_HEIMDAL" >> ${WRKSRC}/config.h.in
-	@${REINPLACE_CMD} -e 's|<gssapi/gssapi\.h>|<gssapi.h>|' \
-		${WRKSRC}/imap/auth_gss.c
-.endif
-
-.if ${PORT_OPTIONS:MHCACHE_BDB}
-CONFIGURE_SED=	-e 's/BDB_VERSIONS="/&${BDB_LIB_NAME} db${BDB_VER} /'
-pre-configure::
-	@${REINPLACE_CMD} -E ${CONFIGURE_SED} ${CONFIGURE_WRKSRC}/${CONFIGURE_SCRIPT}.ac
-.endif
+pre-configure-HCACHE_BDB-on:
+	@${REINPLACE_CMD} -E -e 's/BDB_VERSIONS="/&${BDB_LIB_NAME} db${BDB_VER} /' \
+		${CONFIGURE_WRKSRC}/${CONFIGURE_SCRIPT}
 
 .if defined (XML_NEEDED) && ${PORT_OPTIONS:MXML}
 BUILD_DEPENDS+=	xsltproc:textproc/libxslt \
@@ -300,7 +269,8 @@ BUILD_DEPENDS+=	xsltproc:textproc/libxslt \
 		lynx:www/lynx
 .else
 pre-build::
-	@${REINPLACE_CMD} -E -e 's|-xsltproc|@-true xsltproc|g' \
+	@${REINPLACE_CMD} \
+		-e 's,manual.html stamp-doc-rc stamp-doc-chunked manual.txt,stamp-doc-rc,' \
 		${WRKSRC}/doc/Makefile
 .endif
 

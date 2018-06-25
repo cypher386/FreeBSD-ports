@@ -4,9 +4,9 @@
 CATEGORIES=	devel lang
 PKGNAMESUFFIX=	-regexpr
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal regular expression routines
 
+USES=		fpc
 USE_FPC=	rtl-objpas
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

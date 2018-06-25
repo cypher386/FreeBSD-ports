@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	fftw3
-DISTVERSION=	3.3.6-pl1
-PORTREVISION?=	1
+DISTVERSION=	3.3.7
+PORTREVISION?=	0
 CATEGORIES=	math
 MASTER_SITES=	http://www.fftw.org/ \
 		ftp://ftp.fftw.org/pub/fftw/
@@ -13,7 +13,7 @@ DISTNAME=	fftw-${DISTVERSION}
 MAINTAINER=	jhale@FreeBSD.org
 COMMENT?=	Fast C routines to compute the Discrete Fourier Transform
 
-LICENSE=	GPLv2
+LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 #current flavors: default, float, long, and quad
@@ -36,7 +36,7 @@ INFO=	fftw3
 .else
 #For non-default flavors, build and install the flavor-dependent components
 #only, so that these flavors may coexist with the default flavor
-INSTALL_TARGET=	install-pkgconfigDATA install-libLTLIBRARIES install-exec
+INSTALL_TARGET=	install-cmakeDATA install-pkgconfigDATA install-libLTLIBRARIES install-exec
 .endif
 
 OPTIONS_DEFINE=		G77_WRAPPERS OPENMP OPENMPI OPTIMIZED_CFLAGS SIMD
@@ -123,6 +123,9 @@ CFLAGS+=	-fomit-frame-pointer
 .  endif
 .  if ${ARCH} == "i386" && (${COMPILER_TYPE} == "gcc" || !empty(USE_GCC)) && !${PORT_OPTIONS:MOPENMPI}
 CFLAGS+=	-malign-double
+.  endif
+.  if ${ARCH} == "armv6" && ${OPSYS} == FreeBSD && ${OSVERSION} < 1200032
+CFLAGS+=	-fno-unsafe-math-optimizations
 .  endif
 WITHOUT_NO_STRICT_ALIASING=	yes
 .endif # end OPTIMIZED_CFLAGS

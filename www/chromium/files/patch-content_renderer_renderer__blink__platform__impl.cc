@@ -1,6 +1,6 @@
---- content/renderer/renderer_blink_platform_impl.cc.orig	2017-03-09 20:04:32 UTC
-+++ content/renderer/renderer_blink_platform_impl.cc
-@@ -111,7 +111,7 @@
+--- content/renderer/renderer_blink_platform_impl.cc.orig	2017-12-15 02:04:18.000000000 +0100
++++ content/renderer/renderer_blink_platform_impl.cc	2017-12-31 05:15:48.537395000 +0100
+@@ -124,7 +124,7 @@
  
  #if defined(OS_POSIX)
  #include "base/file_descriptor_posix.h"
@@ -9,48 +9,48 @@
  #include <map>
  #include <string>
  
-@@ -204,7 +204,7 @@ class RendererBlinkPlatformImpl::FileUti
-   scoped_refptr<ThreadSafeSender> thread_safe_sender_;
+@@ -225,7 +225,7 @@
+   scoped_refptr<mojom::ThreadSafeFileUtilitiesHostPtr> file_utilities_host_;
  };
  
--#if !defined(OS_ANDROID) && !defined(OS_WIN)
-+#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_BSD)
+-#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_FUCHSIA)
++#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_FUCHSIA) && !defined(OS_BSD)
  class RendererBlinkPlatformImpl::SandboxSupport
      : public blink::WebSandboxSupport {
   public:
-@@ -250,7 +250,7 @@ RendererBlinkPlatformImpl::RendererBlink
-       renderer_scheduler_(renderer_scheduler),
-       blink_interface_provider_(
-           new BlinkInterfaceProviderImpl(remote_interfaces)) {
--#if !defined(OS_ANDROID) && !defined(OS_WIN)
-+#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_BSD)
+@@ -267,7 +267,7 @@
+       default_task_runner_(renderer_scheduler->DefaultTaskRunner()),
+       web_scrollbar_behavior_(new WebScrollbarBehaviorImpl),
+       renderer_scheduler_(renderer_scheduler) {
+-#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_FUCHSIA)
++#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_FUCHSIA) && !defined(OS_BSD)
    if (g_sandbox_enabled && sandboxEnabled()) {
      sandbox_support_.reset(new RendererBlinkPlatformImpl::SandboxSupport);
    } else {
-@@ -286,7 +286,7 @@ RendererBlinkPlatformImpl::~RendererBlin
+@@ -316,7 +316,7 @@
  }
  
  void RendererBlinkPlatformImpl::Shutdown() {
--#if !defined(OS_ANDROID) && !defined(OS_WIN)
-+#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_BSD)
-   // SandboxSupport contains a map of WebFontFamily objects, which hold
-   // WebCStrings, which become invalidated when blink is shut down. Hence, we
-   // need to clear that map now, just before blink::shutdown() is called.
-@@ -334,7 +334,7 @@ blink::WebFileUtilities* RendererBlinkPl
+-#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_FUCHSIA)
++#if !defined(OS_ANDROID) && !defined(OS_WIN) && !defined(OS_FUCHSIA) && !defined(OS_BSD)
+   // SandboxSupport contains a map of WebFallbackFont objects, which hold
+   // WebStrings and WebVectors, which become invalidated when blink is shut
+   // down. Hence, we need to clear that map now, just before blink::shutdown()
+@@ -417,7 +417,7 @@
  }
  
- blink::WebSandboxSupport* RendererBlinkPlatformImpl::sandboxSupport() {
--#if defined(OS_ANDROID) || defined(OS_WIN)
-+#if defined(OS_ANDROID) || defined(OS_WIN) || defined(OS_BSD)
+ blink::WebSandboxSupport* RendererBlinkPlatformImpl::GetSandboxSupport() {
+-#if defined(OS_ANDROID) || defined(OS_WIN) || defined(OS_FUCHSIA)
++#if defined(OS_ANDROID) || defined(OS_WIN) || defined(OS_FUCHSIA) || defined(OS_BSD)
    // These platforms do not require sandbox support.
    return NULL;
  #else
-@@ -542,7 +542,7 @@ bool RendererBlinkPlatformImpl::SandboxS
+@@ -610,7 +610,7 @@
    return FontLoader::CGFontRefFromBuffer(font_data, font_data_size, out);
  }
  
--#elif defined(OS_POSIX) && !defined(OS_ANDROID)
-+#elif defined(OS_POSIX) && !defined(OS_ANDROID) && !defined(OS_BSD)
+-#elif defined(OS_POSIX) && !defined(OS_ANDROID) && !defined(OS_FUCHSIA)
++#elif defined(OS_POSIX) && !defined(OS_ANDROID) && !defined(OS_FUCHSIA) && !defined(OS_BSD)
  
- void RendererBlinkPlatformImpl::SandboxSupport::getFallbackFontForCharacter(
+ void RendererBlinkPlatformImpl::SandboxSupport::GetFallbackFontForCharacter(
      blink::WebUChar32 character,

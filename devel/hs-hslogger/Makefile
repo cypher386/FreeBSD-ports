@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	hslogger
-PORTVERSION=	1.2.9
+PORTVERSION=	1.2.10
+PORTREVISION=	2
 CATEGORIES=	devel haskell
 
 MAINTAINER=	haskell@FreeBSD.org

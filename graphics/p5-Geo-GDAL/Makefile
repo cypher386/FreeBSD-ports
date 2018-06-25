@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	Geo-GDAL
-PORTVERSION=	2.1.3
+PORTVERSION=	2.2.4
 CATEGORIES=	graphics perl5
-MASTER_SITES=	http://download.osgeo.org/gdal/${PORTVERSION}/ \
+MASTER_SITES=	https://download.osgeo.org/gdal/${PORTVERSION}/ \
 		ftp://ftp.remotesensing.org/pub/gdal/${PORTVERSION}/ \
 		LOCAL/sunpoet
 PKGNAMEPREFIX=	p5-
@@ -24,8 +24,8 @@ USES=		perl5 tar:xz
 WRKSRC_SUBDIR=	swig/perl
 
 post-patch:
-	@${RM} ${WRKSRC}/../../GDALmake.opt.in
-	@${REINPLACE_CMD} -e 's| install| pure_install|' ${WRKSRC}/${MAKEFILE}
+	@${LN} -s ${LOCALBASE}/bin/gdal-config ${WRKSRC}/../../apps/gdal-config
+	@${REINPLACE_CMD} -e 's| INSTALL_BASE=.*||; s| install| pure_install|' ${WRKSRC}/Makefile
 	@${REINPLACE_CMD} -e 's|(const char \*)""|(char \*)""|' ${WRKSRC}/gdal_wrap.cpp ${WRKSRC}/ogr_wrap.cpp
 
 post-install:

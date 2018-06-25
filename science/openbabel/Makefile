@@ -2,43 +2,47 @@
 # $FreeBSD$
 
 PORTNAME=	openbabel
-PORTVERSION=	2.3.2
-PORTREVISION=	2
+PORTVERSION=	2.4.1
+PORTREVISION=	1
 CATEGORIES=	science
 MASTER_SITES=	SF
 
-MAINTAINER=	ports@FreeBSD.org
-COMMENT=	Chemistry file translation program
+MAINTAINER=	yuri@FreeBSD.org
+COMMENT=	Chemical toolbox designed to speak the many languages of chemical data
 
-BROKEN_powerpc64=	Does not build
+LICENSE=	GPLv2+
+LICENSE_FILE=	${WRKSRC}/COPYING
 
-BUILD_DEPENDS=	${LOCALBASE}/include/eigen3/Eigen/Eigen:math/eigen3
+BROKEN_powerpc64=	Does not build: relocation truncated to fit: R_PPC64_TOC16_DS
 
 CONFLICTS_INSTALL=	babel-*
 
+USES=		cmake:outsource eigen:3
 USE_CXXSTD=	gnu++98
 USE_GNOME=	libxml2
-USES=		cmake:outsource
-CMAKE_ARGS=	-DBUILD_GUI=off
 USE_LDCONFIG=	yes
 
 PLIST_SUB=	VERSION="${PORTVERSION}"
 
-OPTIONS_DEFINE=	CAIRO PYTHON
-OPTIONS_DEFAULT=	PYTHON
+OPTIONS_DEFINE=	CAIRO PYTHON GUI
+OPTIONS_DEFAULT=	PYTHON GUI
 OPTIONS_SUB=	yes
 
 CAIRO_DESC=	PNG support via cairo library
-CAIRO_LIB_DEPENDS=	libcairo.so:graphics/cairo
 CAIRO_USES=	pkgconfig
+CAIRO_USE=	GNOME=cairo
 
 PYTHON_USES=	python
-PYTHON_CMAKE_ON=	-DPYTHON_BINDINGS=on
+PYTHON_CMAKE_BOOL=	PYTHON_BINDINGS
+
+GUI_CMAKE_BOOL=	BUILD_GUI
+GUI_CMAKE_ON=	-DwxWidgets_CONFIG_EXECUTABLE:STRING=${WX_CONFIG}
+GUI_USE=	WX=3.0
 
 post-patch:
 	${REINPLACE_CMD} -e '/pkgconfig/s,$${LIB_INSTALL_DIR},libdata,' \
 		${WRKSRC}/CMakeLists.txt
-	${REINPLACE_CMD} -e 's,share/man,man,' \
+	${REINPLACE_CMD} -e 's,man/man1,../man/man1,' \
 		${WRKSRC}/doc/CMakeLists.txt
 
 post-patch-CAIRO-off:

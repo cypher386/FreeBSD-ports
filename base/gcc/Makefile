@@ -1,15 +1,16 @@
 # $FreeBSD$
 
 PORTNAME=	gcc
-PORTVERSION=	5.4.0
-CATEGORIES=	devel
+PORTVERSION=	6.4.0
+CATEGORIES=	base
 MASTER_SITES=	GCC/releases/gcc-${DISTVERSION} \
+		http://www.mpfr.org/mpfr-3.1.6/:mpfr \
 		http://www.mpfr.org/mpfr-current/:mpfr \
 		GNU/gmp:gmp \
-		http://www.multiprecision.org/mpc/download/:mpc
+		https://ftp.gnu.org/gnu/mpc/:mpc
 DISTFILES=	${PORTNAME}-${PORTVERSION}${EXTRACT_SUFX} \
-		mpfr-3.1.4.tar.xz:mpfr \
-		gmp-5.1.3.tar.xz:gmp \
+		mpfr-3.1.6.tar.xz:mpfr \
+		gmp-6.1.2.tar.xz:gmp \
 		mpc-1.0.3.tar.gz:mpc
 PKGNAMEPREFIX=	${OPSYS:tl}-
 
@@ -27,43 +28,68 @@ LICENSE_COMB=	multi
 .error Please define CROSS_SYSROOT before building
 .endif
 
-PREFIX=		/usr
-CONFIGURE_ENV=	gcc_gxx_include_dir="/usr/include/c++/v1"
-TARGET_ARCH=	${CROSS_TOOLCHAIN:C,-.*$,,}
-GCC_TARGET=	${TARGET_ARCH}-portbld-${OPSYS:tl}${OSREL}
+GCC_TARGET=	${ARCH}-unknown-${OPSYS:tl}${OSREL}
 
-USES=	gmake libtool tar:bzip2 makeinfo
-PLIST_SUB=	TARGETARCH=${TARGET_ARCH} \
+PREFIX=		/usr
+CONFIGURE_ENV=	NM=/usr/bin/nm \
+		AS_FOR_TARGET=/usr/bin/as \
+		LD_FOR_TARGET=/usr/bin/ld \
+		NM_FOR_TARGET=/usr/bin/nm
+USES=	gmake libtool tar:xz makeinfo
+PLIST_SUB=	TARGETARCH=${ARCH} \
 		OPSYS=${OPSYS:tl} \
 		GCC_TARGET=${GCC_TARGET} \
 		GCC_VERSION=${PORTVERSION}
 
-TARGET_ARCH=	${CROSS_TOOLCHAIN:C,-.*$,,}
 EXTRA_PATCHES+= ${.CURDIR}/../../devel/powerpc64-gcc/files/freebsd-format-extensions
+EXTRA_PATCHES+= ${.CURDIR}/../../devel/powerpc64-gcc/files/patch-gcc-freebsd-mips
 
 GNU_CONFIGURE=	yes
 CONFIGURE_OUTSOURCE=	yes
-CONFIGURE_ARGS+=--target=${GCC_TARGET} --disable-nls \
+CONFIGURE_ARGS+=	\
+		--target=${GCC_TARGET} \
 		--enable-languages=c,c++ \
+		--enable-gnu-indirect-function \
+		--disable-nls \
 		--without-headers \
+		--with-gxx-include-dir=/usr/include/c++/v1/ \
 		--with-build-sysroot=${CROSS_SYSROOT} \
 		-with-pkgversion="GNU Collection for FreeBSD"
 
 ALL_TARGET?=	all-gcc
 INSTALL_TARGET?=	install-gcc
 
+.include <bsd.port.pre.mk>
+
+.if ${ARCH:Mmips*}
+PLIST_SUB+=	MIPS=""
+.else
+PLIST_SUB+=	MIPS="@comment "
+.endif
+.if ${ARCH:Mpowerpc*}
+PLIST_SUB+=	POWERPC=""
+.else
+PLIST_SUB+=	POWERPC="@comment "
+.endif
+
 post-extract:
-	cd ${WRKSRC}; ${LN} -sf ../mpfr-3.1.4 mpfr ; \
-		${LN} -sf ../gmp-5.1.3 gmp ; \
+	cd ${WRKSRC}; ${LN} -sf ../mpfr-3.1.6 mpfr ; \
+		${LN} -sf ../gmp-6.1.2 gmp ; \
 		${LN} -sf ../mpc-1.0.3 mpc
 
 post-patch:
 	@${REINPLACE_CMD} -e '/LIBSTDCXX/ s/stdc\+\+/c\+\+/g ' \
 		${WRKSRC}//gcc/cp/g++spec.c
+	@${REINPLACE_CMD} -e '/LOCAL_INCLUDE_DIR/ d ' \
+		${WRKSRC}//gcc/Makefile.in
 
 post-install:
+	${MV} ${STAGEDIR}/usr/bin/gcov-tool ${STAGEDIR}/usr/bin/${GCC_TARGET}-gcov-tool ; \
 	for tool in cpp gcc g++ gcov; do \
+		${MV} ${STAGEDIR}/usr/bin/$${tool} ${STAGEDIR}/usr/bin/${GCC_TARGET}-$${tool} ; \
 		${LN} -sf ${GCC_TARGET}-$${tool}  ${STAGEDIR}/usr/bin/$${tool} ; \
+		${MV} ${STAGEDIR}/${MANDIR}1/$${tool}.1 ${STAGEDIR}/${MANDIR}1/${GCC_TARGET}-$${tool}.1 ; \
+		${GZIP_CMD} ${STAGEDIR}/${MANDIR}1/${GCC_TARGET}-$${tool}.1 ; \
 		${LN} -sf ${GCC_TARGET}-$${tool}.1.gz ${STAGEDIR}/${MANDIR}1/$${tool}.1.gz ; \
 	done ; \
 	${LN} -sf ${GCC_TARGET}-g++  ${STAGEDIR}/usr/bin/c++ ; \
@@ -71,5 +97,6 @@ post-install:
 	${LN} -sf ${GCC_TARGET}-gcc  ${STAGEDIR}/usr/bin/cc ; \
 	${LN} -sf ${GCC_TARGET}-gcc.1.gz ${STAGEDIR}/${MANDIR}1/cc.1.gz
 	${RM} -r ${STAGEDIR}/usr/share/info
+	${RM} -r ${STAGEDIR}/usr/lib/gcc/${GCC_TARGET}/${PORTVERSION}/include-fixed
 
 .include <bsd.port.mk>

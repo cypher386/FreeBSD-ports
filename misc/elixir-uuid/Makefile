@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	elixir-uuid
-PORTVERSION=	1.1.7
+PORTVERSION=	1.1.8
 DISTVERSIONPREFIX=	v
 CATEGORIES=	misc
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	UUID generator and utilities for Elixir
 
 LICENSE=	APACHE20

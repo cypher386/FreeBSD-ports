@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	earmark
-PORTVERSION=	1.1
+PORTVERSION=	1.2.5
 DISTVERSIONPREFIX=	v
 CATEGORIES=	textproc
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Markdown parser for Elixir
 
 LICENSE=	APACHE20

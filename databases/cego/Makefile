@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	cego
-PORTVERSION=	2.33.4
+PORTVERSION=	2.39.16
 CATEGORIES=	databases
 MASTER_SITES=	http://www.lemke-it.com/
 
@@ -16,13 +16,12 @@ LIB_DEPENDS=	liblfcbase.so:devel/lfcbase \
 RUN_DEPENDS=	${LOCALBASE}/bin/sudo:security/sudo \
 		bash:shells/bash
 
+USES=		libtool localbase ncurses readline shebangfix
+SHEBANG_FILES=	tools/cgbackup tools/cgrecover tools/cgsimload \
+		tools/logManager tools/backupManager
+USE_LDCONFIG=	yes
 GNU_CONFIGURE=	yes
 TEST_TARGET=	check
-
-USE_LDCONFIG=	yes
-
-USES=		libtool localbase ncurses readline shebangfix
-SHEBANG_FILES=	tools/cgbackup tools/cgrecover tools/cgsimload
 
 USERS=		cego
 GROUPS=		cego

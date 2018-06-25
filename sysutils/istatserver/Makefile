@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	istatserver
-PORTVERSION=	3.01
-PORTREVISION=	1
+PORTVERSION=	3.02
 CATEGORIES=	sysutils
 MASTER_SITES=	https://s3.amazonaws.com/bjango/files/istatserverlinux/
 
@@ -15,8 +14,7 @@ LICENSE=	BSD3CLAUSE
 LIB_DEPENDS=	libxml2.so:textproc/libxml2 \
 		libsqlite3.so:databases/sqlite3
 
-BROKEN=		does not build (attempt to chown from do-install)
-
+USES=		ssl
 GNU_CONFIGURE=	yes
 USE_RC_SUBR=	${PORTNAME}
 
@@ -33,9 +31,9 @@ do-install:
 	${INSTALL_DATA} ${WRKSRC}/resource/istatserver_generated.conf \
 	${STAGEDIR}${PREFIX}/etc/istatserver/istatserver_generated.conf.sample
 	${INSTALL_MAN} ${WRKSRC}/resource/istatserver.1 \
-	 		${STAGEDIR}${MANPREFIX}/man/man1
+			${STAGEDIR}${MANPREFIX}/man/man1
 	${INSTALL_MAN} ${WRKSRC}/resource/istatserver.conf.5 \
-	 		${STAGEDIR}${MANPREFIX}/man/man5
+			${STAGEDIR}${MANPREFIX}/man/man5
 	@${ECHO_CMD} '@postexec ${CHOWN} -R ${USERS}:${GROUPS} %D/etc/istatserver' >> ${TMPPLIST}
 
 .include <bsd.port.mk>

@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	postgresql-plruby
-PORTVERSION=	0.5.4
+PORTVERSION=	0.5.7
 PORTREVISION=	2
 CATEGORIES=	databases ruby
 DIST_SUBDIR=	ruby
@@ -10,14 +10,18 @@ DIST_SUBDIR=	ruby
 MAINTAINER=	knu@FreeBSD.org
 COMMENT=	PL/Ruby procedural language for the PostgreSQL database system
 
-USE_GITHUB=	yes
-GH_ACCOUNT=	CraigCottingham
-GH_TAGNAME=	f8d9ced
+LICENSE=	BSD2CLAUSE RUBY
+LICENSE_COMB=	dual
+
+BROKEN_powerpc64=	fails to build: ruby.h:628:35: call to 'ruby_safe_level_2_error' declared with attribute error: $SAFE=2 to 4 are obsolete
 
 USES=		uidfix pgsql
 WANT_PGSQL=	server
 USE_RUBY=	yes
 USE_RUBY_EXTCONF=	yes
+
+USE_GITHUB=	yes
+GH_ACCOUNT=	devrimgunduz
 
 POSTGRESQL_PORT?=	databases/postgresql${PGSQL_VER_NODOT}-server
 PGSQL_PORTDIR?=		${PORTSDIR}/${POSTGRESQL_PORT}
@@ -55,9 +59,5 @@ post-install-DOCS-on:
 	cd ${WRKSRC}/ && ${COPYTREE_SHARE} docs/doc ${STAGEDIR}${RUBY_MODDOCDIR}/ README.markdown && ${INSTALL_DATA} ${DOCS} ${STAGEDIR}${RUBY_MODDOCDIR}/
 	${FIND} -ds ${STAGEDIR}${RUBY_MODDOCDIR} -type f -print | ${SED} -E -e \
 		's,^${STAGEDIR}${PREFIX}/?,,' >> ${TMPPLIST}
-
-BROKEN_RUBY22=	yes
-BROKEN_RUBY23=	yes
-BROKEN_RUBY24=	yes
 
 .include <bsd.port.mk>

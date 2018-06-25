@@ -1,2 +1,3 @@
-SHA256 (cabal/pandoc-types-1.12.4.5.tar.gz) = 87a1db206be3eccd2e66518363340e90e7592d8e82e2a5f006620cd3e1ac877b
-SIZE (cabal/pandoc-types-1.12.4.5.tar.gz) = 13341
+TIMESTAMP = 1524405363
+SHA256 (cabal/pandoc-types-1.17.4.2.tar.gz) = 57e15e0a8c74f1acc96259d24eb77a6febbc182a1fd8092af8c431e7a3263eca
+SIZE (cabal/pandoc-types-1.17.4.2.tar.gz) = 24035

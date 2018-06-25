@@ -1,3 +1,3 @@
-TIMESTAMP = 1481659324
-SHA256 (wayland-1.12.0.tar.xz) = d6b4135cba0188abcb7275513c72dede751d6194f6edc5b82183a3ba8b821ab1
-SIZE (wayland-1.12.0.tar.xz) = 379520
+TIMESTAMP = 1507715269
+SHA256 (wayland-1.14.0.tar.xz) = ed80cabc0961a759a42092e2c39aabfc1ec9a13c86c98bbe2b812f008da27ab8
+SIZE (wayland-1.14.0.tar.xz) = 413960

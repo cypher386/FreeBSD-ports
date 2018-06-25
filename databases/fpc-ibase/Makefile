@@ -1,13 +1,13 @@
 # Created by: John Merryweather Cooper
 # $FreeBSD$
 
+PORTREVISION=	1
 CATEGORIES=	databases lang
 PKGNAMESUFFIX=	-ibase
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal interface to interbase
 
-USE_FPC=	yes
+USES=		fpc
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc
 WRKUNITDIR=	${FPCSRCDIR}/packages/${PKGNAMESUFFIX:S/-//}

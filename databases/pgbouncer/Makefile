@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	pgbouncer
-PORTVERSION=	1.7.2
-PORTREVISION=	2
+PORTVERSION=	1.8.1
 CATEGORIES=	databases
 MASTER_SITES=	https://pgbouncer.github.io/downloads/files/${PORTVERSION}/ \
 		http://pgbouncer.github.io/downloads/files/${PORTVERSION}/
@@ -12,6 +11,9 @@ MAINTAINER=	m.tsatsenko@gmail.com
 COMMENT=	Lightweight connection pooler for PostgreSQL
 
 LICENSE=	BSD2CLAUSE
+
+BROKEN_SSL=	openssl-devel
+BROKEN_SSL_REASON_openssl-devel=	variable has incomplete type 'X509_STORE_CTX' (aka 'struct x509_store_ctx_st')
 
 LIB_DEPENDS=	libevent.so:devel/libevent
 BUILD_DEPENDS+=	${LOCALBASE}/bin/gsed:textproc/gsed
@@ -25,6 +27,10 @@ USE_RC_SUBR=	pgbouncer
 
 GNU_CONFIGURE=	yes
 USES=		gmake ssl
+
+OPTIONS_DEFINE=	CARES
+CARES_LIB_DEPENDS=	libcares.so:dns/c-ares
+CARES_CONFIGURE_WITH=	cares
 
 CONFIGURE_ARGS=	--with-libevent=${LOCALBASE} --enable-evdns
 CONFIGURE_ENV+=	PTHREAD_LIBS="-lpthread"

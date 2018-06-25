@@ -50,17 +50,15 @@ TITLE?=		My CVS Repository
 .if exists(${PREFIX}/www/cgi-bin)
 DIRPREFIX=	www
 .elif exists(${PREFIX}/www/apache24/cgi-bin)
-DIRPREFIX=      www/apache24
-.elif exists(${PREFIX}/www/apache22/cgi-bin)
-DIRPREFIX=	www/apache22
+DIRPREFIX=	www/apache24
 .elif exists(${PREFIX}/apache/cgi-bin)
 DIRPREFIX=	apache
 .else
 DIRPREFIX=	share/apache
 .endif
-CGIDIR?=        ${DIRPREFIX}/cgi-bin
-ICONSDIR?=      ${DIRPREFIX}/icons
-CSSDIR?=        ${DIRPREFIX}/data/css
+CGIDIR?=	${DIRPREFIX}/cgi-bin
+ICONSDIR?=	${DIRPREFIX}/icons
+CSSDIR?=	${DIRPREFIX}/data/css
 
 CONFFILES=	cvsweb.conf \
 		cvsweb.conf-freebsd \
@@ -68,7 +66,7 @@ CONFFILES=	cvsweb.conf \
 		cvsweb.conf-netbsd \
 		cvsweb.conf-ruby
 
-PLIST_SUB=	CGIDIR="${CGIDIR}" ICONSDIR="${ICONSDIR}" CSSDIR="${CSSDIR}" \
+PLIST_SUB+=	CGIDIR="${CGIDIR}" ICONSDIR="${ICONSDIR}" CSSDIR="${CSSDIR}" \
 		DIRPREFIX="${DIRPREFIX}"
 
 SUB_FILES=	pkg-message

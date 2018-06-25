@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	decimal
-PORTVERSION=	1.3.1
+PORTVERSION=	1.4.1
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Arbitrary precision decimal arithmetic for Elixir
 
 LICENSE=	APACHE20

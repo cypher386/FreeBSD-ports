@@ -2,6 +2,7 @@
 
 PORTNAME=	icedtea-web
 PORTVERSION=	1.6.2
+PORTREVISION=	4
 CATEGORIES=	java www
 MASTER_SITES=	http://icedtea.wildebeest.org/download/source/ \
 		http://icedtea.classpath.org/download/source/
@@ -11,6 +12,7 @@ COMMENT=	Free Java plug-in and Java Web Start for OpenJDK
 
 LICENSE=	GPLv2
 
+BROKEN=		Does not configure: "Package 'mozilla-plugin', required by 'virtual:world', not found" 
 BUILD_DEPENDS=	zip:archivers/zip \
 		bash:shells/bash \
 		gsed:textproc/gsed
@@ -27,8 +29,6 @@ USE_XORG=	x11
 USES=		desktop-file-utils gmake perl5 pkgconfig shebangfix
 SHEBANG_FILES=	jrunscript.in launcher/launchers.in
 
-WANT_GNOME=	yes
-
 CONFIGURE_ARGS=		--with-hamcrest="${HAMCREST_JAR}"
 CONFIGURE_ARGS+=	--with-jdk-home="${JAVA_HOME}"
 CONFIGURE_ARGS+=	--with-jre-home="${JAVA_HOME}/jre"
@@ -43,11 +43,9 @@ CONFIGURE_SHELL=	${bash_CMD}
 
 TEST_TARGET=	check
 
-OPTIONS_DEFINE=	DOCS PLUGIN RHINO TAGSOUP
-OPTIONS_DEFAULT=PLUGIN
+OPTIONS_DEFINE=	DOCS RHINO TAGSOUP
 OPTIONS_SUB=	yes
 
-PLUGIN_DESC=	Enable the browser plug-in
 RHINO_DESC=	Add support for Proxy Auto Config files
 TAGSOUP_DESC=	Enable cleaning up of malformed JNLP files
 
@@ -64,14 +62,6 @@ TAGSOUP_RUN_DEPENDS=	${TAGSOUP_BUILD_DEPENDS}
 TAGSOUP_VARS=		TAGSOUP_JAR="${JAVALIBDIR}/tagsoup.jar"
 TAGSOUP_VARS_OFF=	TAGSOUP_JAR=no
 
-PLUGIN_CONFIGURE_ENABLE=plugin
-PLUGIN_PORTDOCS=	plugin
-PLUGIN_TEST_TARGET=	plugin-tests
-PLUGIN_USE=		GNOME=glib20
-PLUGIN_USES=		gecko webplugin:native
-PLUGIN_VARS=		WEBPLUGIN_DIR=${PREFIX}/lib
-PLUGIN_VARS+=		WEBPLUGIN_FILES=IcedTeaPlugin.so
-
 HAMCREST_JAR=	${JAVALIBDIR}/hamcrest.jar
 JUNIT_JAR=	${JAVALIBDIR}/junit.jar
 
@@ -83,7 +73,9 @@ pre-extract:
 	@${ECHO_MSG} "IMPORTANT: To build IcedTea-Web ${PORTVERSION}, you have to turn on 'ICEDTEA' option"
 	@${ECHO_MSG} "for ${JAVA_PORT} (default).  Otherwise, it will neither build nor work."
 	@${ECHO_MSG}
+.  if !(defined(PACKAGE_BUILDING) || defined(BATCH))
 	@sleep 5
+.  endif
 .endif
 
 post-patch:

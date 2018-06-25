@@ -12,6 +12,8 @@ COMMENT=	Mathematics library with many different functions
 
 LICENSE=	LGPL20
 
+BROKEN_aarch64=		fails to link: can't create dynamic relocation R_AARCH64_ADR_PREL_PG_HI21 against symbol: bias in readonly segment; recompile object files with -fPIC
+
 USE_LDCONFIG=	yes
 
 PORTDOCS=	*
@@ -20,7 +22,7 @@ SRC_DIRS=	cfit complex fft geom intg matrix roots sfunc simu sort statf \
 
 .include <bsd.port.pre.mk>
 
-.if ${ARCH} == "amd64" || ${ARCH} == "ia64"
+.if ${ARCH} == "amd64"
 COPT=		-fPIC
 .endif
 
@@ -44,11 +46,11 @@ do-build:
 		${CC} -shared -Wl,-soname=libccm.so.1 -o libccm.so.1 *.o)
 
 do-install:
-	@${INSTALL_DATA} ${WRKSRC}/ccmath.h ${STAGEDIR}${PREFIX}/include
-	@${INSTALL_DATA} ${WRKSRC}/tmp/libccm.a ${STAGEDIR}${PREFIX}/lib
-	@${INSTALL_LIB} ${WRKSRC}/tmp/libccm.so.1 ${STAGEDIR}${PREFIX}/lib
+	${INSTALL_DATA} ${WRKSRC}/ccmath.h ${STAGEDIR}${PREFIX}/include
+	${INSTALL_DATA} ${WRKSRC}/tmp/libccm.a ${STAGEDIR}${PREFIX}/lib
+	${INSTALL_LIB} ${WRKSRC}/tmp/libccm.so.1 ${STAGEDIR}${PREFIX}/lib
 	@${LN} -s libccm.so.1 ${STAGEDIR}${PREFIX}/lib/libccm.so
 	@${MKDIR} ${STAGEDIR}${PREFIX}/share/doc/ccmath
-	@${INSTALL_DATA} ${WRKSRC}/manual/* ${STAGEDIR}${PREFIX}/share/doc/ccmath
+	${INSTALL_DATA} ${WRKSRC}/manual/* ${STAGEDIR}${PREFIX}/share/doc/ccmath
 
 .include <bsd.port.post.mk>

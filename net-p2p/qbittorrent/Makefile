@@ -2,73 +2,62 @@
 # $FreeBSD$
 
 PORTNAME=	qbittorrent
-PORTVERSION=	3.3.11
+DISTVERSION=	4.1.1
 PORTREVISION=	1
 CATEGORIES=	net-p2p ipv6
 MASTER_SITES=	SF/${PORTNAME}/${PORTNAME}/${PORTNAME}-${PORTVERSION}
 
-MAINTAINER=	yuri@rawbw.com
-COMMENT?=	Bittorrent client using Qt4/5 and libtorrent-rasterbar
+MAINTAINER=	yuri@FreeBSD.org
+COMMENT=	Bittorrent client using Qt4/5 and libtorrent-rasterbar
 
 LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+BROKEN_FreeBSD_10=	error: no matching constructor for initialization of 'const QString'
+
 LIB_DEPENDS=	libtorrent-rasterbar.so:net-p2p/libtorrent-rasterbar \
 		libboost_system.so:devel/boost-libs
 
-USES=		compiler:c++11-lib execinfo pkgconfig tar:xz
-QT4_USE=	QT4=corelib,network,xml,qmake_build,linguisttools_build,moc_build,rcc_build,uic_build
-QT5_USE=	QT5=core,network,xml,qmake_build,buildtools_build,linguisttools_build
-QT_NONSTANDARD=	yes
-DESTDIRNAME=	INSTALL_ROOT
-GNU_CONFIGURE=	yes
+FLAVORS=	default nox
+FLAVOR?=	${FLAVORS:[1]}
+default_LIB_DEPENDS=	libGeoIP.so:net/GeoIP
+nox_PKGNAMESUFFIX=	-nox
+nox_PLIST=		${NONEXISTENT}
 
-PORTDOCS=	AUTHORS Changelog README.md
+USES=			compiler:c++11-lib pkgconfig tar:xz
+GNU_CONFIGURE=		yes
+USE_QT5=		core network xml buildtools_build linguisttools_build qmake_build
+CONFIGURE_ARGS=		CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}"
+QT_NONSTANDARD=		yes
+DESTDIRNAME=		INSTALL_ROOT
 
-.if !defined(SLAVE_PORT) || ${SLAVE_PORT:tl} == "no"
-WITH_GUI:=	yes
-.else
-WITH_GUI:=	no
+.if ${FLAVOR} == default
+USES+=			desktop-file-utils
+USE_QT5+=		concurrent gui svg widgets
+USE_GL=			gl
+.endif
+
+.if ${FLAVOR} == nox
+SUFFIX=			-nox
+COMMENT+=		(web UI version)
+CONFIGURE_ARGS+=	--disable-gui
+PLIST_FILES=		bin/qbittorrent${SUFFIX} \
+			man/man1/qbittorrent${SUFFIX}.1.gz
 .endif
 
 OPTIONS_DEFINE=		DBUS DEBUG DOCS
-OPTIONS_SINGLE=		QT
-OPTIONS_SINGLE_QT=	QT4 QT5
-OPTIONS_DEFAULT=	QT5
-OPTION_QT=		${SELECTED_OPTIONS:MQT*}
+OPTIONS_DEFAULT=	DBUS
 
 DEBUG_CONFIGURE_ENABLE=	debug
 DBUS_CONFIGURE_ENABLE=	qt-dbus
-QT4_CONFIGURE_ON=	--with-qt4
+DBUS_USE=		qt5=dbus
 
-.if ${WITH_GUI} == "yes"
-LIB_DEPENDS+=		libGeoIP.so:net/GeoIP
-USES+=			desktop-file-utils
-QT4_USE+=		QT4=gui
-QT5_USE+=		QT5=concurrent,gui,widgets GL=gl
-OPTIONS_DEFAULT+=	DBUS
-.else
-CONFIGURE_ARGS+=	--disable-gui
-.endif
-
-.include <bsd.port.options.mk>
-
-.if ${PORT_OPTIONS:MDBUS}
-USE_${OPTION_QT}+=	dbus
-.endif
-
-CONFIGURE_ARGS+=	CFLAGS="${CFLAGS}" CXXFLAGS="${CXXFLAGS}"
+PORTDOCS=		AUTHORS Changelog README.md
 
 post-install:
-.if ${WITH_GUI} == "yes"
-	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/qbittorrent
-	${INSTALL_MAN} ${WRKSRC}/doc/qbittorrent.1 \
+	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/qbittorrent${SUFFIX}
+	${INSTALL_MAN} ${WRKSRC}/doc/qbittorrent${SUFFIX}.1 \
 		${STAGEDIR}${MAN1PREFIX}/man/man1/
-.else
-	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/qbittorrent-nox
-	${INSTALL_MAN} ${WRKSRC}/doc/qbittorrent-nox.1 \
-		${STAGEDIR}${MAN1PREFIX}/man/man1/
-.endif
 	@${RM} -r ${STAGEDIR}${PREFIX}/share/man
 
 post-install-DOCS-on:

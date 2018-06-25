@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	glib
-PORTVERSION=	2.50.2
+PORTVERSION=	2.50.3
+PORTREVISION=	3
 PORTEPOCH=	1
 CATEGORIES=	devel
 MASTER_SITES=	GNOME
@@ -25,8 +26,8 @@ GNU_CONFIGURE=	yes
 USE_LDCONFIG=	yes
 # iconv:wchar_t - our iconv in base doesn't support utf-8 -> wchar_t (boooo)
 # (wchar_t is used by glibmm, rawtherapee triggered this)
-USES+=		gettext gmake gnome iconv:wchar_t libtool localbase pathfix perl5 \
-		pkgconfig python shebangfix
+USES+=		compiler:c11 gettext gmake gnome iconv:wchar_t libtool \
+		localbase pathfix perl5 pkgconfig python shebangfix
 USE_PYTHON=	py3kplist
 CONFIGURE_ARGS=	--disable-gtk-doc --with-html-dir=${PREFIX}/share/doc \
 		--disable-man --without-xml-catalog \
@@ -38,7 +39,7 @@ INSTALL_TARGET=	install-strip
 
 SHEBANG_FILES=	*/*.pl
 
-LIBVERSION=	0.5000.2
+LIBVERSION=	0.5000.3
 PLIST_SUB+=	LIBVERSION=${LIBVERSION}
 
 glib_MAN=	gtester.1 gtester-report.1 glib-gettextize.1
@@ -47,7 +48,8 @@ gio_MAN=	gdbus.1 gsettings.1 gio-querymodules.1 \
 		glib-compile-resources.1 gresource.1 gdbus-codegen.1
 gobject_MAN=	glib-genmarshal.1 glib-mkenums.1 gobject-query.1
 
-OPTIONS_DEFINE=	COLLATION_FIX DEBUG
+OPTIONS_DEFINE=	COLLATION_FIX DEBUG NLS
+OPTIONS_SUB=	yes
 # libc collation was fixed by https://svnweb.freebsd.org/changeset/base/290494
 COLLATION_FIX_DESC=	Use ICU for UTF-8 string collation (if libc is broken)
 
@@ -92,9 +94,6 @@ post-patch:
 	@${REINPLACE_CMD} -e 's|/usr/local|${LOCALBASE}|g ; \
 		s|/usr/share/locale/locale|${LOCALBASE}/share/locale/locale|g' \
 			${WRKSRC}/glib/gutils.c
-	@${REINPLACE_CMD} -e 's|/lib/dbus/machine-id|/db/dbus/machine-id|g' \
-		${WRKSRC}/gio/gdbusaddress.c ${WRKSRC}/gio/gdbusprivate.c \
-		${WRKSRC}/po/*.po
 	@${REINPLACE_CMD} -e 's|inotify_support=yes|inotify_support=no| ; \
 		s|-Werror|| ; \
 		s|#define HAVE_SYS_INOTIFY_H 1||' ${WRKSRC}/configure

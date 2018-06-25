@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	gettext
-PORTVERSION=	0.13.1
+PORTVERSION=	0.15.0
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Implementation of gettext for Elixir
 
 LICENSE=	APACHE20

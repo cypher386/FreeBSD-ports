@@ -3,8 +3,9 @@
 
 PORTNAME=	ldns
 PORTVERSION=	1.7.0
+PORTREVISION=	1
 CATEGORIES=	dns
-MASTER_SITES=	http://www.nlnetlabs.nl/downloads/ldns/ \
+MASTER_SITES=	https://www.nlnetlabs.nl/downloads/ldns/ \
 		LOCAL/ehaupt
 
 MAINTAINER=	jaap@NLnetLabs.nl
@@ -15,6 +16,7 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 
 GNU_CONFIGURE=	yes
 USES=		cpe gmake libtool ssl perl5
+USE_PERL5=	build
 CPE_VENDOR=	nlnetlabs
 USE_LDCONFIG=	yes
 
@@ -57,14 +59,16 @@ EXAMPLES_INSTALL_TARGET=	install-examples
 
 .if defined(BUILD_PYLDNS)
 USES+=		python
+USE_PYTHON=	flavors
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 ALL_TARGET=	pyldns
 INSTALL_TARGET=	install-pyldns
 
 CONFIGURE_ARGS+=--with-pyldns
 LIB_DEPENDS+=	libldns.so:dns/ldns
-BUILD_DEPENDS+=	${LOCALBASE}/bin/swig:devel/swig13
+BUILD_DEPENDS+=	swig3.0:devel/swig30
 CFLAGS+=	-I${OPENSSLINC}
+BINARY_ALIAS=	swig=swig3.0
 
 post-patch:
 	@${REINPLACE_CMD} \

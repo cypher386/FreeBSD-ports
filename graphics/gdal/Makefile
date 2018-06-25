@@ -2,10 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	gdal
-PORTVERSION=	2.1.3
-PORTREVISION=	1
+PORTVERSION=	2.2.4
 CATEGORIES=	graphics geography
-MASTER_SITES=	http://download.osgeo.org/gdal/${PORTVERSION}/ \
+MASTER_SITES=	https://download.osgeo.org/gdal/${PORTVERSION}/ \
 		ftp://ftp.remotesensing.org/pub/gdal/${PORTVERSION}/ \
 		LOCAL/sunpoet
 
@@ -23,8 +22,8 @@ LIB_DEPENDS=	libgeotiff.so:graphics/libgeotiff \
 		libtiff.so:graphics/tiff
 
 OPTIONS_DEFINE=	ARMADILLO CFITSIO CURL ECW EXPAT FREEXL GEOS GTA HDF5 JASPER \
-		KML LIBXML2 MYSQL NETCDF ODBC OPENJPEG PCRE PGSQL SPATIALITE \
-		SQLITE WEBP XERCES
+		KML LIBXML2 MYSQL NETCDF ODBC OPENJPEG PCRE PGSQL SFCGAL \
+		SPATIALITE SQLITE WEBP XERCES
 OPTIONS_DEFAULT=JASPER
 OPTIONS_RADIO=	PDF
 OPTIONS_RADIO_PDF=	PODOFO POPPLER
@@ -54,8 +53,7 @@ MAKEFILE=	GNUmakefile
 USE_LDCONFIG=	yes
 USES=		gmake iconv jpeg localbase tar:xz
 
-PLIST_SUB=	MAJOR_VER=${PORTVERSION:R:R} PORTVERSION=${PORTVERSION}
-PORTDATA=	*
+PLIST_SUB=	PORTVERSION=${PORTVERSION}
 
 SLAVEDIRS=	graphics/p5-Geo-GDAL graphics/php-gdal graphics/py-gdal
 
@@ -88,7 +86,7 @@ LIBXML2_CONFIGURE_ON=	--with-xml2=${LOCALBASE}/bin/xml2-config
 LIBXML2_LIB_DEPENDS=	libxml2.so:textproc/libxml2
 MYSQL_CONFIGURE_OFF=	--with-mysql=no
 MYSQL_CONFIGURE_ON=	--with-mysql=${LOCALBASE}/bin/mysql_config
-MYSQL_USE=		MYSQL=yes
+MYSQL_USES=		mysql
 NETCDF_CONFIGURE_WITH=	netcdf
 NETCDF_LIB_DEPENDS=	libnetcdf.so:science/netcdf
 ODBC_CONFIGURE_WITH=	odbc
@@ -104,6 +102,9 @@ PODOFO_CONFIGURE_WITH=	podofo
 PODOFO_LIB_DEPENDS=	libpodofo.so:graphics/podofo
 POPPLER_CONFIGURE_WITH=	poppler=${LOCALBASE}
 POPPLER_LIB_DEPENDS=	libpoppler.so:graphics/poppler
+SFCGAL_CONFIGURE_OFF=	--with-sfcgal=no
+SFCGAL_CONFIGURE_ON=	--with-sfcgal=${LOCALBASE}/bin/sfcgal-config
+SFCGAL_LIB_DEPENDS=	libSFCGAL.so:databases/sfcgal
 SPATIALITE_CONFIGURE_WITH=	spatialite
 SPATIALITE_LIB_DEPENDS=	libspatialite.so:databases/spatialite
 SQLITE_CONFIGURE_WITH=	sqlite3
@@ -114,7 +115,8 @@ XERCES_CONFIGURE_WITH=	xerces
 XERCES_LIB_DEPENDS=	libxerces-c.so:textproc/xerces-c3
 
 post-patch:
-	@${REINPLACE_CMD} -e 's|$$(INST_LIB)/pkgconfig|${PREFIX}/libdata/pkgconfig|' ${WRKSRC}/GNUmakefile
+	@${REINPLACE_CMD} -e '/^#GDAL_SLIB_SONAME/ s|^#||' ${WRKSRC}/GDALmake.opt.in
+	@${REINPLACE_CMD} -e 's|$$(INST_LIB)/pkgconfig|${PREFIX}/libdata/pkgconfig|; s| LICENSE.TXT||' ${WRKSRC}/GNUmakefile
 	@${REINPLACE_CMD} -e 's|-lminizip|-lkmlminizip|' ${WRKSRC}/configure
 # Clean up bundled libraries
 	@${RM} -r ${WRKSRC}/frmts/gif/giflib/

@@ -2,10 +2,11 @@
 
 PORTNAME=	msgpack
 PORTVERSION=	0.7.0
+PORTREVISION=	1
 CATEGORIES=	devel
 PKGNAMEPREFIX=	erlang-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	MessagePack (de)serializer for Erlang
 
 LICENSE=	APACHE20

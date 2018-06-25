@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=		Ice
-PORTVERSION=		3.6.3
-PORTREVISION=		2
+PORTVERSION=		3.6.4
 DISTVERSIONPREFIX=	v
 CATEGORIES=		devel
 
@@ -13,6 +12,8 @@ COMMENT=		Modern alternative to object middleware such as CORBA/COM/DCOM/COM+
 LICENSE=		GPLv2
 
 SLAVE_PORT?=		no
+
+MAKE_JOBS_UNSAFE=	yes
 
 .if ${SLAVE_PORT} == "no"
 LIB_DEPENDS=		libexpat.so:textproc/expat2 \
@@ -32,7 +33,7 @@ USES+=			iconv gmake
 
 .if ${PORT_OPTIONS:MTEST} && ${SLAVE_PORT} == "no"
 USES+=			python:build
-BUILD_DEPENDS+=		${PYTHON_PKGNAMEPREFIX}passlib>0:security/py-passlib
+BUILD_DEPENDS+=		${PYTHON_PKGNAMEPREFIX}passlib>0:security/py-passlib@${PY_FLAVOR}
 .endif
 
 USES+=			bdb:5

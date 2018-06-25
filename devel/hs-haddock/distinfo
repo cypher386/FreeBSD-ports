@@ -1,2 +1,3 @@
-SHA256 (cabal/haddock-2.16.1.tar.gz) = 46ecd130cb5ad2b5c7452c843f9b75e976f1416d1cf17e6436d65c2c0bdbd6d6
-SIZE (cabal/haddock-2.16.1.tar.gz) = 216323
+TIMESTAMP = 1524638302
+SHA256 (cabal/haddock-2.19.0.1.tar.gz) = 6769a3fae0a7c2c7ebb41029d4d3c7916eb7d75fe6f307a0f7d00b07814c32bc
+SIZE (cabal/haddock-2.19.0.1.tar.gz) = 276623

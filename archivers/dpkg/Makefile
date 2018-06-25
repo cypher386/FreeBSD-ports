@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	dpkg
-PORTVERSION=	1.18.23
+PORTVERSION=	1.18.24
 CATEGORIES=	archivers sysutils
 MASTER_SITES=	DEBIAN_POOL
 DISTNAME=	dpkg_${PORTVERSION}
@@ -13,7 +13,9 @@ COMMENT=	Debian package maintenance system
 LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-BUILD_DEPENDS=	po4a:textproc/po4a
+BUILD_DEPENDS=	po4a:textproc/po4a \
+		gtar:archivers/gtar \
+		gpatch:devel/patch
 RUN_DEPENDS=	gtar:archivers/gtar \
 		gpatch:devel/patch
 

@@ -3,7 +3,7 @@
 
 PORTNAME=	irssi-xmpp
 PORTVERSION=	0.53
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	irc
 MASTER_SITES=	http://cybione.org/~irssi-xmpp/files/
 
@@ -29,7 +29,7 @@ OPTIONS_DEFINE=	DOCS
 
 post-patch:
 # Try to unbreak parallel builds (-jX)
-	@${REINPLACE_CMD} -E 's|cd (.+) && (\$${MAKE})|\2 -C \1|' \
+	@${REINPLACE_CMD} -E 's|cd (.+) && (\$$\{MAKE})|\2 -C \1|' \
 		${WRKSRC}/Makefile ${WRKSRC}/src/Makefile
 
 post-install:

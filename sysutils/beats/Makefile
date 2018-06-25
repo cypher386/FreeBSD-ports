@@ -2,11 +2,12 @@
 # $FreeBSD$
 
 PORTNAME=	beats
-PORTVERSION=	5.3.0
+PORTVERSION=	6.2.4
+PORTREVISION=	1
 DISTVERSIONPREFIX=v
 CATEGORIES=	sysutils
 
-MAINTAINER=	girgen@FreeBSD.org
+MAINTAINER=	elastic@FreeBSD.org
 COMMENT=	Collect logs locally and send to remote logstash
 
 LICENSE=	APACHE20
@@ -37,33 +38,20 @@ METRICBEAT_VARS=GO_TARGETS+=metricbeat
 HEARTBEAT_DESC=	Heartbeat
 HEARTBEAT_VARS=GO_TARGETS+=heartbeat
 
+MAKE_ENV+=	GOBUILD_FLAGS=""
+
 do-build:
-	@for GO_TARGET in libbeat/dashboards ${GO_TARGETS}; do \
+	@for GO_TARGET in ${GO_TARGETS}; do \
 		cd ${GO_WRKSRC}; ${SETENV} ${MAKE_ENV} ${GO_ENV} ${GMAKE} -C $${GO_TARGET} ;\
 	done
 
-post-stage:
-	for GO_TARGET in ${GO_TARGETS}; do \
-		${MKDIR} ${STAGEDIR}/var/db/beats/$${GO_TARGET} ;\
-	done
-
 do-install:
-	${MKDIR} ${STAGEDIR}${DATADIR}
-	${INSTALL_SCRIPT} \
-		${GO_WRKSRC}/libbeat/scripts/migrate_beat_config_1_x_to_5_0.py \
-		${STAGEDIR}${DATADIR}
-	${INSTALL_PROGRAM} \
-		${GO_WRKSRC}/libbeat/dashboards/import_dashboards \
-		${STAGEDIR}${DATADIR}
 	for GO_TARGET in ${GO_TARGETS}; do \
 		${INSTALL_PROGRAM} ${GO_WRKSRC}/$${GO_TARGET}/$${GO_TARGET} \
 			${STAGEDIR}${PREFIX}/sbin ;\
 		${INSTALL_DATA} ${WRKSRC}/$${GO_TARGET}/$${GO_TARGET}.yml \
 			${STAGEDIR}${PREFIX}/etc/$${GO_TARGET}.yml.sample ;\
-		${INSTALL_DATA} ${WRKSRC}/$${GO_TARGET}/$${GO_TARGET}.template.json \
-			${STAGEDIR}${PREFIX}/etc/$${GO_TARGET}.template.json.sample ;\
-		${INSTALL_DATA} ${WRKSRC}/$${GO_TARGET}/$${GO_TARGET}.template-es2x.json \
-			${STAGEDIR}${PREFIX}/etc/$${GO_TARGET}.template-es2x.json.sample ;\
+		${MKDIR} ${STAGEDIR}/var/db/beats/$${GO_TARGET} ;\
 	done
 
 .include <bsd.port.mk>

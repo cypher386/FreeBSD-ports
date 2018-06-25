@@ -2,12 +2,12 @@
 # $FreeBSD$
 
 PORTNAME=	railties
-PORTVERSION=	5.0.2
+PORTVERSION=	5.1.6
 CATEGORIES=	www rubygems
 MASTER_SITES=	RG
 PKGNAMESUFFIX=	5
 
-MAINTAINER=	ruby@FreeBSD.org
+MAINTAINER=	sunpoet@FreeBSD.org
 COMMENT=	Rails internals bootup, plugins, generators, and rake tasks
 
 LICENSE=	MIT
@@ -19,7 +19,9 @@ RUN_DEPENDS=	rubygem-actionpack5>=${PORTVERSION}:www/rubygem-actionpack5 \
 		rubygem-rake>=0.8.7:devel/rubygem-rake \
 		rubygem-thor>=0.18.1:devel/rubygem-thor
 
-CONFLICTS_INSTALL=	rubygem-railties- rubygem-railties4- rubygem-railties41-
+CONFLICTS_INSTALL=	rubygem-railties4 rubygem-railties50
+
+PORTSCOUT=	limit:^5\.1\.
 
 NO_ARCH=	yes
 USE_RUBY=	yes

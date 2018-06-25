@@ -3,7 +3,7 @@
 
 PORTNAME=	libflame
 DISTVERSION=	r7421
-PORTREVISION=	5
+PORTREVISION=	7
 CATEGORIES=	math
 MASTER_SITES=	http://www.cs.utexas.edu/users/%SUBDIR%/:1,2 LOCAL/bf:3
 MASTER_SITE_SUBDIR=	flame/snapshots/:1 field/docs/:2
@@ -317,7 +317,7 @@ do-install:
 BUILD_DEPENDS +=	${RUN_DEPENDS}
 CONFIGURE_ARGS+=	--enable-verbose-make-output
 
-check regression-test test: build
+do-test:
 	@cd ${WRKSRC}; ${SETENV} ${MAKE_ENV} ${MAKE_CMD} ${_MAKE_JOBS} \
 	${MAKE_ARGS} MK_INCL_DIR_INST_W_ARCH_VERS="${WRKDIR}/include" \
 	install-headers

@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	libslang2
-PORTVERSION=	2.3.1
+PORTVERSION=	2.3.2
 CATEGORIES=	devel
 MASTER_SITES=	http://www.jedsoft.org/releases/slang/
 DISTNAME=	slang-${PORTVERSION}
@@ -41,7 +41,7 @@ PNG_CONFIGURE_WITH=	png
 PNG_LIB_DEPENDS=	libpng.so:graphics/png
 ICONV_USES=		iconv
 ONIG_CONFIGURE_WITH=	onig
-ONIG_LIB_DEPENDS=	libonig.so:devel/oniguruma5
+ONIG_LIB_DEPENDS=	libonig.so:devel/oniguruma
 
 .include <bsd.port.pre.mk>
 

@@ -1,12 +1,14 @@
 # $FreeBSD$
 
 PORTNAME=	zookeeper
-PORTVERSION=	3.4.10
+PORTVERSION=	3.4.12
 CATEGORIES=	devel java
 MASTER_SITES=	APACHE/${PORTNAME}/current
 
 MAINTAINER=	skreuzer@FreeBSD.org
 COMMENT=	Coordination Service for Distributed Applications
+
+LICENSE=	APACHE20
 
 RUN_DEPENDS=	slf4j>=1.7.5:devel/slf4j \
 		netty>=3.5.5:java/netty \
@@ -16,6 +18,8 @@ RUN_DEPENDS=	slf4j>=1.7.5:devel/slf4j \
 
 USERS=	zookeeper
 GROUPS=	zookeeper
+
+ZOOKEEPER_CONFS=	configuration.xsl log4j.properties zoo.cfg
 
 ZOOKEEPER_JAR=	${WRKSRC}/${PORTNAME}-${PORTVERSION}.jar
 
@@ -38,8 +42,7 @@ PLIST_SUB+=	PORTVERSION=${PORTVERSION} \
 NO_BUILD=	yes
 NO_ARCH=	yes
 USE_JAVA=	yes
-JAVA_VERSION=	1.7
-JAVA_VENDOR=	openjdk
+JAVA_VERSION=	1.7+
 JAVA_RUN=	yes
 USE_RC_SUBR=	zookeeper
 
@@ -47,10 +50,13 @@ PORTDOCS=	*
 
 post-extract:
 	@${REINPLACE_CMD} "/dataDir/s|=.*|=${ZOOKEEPER_DBDIR}|" ${WRKDIR}/${DISTNAME}/conf/zoo_sample.cfg
-	@${RM} ${WRKDIR}/${DISTNAME}/conf/zoo_sample.cfg.bak
+	@${MV} ${WRKDIR}/${DISTNAME}/conf/zoo_sample.cfg ${WRKDIR}/${DISTNAME}/conf/zoo.cfg
 
 do-install:
-	${CP} -Rp ${WRKDIR}/${DISTNAME}/conf/ ${STAGEDIR}${ETCDIR}
+	@${MKDIR} ${STAGEDIR}${ETCDIR}
+.for f in ${ZOOKEEPER_CONFS}
+	${INSTALL_DATA} ${WRKDIR}/${DISTNAME}/conf/${f} ${STAGEDIR}${ETCDIR}/${f}.sample
+.endfor
 	${INSTALL_DATA} ${ZOOKEEPER_JAR} ${STAGEDIR}${JAVALIBDIR}
 	(cd ${STAGEDIR}/${JAVAJARDIR} && ${LN} -nfs \
 		${PORTNAME}-${PORTVERSION}.jar ${PORTNAME}.jar)

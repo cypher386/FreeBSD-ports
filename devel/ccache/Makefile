@@ -2,16 +2,17 @@
 # $FreeBSD$
 
 PORTNAME=	ccache
-PORTVERSION=	3.3.4
-PORTREVISION=	3
+PORTVERSION=	3.3.5
+PORTREVISION=	2
 CATEGORIES=	devel
-MASTER_SITES=	http://www.samba.org/ftp/ccache/ \
+MASTER_SITES=	https://www.samba.org/ftp/ccache/ \
 		LOCAL/bdrewery
 
 MAINTAINER=	bdrewery@FreeBSD.org
 COMMENT=	Tool to minimize the compile time of C/C++ programs
 
-LICENSE=	GPLv3
+LICENSE=	GPLv3+
+LICENSE_FILE=	${WRKSRC}/GPL-3.0.txt
 
 CONFLICTS_INSTALL=	ccache-static-[0-9]* ccache-memcached-[0-9]* ccache-memcached-static-[0-9]*
 
@@ -42,6 +43,8 @@ MEMCACHED_USES=			autoreconf pkgconfig
 MEMCACHED_LIB_DEPENDS=		libmemcached.so:databases/libmemcached
 MEMCACHED_LDFLAGS=		-L${LOCALBASE}/lib
 MEMCACHED_CFLAGS=		-I${LOCALBASE}/include
+
+STATIC_CONFIGURE_ENABLE=	static
 
 .if defined(WITH_CCACHE_BUILD) && empty(OPTIONS_SLAVE:MMEMCACHED) && \
     !defined(NO_CCACHE_DEPEND)
@@ -75,11 +78,11 @@ PLIST_SUB+=	CCLINKDIR="${CCLINKDIR}"
 CCACHE_COMPILERS+=	icc icpc
 .endif
 
-GNU_COMPILERS+=		34 42 43 44 45 46 47 48 49 5 6 7
+GNU_COMPILERS+=		34 42 43 44 45 46 47 48 49 5 6 7 8
 CCACHE_COMPILERS+=	cc c++ CC gcc g++ ${GNU_COMPILERS:S|^|gcc|} ${GNU_COMPILERS:S|^|g++|}
 
 .if ${PORT_OPTIONS:MCLANGLINK}
-CLANG_COMPILERS+=	33 34 35 36 37 38 39 40 -devel
+CLANG_COMPILERS+=	33 34 35 36 37 38 39 40 50 60 -devel
 CCACHE_COMPILERS+=	clang clang++ ${CLANG_COMPILERS:S|^|clang|} ${CLANG_COMPILERS:S|^|clang++|}
 .endif
 

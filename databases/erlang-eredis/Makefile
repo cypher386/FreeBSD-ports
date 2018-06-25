@@ -1,13 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	eredis
-PORTVERSION=	1.0.8
+PORTVERSION=	1.1.0
 DISTVERSIONPREFIX=	v
-PORTREVISION=	2
 CATEGORIES=	databases
 PKGNAMEPREFIX=	erlang-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Non-blocking Redis client for Erlang
 
 LICENSE=	MIT

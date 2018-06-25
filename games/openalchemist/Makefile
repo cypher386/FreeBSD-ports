@@ -3,7 +3,7 @@
 
 PORTNAME=	openalchemist
 PORTVERSION=	0.3
-PORTREVISION=	19
+PORTREVISION=	20
 CATEGORIES=	games
 MASTER_SITES=	SF/${PORTNAME}/${PORTNAME}/${PORTNAME}-${PORTVERSION}
 DISTNAME=	${PORTNAME}-${PORTVERSION}-src
@@ -22,12 +22,14 @@ LIB_DEPENDS=	libclanCore.so:devel/clanlib1 \
 CPPFLAGS+=	-I${LOCALBASE}/include
 LDFLAGS+=	-lpthread -L${LOCALBASE}/lib
 GNU_CONFIGURE=	yes
+
+USES=		autoreconf gmake iconv jpeg pkgconfig python:2.7,run shebangfix
+SHEBANG_FILES=	openalchemist-config
+
 USE_GNOME=	pygtk2
 USE_XORG=	xxf86vm xi x11 xmu xext xdamage xfixes xau xdmcp xt sm ice
 USE_GL=		gl glu
 USE_SDL=	sdl gfx
-USES=		autoreconf gmake iconv jpeg pkgconfig shebangfix
-SHEBANG_FILES=	openalchemist-config
 
 PORTDOCS=	AUTHORS ChangeLog README TODO
 

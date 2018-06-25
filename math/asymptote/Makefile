@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	asymptote
-PORTVERSION=	2.37
+PORTVERSION=	2.44
+PORTREVISION=	1
 CATEGORIES=	math
 MASTER_SITES=	SF/${PORTNAME}/${PORTVERSION}
 DISTNAME=	${PORTNAME}-${PORTVERSION}.src
@@ -13,37 +14,43 @@ COMMENT=	Powerful script-based vector graphics language
 LICENSE=	GPLv3 LGPL3
 LICENSE_COMB=	dual
 
-LIB_DEPENDS=	libgc-threaded.so:devel/boehm-gc-threaded \
-		libsigsegv.so:devel/libsigsegv
+ONLY_FOR_ARCHS=	amd64 i386
+
+LIB_DEPENDS=	libsigsegv.so:devel/libsigsegv
 RUN_DEPENDS=	animate:graphics/ImageMagick \
 		gv:print/gv \
-		${PYTHON_PKGNAMEPREFIX}pillow>0:graphics/py-pillow \
-		${PYTHON_PKGNAMEPREFIX}tkinter>0:x11-toolkits/py-tkinter
+		${PYTHON_PKGNAMEPREFIX}pillow>0:graphics/py-pillow@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}tkinter>0:x11-toolkits/py-tkinter@${PY_FLAVOR}
 
-ALL_TARGET=	asy asy-keywords.el
+USES=		compiler:c++14-lang gettext-runtime ghostscript gmake ncurses perl5 python \
+		shebangfix tar:tgz
+SHEBANG_FILES=	GUI/*.py
+USE_GL=		gl glu glut
+USE_PERL5=	build
+USE_TEX=	dvipsk formats
 
-CONFIGURE_ARGS=	--enable-gc=system
 CPPFLAGS+=	-I${LOCALBASE}/include
-
 GNU_CONFIGURE=	yes
-
-INSTALL_TARGET=	install-asy
 
 MAKE_ENV=	ASYMPTOTE_HOME=${WRKDIR} HOME=${WRKDIR}
 MAKE_JOBS_UNSAFE=	yes
 
-ONLY_FOR_ARCHS=	i386 amd64
+ALL_TARGET=	asy asy-keywords.el
+INSTALL_TARGET=	install-asy
 
-USES=		gettext-runtime ghostscript gmake ncurses perl5 python tar:tgz
-USE_GL=	glut
-USE_PERL5=	build
-USE_TEX=	dvipsk formats
+WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}
 
-WRKSRC=	${WRKDIR}/${PORTNAME}-${PORTVERSION}
+OPTIONS_DEFAULT=	FFTW GSL MANPAGES READLINE
+OPTIONS_DEFINE=		BDWGC DOCS EXAMPLES FFTW GSL MANPAGES OFFSCREEN READLINE
 
-# Options
+BDWGC_LIB_DEPENDS=	libgc-threaded.so:devel/boehm-gc-threaded
+BDWGC_DESC=		Enable Boehm-Demers-Weiser garbage collector
+BDWGC_CONFIGURE_ENABLE=	gc=${LOCALBASE}
+
+DOCS_ALL_TARGET=	html
 DOCS_BUILD_DEPENDS=	texi2dvi:print/texinfo
 DOCS_CONFIGURE_WITH=	docdir=${DOCSDIR}
+DOCS_INSTALL_TARGET=	install-html
 
 FFTW_CONFIGURE_ENABLE=	fftw
 FFTW_DESC=	Use FFTW to compute the Discrete Fourier Transform
@@ -53,38 +60,29 @@ GSL_CONFIGURE_ENABLE=	gsl
 GSL_DESC=	Enable GNU Scientific library
 GSL_LIB_DEPENDS=	libgsl.so:math/gsl
 
+MANPAGES_ALL_TARGET=	man
 MANPAGES_BUILD_DEPENDS=	texi2dvi:print/texinfo
+MANPAGES_INFO=	asy-faq
+MANPAGE_INSTALL_TARGET=	install-man
 
 OFFSCREEN_CONFIGURE_ENABLE=	offscreen
 OFFSCREEN_DESC=	Enable offscreen rendering using OSMesa library
 OFFSCREEN_LIB_DEPENDS=	libOSMesa.so:graphics/libosmesa
-OPTIONS_DEFAULT=	FFTW GSL MANPAGES READLINE
-OPTIONS_DEFINE=	DOCS EXAMPLES FFTW GSL MANPAGES OFFSCREEN READLINE
 
 READLINE_CONFIGURE_ENABLE=	readline
-READLINE_DESC=	${LIBEDIT_DESC}
-READLINE_USES=	readline
-
-.include <bsd.port.options.mk>
-
-# Documentation
-.if ${PORT_OPTIONS:MDOCS}
-ALL_TARGET+=	html
-INSTALL_TARGET+=	install-html
-.endif
-
-.if ${PORT_OPTIONS:MMANPAGES}
-INFO=	asy-faq
-ALL_TARGET+=	man
-INSTALL_TARGET+=	install-man
-.endif
+READLINE_USES=	readline:port
 
 post-patch:
 	@${REINPLACE_CMD} 's/-lgc/-lgc-threaded/' ${WRKSRC}/configure
 	@${REINPLACE_CMD} 's,/usr/lib/libgs.so,${LOCALBASE}/lib/libgs.so,' \
 		${WRKSRC}/settings.cc
+	@${REINPLACE_CMD} 's,makeinfo,${LOCALBASE}/bin/makeinfo,' \
+		${WRKSRC}/doc/png/Makefile.in
+
+# Fix the python interpreter in the generated file share/asymptote/GUI/xasyVersion.py:
+	@${REINPLACE_CMD} 's,/usr/bin/env python,${PYTHON_CMD},' ${WRKSRC}/Makefile.in
 
 post-install:
-	${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/asy
+	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/asy
 
 .include <bsd.port.mk>

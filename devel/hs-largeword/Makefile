@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	largeword
-PORTVERSION=	1.2.3
+PORTVERSION=	1.2.5
 PORTREVISION=	2
 CATEGORIES=	devel haskell
 

@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	specinfra
-PORTVERSION=	2.67.7
+PORTVERSION=	2.73.2
+PORTREVISION=	1
 CATEGORIES=	sysutils rubygems
 MASTER_SITES=	RG
 
@@ -13,10 +14,11 @@ LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/LICENSE.txt
 
 RUN_DEPENDS=	rubygem-net-scp>=0:security/rubygem-net-scp \
-		rubygem-net-ssh>=2.7:security/rubygem-net-ssh
+		rubygem-net-ssh4>=2.7:security/rubygem-net-ssh4 \
+		rubygem-net-telnet>=0:security/rubygem-net-telnet
 
 NO_ARCH=	yes
-USE_RUBY=	yes
 USES=		gem
+USE_RUBY=	yes
 
 .include <bsd.port.mk>

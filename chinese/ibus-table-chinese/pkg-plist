@@ -1,7 +1,7 @@
-%%DOCSDIR%%-%%PORTVERSION%%/AUTHORS
-%%DOCSDIR%%-%%PORTVERSION%%/COPYING
-%%DOCSDIR%%-%%PORTVERSION%%/ChangeLog
-%%DOCSDIR%%-%%PORTVERSION%%/README
+%%DOCSDIR%%/AUTHORS
+%%DOCSDIR%%/COPYING
+%%DOCSDIR%%/ChangeLog
+%%DOCSDIR%%/README
 %%DATADIR%%/icons/array30-big.png
 %%DATADIR%%/icons/array30.png
 %%DATADIR%%/icons/cangjie-big.png

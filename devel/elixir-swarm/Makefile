@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	swarm
-DISTVERSION=	3.0.5
+DISTVERSION=	3.3.1
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Clustering, registration, and distribution for Elixir
 
 LICENSE=	MIT

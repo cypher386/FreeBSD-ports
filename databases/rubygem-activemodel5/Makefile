@@ -2,18 +2,20 @@
 # $FreeBSD$
 
 PORTNAME=	activemodel
-PORTVERSION=	5.0.2
+PORTVERSION=	5.1.6
 CATEGORIES=	databases rubygems
 MASTER_SITES=	RG
 PKGNAMESUFFIX=	5
 
-MAINTAINER=	ruby@FreeBSD.org
+MAINTAINER=	sunpoet@FreeBSD.org
 COMMENT=	Toolkit for building modeling frameworks
 
 LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/MIT-LICENSE
 
 RUN_DEPENDS=	rubygem-activesupport5>=${PORTVERSION}:devel/rubygem-activesupport5
+
+PORTSCOUT=	limit:^5\.1\.
 
 NO_ARCH=	yes
 USE_RUBY=	yes

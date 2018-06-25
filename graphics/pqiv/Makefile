@@ -2,13 +2,15 @@
 # $FreeBSD$
 
 PORTNAME=	pqiv
-PORTVERSION=	2.8.3
+PORTVERSION=	2.10.4
 CATEGORIES=	graphics
 
 MAINTAINER=	danilo@FreeBSD.org
 COMMENT=	Pretty Quick Image Viewer
 
 LICENSE=	GPLv2
+
+BROKEN_powerpc64=	fails to compile: pqiv.c:1183: #pragma GCC diagnostic not allowed inside functions
 
 LIB_DEPENDS=	libfontconfig.so:x11-fonts/fontconfig \
 		libfreetype.so:print/freetype2
@@ -21,7 +23,7 @@ OPTIONS_SINGLE=		GTK
 OPTIONS_SINGLE_GTK=	GTK2 GTK3
 
 OPTIONS_GROUP=		BACKENDS
-OPTIONS_GROUP_BACKENDS=	LIBARCHIVE LIBAV PIXBUF POPPLER SPECTRE WAND
+OPTIONS_GROUP_BACKENDS=	LIBARCHIVE LIBAV PIXBUF POPPLER SPECTRE WAND WEBP
 LIBARCHIVE_DESC=	Libarchive formats support
 LIBAV_DESC=		Video support
 SPECTRE_DESC=		PS/EPS support
@@ -50,6 +52,9 @@ SPECTRE_LIB_DEPENDS=	libspectre.so:print/libspectre
 
 WAND_CONFIGURE_WITH=	wand
 WAND_LIB_DEPENDS=	libMagickWand-6.so:graphics/ImageMagick
+
+WEBP_CONFIGURE_WITH=	webp
+WEBP_LIB_DEPENDS=	libwebp.so:graphics/webp
 
 GTK2_CONFIGURE_ON=	--gtk-version=2
 GTK2_USE=		GNOME=gtk20

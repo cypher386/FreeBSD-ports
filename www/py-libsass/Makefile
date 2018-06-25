@@ -2,19 +2,28 @@
 # $FreeBSD$
 
 PORTNAME=	libsass
-PORTVERSION=	0.12.3
+DISTVERSION=	0.14.5
 CATEGORIES=	www python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
-MAINTAINER=	yuri@rawbw.com
+MAINTAINER=	yuri@FreeBSD.org
 COMMENT=	Straightforward binding of libsass for Python
 
 LICENSE=	MIT
+LICENSE_FILE=	${WRKSRC}/LICENSE
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}six>0:devel/py-six
+BROKEN_powerpc64=	fails to compile: cc1plus: error: unrecognized command line option -std=c++0x
 
-USES=		python
-USE_PYTHON=	distutils autoplist
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}six>0:devel/py-six@${PY_FLAVOR}
+LIB_DEPENDS=	libsass.so:textproc/libsass
+
+USES=		localbase python
+USE_PYTHON=	autoplist distutils
+
+MAKE_ENV=	SYSTEM_SASS=1
+
+post-install:
+	@${STRIP_CMD} ${STAGEDIR}${PYTHON_SITELIBDIR}/_sass.so
 
 .include <bsd.port.mk>

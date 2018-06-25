@@ -1,9 +1,7 @@
-# Created by: Jason Bacon <bacon4000@gmail.com>
 # $FreeBSD$
 
 PORTNAME=	slurm
-PORTVERSION=	16.05.9
-PORTREVISION=	1
+DISTVERSION=	17.02.11
 CATEGORIES=	sysutils
 MASTER_SITES=	http://www.schedmd.com/download/latest/ \
 		http://www.schedmd.com/download/archive/ \
@@ -24,17 +22,19 @@ LIB_DEPENDS=	libjson-c.so:devel/json-c \
 USERS=		slurm
 GROUPS=		${USERS}
 
-GNU_CONFIGURE=	yes
+USES=		gmake libtool pkgconfig python:build readline:port shebangfix \
+		ssl tar:bz2
 USE_LDCONFIG=	yes
-USE_RC_SUBR=	slurmctld slurmd
-PLIST_SUB=	PORTVERSION="${PORTVERSION}"
-INSTALL_TARGET=	install-strip
-USES=		gmake libtool pkgconfig python:build readline shebangfix ssl \
-		tar:bz2
 USE_PERL5=	configure
+USE_RC_SUBR=	slurmctld slurmd
+
+GNU_CONFIGURE=	yes
+CONFIGURE_ARGS=	--bindir=${PREFIX}/bin
+INSTALL_TARGET=	install-strip
+PLIST_SUB=	PORTVERSION="${PORTVERSION}"
 SHEBANG_FILES=	doc/html/shtml2html.py doc/man/man2html.py
 
-OPTIONS_DEFINE=	CURL DOCS GTK2 HDF5 HWLOC IPMI MYSQL RRD
+OPTIONS_DEFINE=	CURL DOCS GTK2 HDF5 HWLOC IPMI MYSQL RRD LINUX
 OPTIONS_DEFAULT=HDF5 HWLOC
 OPTIONS_SUB=	yes
 
@@ -42,8 +42,9 @@ CURL_DESC=	Require cURL for elasticsearch plugins
 GTK2_DESC=	Build sview GUI config tool
 HDF5_DESC=	Job profiling using HDF5
 HWLOC_DESC=	Portable hardware locality
-IPMI_DESC=	IPMI engergy consumption accounting
+IPMI_DESC=	IPMI energy consumption accounting
 RRD_DESC=	RRD external sensor data collection
+LINUX_DESC=	Support jobacct_gather/linux (requires linprocfs)
 
 DOCS_BUILD_DEPENDS=	man2html:textproc/man2html
 
@@ -75,6 +76,8 @@ MYSQL_CONFIGURE_OFF=	--with-mysql_config=/nonexistent
 RRD_LIB_DEPENDS=	librrd.so:databases/rrdtool
 RRD_CONFIGURE_WITH=	rrdtool
 
+LINUX_USES=		linux
+
 CFLAGS+=	-I${WRKSRC}/slurm -I${LOCALBASE}/include
 LDFLAGS+=	-L${LOCALBASE}/lib -lsysinfo -lkvm
 
@@ -87,7 +90,7 @@ post-patch:
 		${WRKSRC}/configure
 	@${REINPLACE_CMD} -e 's|/bin/mail|/usr/bin/mail|g' \
 		${WRKSRC}/src/common/read_config.h \
-		${WRKSRC}/contribs/seff/smail.in \
+		${WRKSRC}/contribs/seff/smail \
 		${WRKSRC}/doc/html/configurator.easy.html.in \
 		${WRKSRC}/doc/html/configurator.html.in \
 		${WRKSRC}/contribs/cray/slurm.conf.template \
@@ -100,6 +103,32 @@ post-patch:
 		-e 's|SlurmdSpoolDir=.*|SlurmdSpoolDir=/var/spool/slurmd|' \
 		-e 's|StateSaveLocation=.*|StateSaveLocation=/var/run/slurm|' \
 		${WRKSRC}/etc/slurm.conf.example
+
+post-patch-LINUX-on:
+	@${REINPLACE_CMD} -e 's|"/proc|"/compat/linux/proc|g' \
+		${WRKSRC}/src/slurmd/slurmstepd/req.c \
+		${WRKSRC}/src/slurmd/slurmstepd/pdebug.c \
+		${WRKSRC}/src/slurmd/slurmd/get_mach_stat.c \
+		${WRKSRC}/src/slurmd/slurmd/read_proc.c \
+		${WRKSRC}/src/slurmd/common/xcpuinfo.c \
+		${WRKSRC}/src/slurmd/common/xcgroup.c \
+		${WRKSRC}/src/slurmd/common/set_oomadj.c \
+		${WRKSRC}/src/slurmd/common/proctrack.c \
+		${WRKSRC}/src/common/callerid.c \
+		${WRKSRC}/src/plugins/task/affinity/affinity.c \
+		${WRKSRC}/src/plugins/acct_gather_energy/rapl/acct_gather_energy_rapl.c \
+		${WRKSRC}/src/plugins/jobacct_gather/cgroup/jobacct_gather_cgroup.c \
+		${WRKSRC}/src/plugins/jobacct_gather/common/common_jag.c \
+		${WRKSRC}/src/plugins/jobacct_gather/linux/jobacct_gather_linux.c \
+		${WRKSRC}/src/plugins/switch/cray/scaling.c \
+		${WRKSRC}/src/plugins/proctrack/cray/proctrack_cray.c \
+		${WRKSRC}/src/plugins/proctrack/cgroup/proctrack_cgroup.c \
+		${WRKSRC}/src/plugins/proctrack/pgid/proctrack_pgid.c \
+		${WRKSRC}/src/plugins/proctrack/linuxproc/kill_tree.c \
+		${WRKSRC}/src/plugins/proctrack/lua/proctrack_lua.c \
+		${WRKSRC}/src/plugins/acct_gather_filesystem/lustre/acct_gather_filesystem_lustre.c \
+		${WRKSRC}/contribs/cray/pam_job.c \
+		${WRKSRC}/contribs/lua/proctrack.lua
 
 # Hack around nonfunctional --disable-gtktest flag
 post-patch-GTK2-off:

@@ -12,10 +12,12 @@ COMMENT=	Secret Rabbit Code: a Sample Rate Converter for audio
 LICENSE=	BSD2CLAUSE
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-USES=		libtool pathfix pkgconfig
+USES=		cpe libtool pathfix pkgconfig
 USE_LDCONFIG=	yes
+CPE_VENDOR=	${CPE_PRODUCT}_project
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
+TEST_TARGET=	check
 
 OPTIONS_DEFINE=	CPU_CLIP DOCS EXAMPLES
 CPU_CLIP_DESC=	Allow machine-dependent clipping
@@ -42,12 +44,6 @@ LIB_DEPENDS+=	libsndfile.so:audio/libsndfile
 BUILD_DEPENDS +=	libsndfile>=0:audio/libsndfile
 .else
 CONFIGURE_ARGS+=	--disable-sndfile
-.endif
-
-.if defined(MAINTAINER_MODE)
-check regression-test test: build
-	@cd ${WRKSRC}; ${SETENV} ${MAKE_ENV} ${MAKE} ${_MAKE_JOBS} ${MAKE_ARGS} \
-	check
 .endif
 
 .include <bsd.port.mk>

@@ -3,7 +3,7 @@
 
 PORTNAME=	graphviz
 PORTVERSION=	2.40.1
-PORTREVISION=	0
+PORTREVISION=	5
 CATEGORIES=	graphics tk
 MASTER_SITES=	http://www.graphviz.org/pub/graphviz/ARCHIVE/
 
@@ -20,17 +20,19 @@ LIB_DEPENDS=	libltdl.so:devel/libltdl \
 		libexpat.so:textproc/expat2 \
 		libgd.so:${GD_PORT}
 
-USES=		bison cpe gmake jpeg libtool:keepla pkgconfig pathfix shebangfix
+USES=		cpe pathfix shebangfix gmake bison groff pkgconfig \
+		libtool:keepla localbase:ldflags jpeg
 GNU_CONFIGURE=	yes
-LDFLAGS+=	-L${LOCALBASE}/lib
-CPPFLAGS+=	-I${LOCALBASE}/include
+# sincos is broken on armv6, see ports/220591
+CFLAGS_armv6=	-fno-builtin-sincos -fno-builtin-sin -fno-builtin-cos \
+		-fno-builtin-sincosf -fno-builtin-sinf -fno-builtin-cosf \
+		-fno-builtin-sincosl -fno-builtin-sinl -fno-builtin-cosl
+CFLAGS_armv7=	-fno-builtin-sincos -fno-builtin-sin -fno-builtin-cos \
+		-fno-builtin-sincosf -fno-builtin-sinf -fno-builtin-cosf \
+		-fno-builtin-sincosl -fno-builtin-sinl -fno-builtin-cosl
 PLIST_SUB=	PORTVERSION="${PORTVERSION}"
 
 MAKE_ENV=	EXPR_COMPAT=yes
-
-SHEBANG_LANG=	tcl
-tcl_OLD_CMD=	/usr/bin/tclsh
-tcl_CMD=	${TCLSH}
 
 FIX_INCLUDE=	\
 		lib/cdt/dthdr.h \
@@ -139,21 +141,28 @@ DEVIL_CONFIGURE_WITH=		devil
 GHOSTSCRIPT_CONFIGURE_OFF=	--with-ghostscript=no
 GHOSTSCRIPT_IMPLIES=		PANGOCAIRO
 PERL_CONFIGURE_ENABLE=		perl
+PERL_VARS=		SHEBANG_FILES+=tclpkg/gv/demo/modgraph.pl
 PHP_CONFIGURE_ENABLE=		php
 PHP_CPPFLAGS=		-I${LOCALBASE}/include/php/Zend
+PHP_VARS=		SHEBANG_FILES+=tclpkg/gv/demo/modgraph.php
 PYTHON_CONFIGURE_ENABLE=	python
-PYTHON_LDFLAGS=		"-L${PYTHON_LIBDIR}"
+PYTHON_LDFLAGS=		"-L${PYTHONBASE}/lib"
+PYTHON_VARS=		SHEBANG_FILES+=tclpkg/gv/demo/modgraph.py
 RUBY_CONFIGURE_ENABLE=		ruby
 RUBY_CONFIGURE_ENV=	RUBY="${RUBY}"
+RUBY_VARS=		SHEBANG_FILES+=tclpkg/gv/demo/modgraph.rb
 LUA_CONFIGURE_ENABLE=		lua
 LUA_CFLAGS=		-I${LUA_INCDIR}
 LUA_LDFLAGS=		-L${LUA_LIBDIR} -lm
 LUA_CONFIGURE_ENV=	LUA="${LUA_BINDIR}/lua" \
 			LUA_INSTALL_DIR=${PREFIX}/lib/lua/${LUA_VER}
+LUA_VARS=		SHEBANG_FILES+=tclpkg/gv/demo/modgraph.lua
 TCL_CONFIGURE_ENABLE=		tcl
 TCL_CPPFLAGS=		-I${TK_INCLUDEDIR}
 TCL_CONFIGURE_ON=	--with-tclsh=${TCLSH} --enable-tcl=yes
 TCL_CONFIGURE_ENV=	TCLCONFIG="${TCL_LIBDIR}/tclConfig.sh"
+TCL_VARS=		SHEBANG_FILES+=tclpkg/gv/demo/modgraph.tcl \
+			PLIST_SUB+=TCL_VER="${TCL_VER}"
 TK_CPPFLAGS=		-I${TK_INCLUDEDIR}
 TK_CONFIGURE_ON=	--with-wish=${WISH}
 TK_CONFIGURE_ENV=	TKCONFIG="${TK_LIBDIR}/tkConfig.sh"
@@ -184,10 +193,6 @@ BROKEN=	Ming incomplete, uses removed libgraph
 BUILD_DEPENDS+=	tclsh${TCL_VER}:lang/tcl${_TCLTK_WANTED_VERSION}
 .endif
 
-.if ${PORT_OPTIONS:MTCL}
-PLIST_SUB+=	TCL_VER="${TCL_VER}"
-.endif
-
 .if ${PORT_OPTIONS:MICONV}
 CONFIGURE_ARGS+=	--with-iconvlibdir=${ICONV_PREFIX}/lib
 CONFIGURE_ARGS+=	--with-iconvincludedir=${ICONV_PREFIX}/include
@@ -207,21 +212,13 @@ CONFIGURE_ARGS+=	--disable-swig
 CONFIGURE_ENV+=		SWIG="/nonexistent"
 .endif
 
+.include <bsd.port.pre.mk>
+
 .if ${PORT_OPTIONS:MPHP}
-SHEBANG_FILES+=	tclpkg/gv/demo/modgraph.php
-IGNORE_WITH_PHP=	56 71
+.if ${PHP_VER} < 70
+# force old PHP API
+MAKE_ARGS+=	SWIG_PHP_OPT=-php5
 .endif
-
-.if ${PORT_OPTIONS:MRUBY}
-SHEBANG_FILES+=	tclpkg/gv/demo/modgraph.rb
-.endif
-
-.if ${PORT_OPTIONS:MLUA}
-SHEBANG_FILES+=	tclpkg/gv/demo/modgraph.lua
-.endif
-
-.if ${PORT_OPTIONS:MTCL}
-SHEBANG_FILES+=	tclpkg/gv/demo/modgraph.tcl
 .endif
 
 post-patch:
@@ -258,26 +255,25 @@ post-patch:
 	${REINPLACE_CMD} -e 's|GTS_LIBS)|GTS_LIBS) $$(MATH_LIBS)|' \
 		${WRKSRC}/cmd/smyrna/Makefile.in
 	${CP} ${WRKSRC}/lib/cgraph/cgraph.h ${WRKSRC}/plugin/ming/
-.if ${OSVERSION} >= 1100093
+.if ${OPSYS} == FreeBSD && ${OSVERSION} >= 1100093
 	${REINPLACE_CMD} -e 's|SF_FLAGS|SFIO_FLAGS|g' \
 		${WRKSRC}/lib/sfio/*.[ch]
 .endif
-.if ! ${PORT_OPTIONS:MDOCS}
+
+post-patch-DOCS-off:
 	${REINPLACE_CMD} -e 's| install-txtDATA$$||' \
 		${WRKSRC}/Makefile.in
-.endif
 
-.if ${PORT_OPTIONS:MPHP}
-pre-install:
+pre-install-PHP-on:
 	${MKDIR} "${STAGEDIR}/${PREFIX}/share/php"
-.endif
 
 post-install: install-ldconfig-file
 	cd ${WRKSRC}/lib/expr && \
 		${MAKE_ENV} ${MAKE} ${MAKE_ARGS} ${INSTALL_TARGET}
 	cd ${WRKSRC} && \
 		${INSTALL_DATA} ${FIX_INCLUDE} ${STAGEDIR}${PREFIX}/include/graphviz/
-.if ${PORT_OPTIONS:MDOCS}
+
+post-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}
 	${MKDIR} ${STAGEDIR}${DOCSDIR}/html
 	${MKDIR} ${STAGEDIR}${DOCSDIR}/pdf
@@ -285,8 +281,8 @@ post-install: install-ldconfig-file
 		${INSTALL_DATA} ${PDOCS_TXT} ${STAGEDIR}${DOCSDIR}/ && \
 		${INSTALL_DATA} ${PDOCS_PDF} ${STAGEDIR}${DOCSDIR}/pdf/ && \
 		${INSTALL_DATA} ${PDOCS_HTML} ${STAGEDIR}${DOCSDIR}/html/
-.endif
-.if ${PORT_OPTIONS:MEXAMPLES}
+
+post-install-EXAMPLES-on:
 	@${ECHO_MSG} "Installing demo data..."
 	${MKDIR} ${STAGEDIR}${EXAMPLESDIR}
 	${INSTALL_SCRIPT} \
@@ -305,6 +301,5 @@ post-install: install-ldconfig-file
 	${INSTALL_DATA} \
 		${WRKSRC}/tclpkg/tclpathplan/demo/pathplan_data/*.dat \
 		${STAGEDIR}${EXAMPLESDIR}/pathplan_data/
-.endif
 
-.include <bsd.port.mk>
+.include <bsd.port.post.mk>

@@ -1,6 +1,7 @@
+@comment env LC_ALL=C sort -f
 bin/rawtherapee
+bin/rawtherapee-cli
 man/man1/rawtherapee.1.gz
-share/appdata/rawtherapee.appdata.xml
 share/applications/rawtherapee.desktop
 %%PORTDOCS%%%%DOCSDIR%%/AUTHORS.txt
 %%PORTDOCS%%%%DOCSDIR%%/AboutThisBuild.txt
@@ -12,8 +13,10 @@ share/icons/hicolor/24x24/apps/rawtherapee.png
 share/icons/hicolor/256x256/apps/rawtherapee.png
 share/icons/hicolor/32x32/apps/rawtherapee.png
 share/icons/hicolor/48x48/apps/rawtherapee.png
+share/metainfo/rawtherapee.appdata.xml
 %%DATADIR%%/camconst.json
 %%DATADIR%%/dcpprofiles/Canon EOS 100D.dcp
+%%DATADIR%%/dcpprofiles/Canon EOS 1300D.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 20D.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 400D.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 40D.dcp
@@ -22,6 +25,8 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/dcpprofiles/Canon EOS 550D.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 5D Mark III.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 5D.dcp
+%%DATADIR%%/dcpprofiles/Canon EOS 60D.dcp
+%%DATADIR%%/dcpprofiles/Canon EOS 6D Mark II.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 6D.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 7D Mark II.dcp
 %%DATADIR%%/dcpprofiles/Canon EOS 7D.dcp
@@ -42,29 +47,40 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/dcpprofiles/FUJIFILM X-Pro2.dcp
 %%DATADIR%%/dcpprofiles/FUJIFILM X-T1.dcp
 %%DATADIR%%/dcpprofiles/Fujifilm X-T10.dcp
+%%DATADIR%%/dcpprofiles/FUJIFILM X-T20.dcp
+%%DATADIR%%/dcpprofiles/FUJIFILM X100S.dcp
 %%DATADIR%%/dcpprofiles/FUJIFILM X100T.dcp
 %%DATADIR%%/dcpprofiles/Leaf Aptus 75.dcp
+%%DATADIR%%/dcpprofiles/LG Mobile LG-H815.dcp
+%%DATADIR%%/dcpprofiles/MINOLTA DYNAX 7D.dcp
 %%DATADIR%%/dcpprofiles/Nikon D200.dcp
-%%DATADIR%%/dcpprofiles/Nikon D300.dcp
+%%DATADIR%%/dcpprofiles/NIKON D300.dcp
 %%DATADIR%%/dcpprofiles/Nikon D3000.dcp
 %%DATADIR%%/dcpprofiles/Nikon D3100.dcp
 %%DATADIR%%/dcpprofiles/Nikon D3S.dcp
 %%DATADIR%%/dcpprofiles/Nikon D50.dcp
 %%DATADIR%%/dcpprofiles/Nikon D5100.dcp
+%%DATADIR%%/dcpprofiles/NIKON D5600.dcp
 %%DATADIR%%/dcpprofiles/NIKON D600.dcp
-%%DATADIR%%/dcpprofiles/Nikon D700.dcp
+%%DATADIR%%/dcpprofiles/NIKON D700.dcp
 %%DATADIR%%/dcpprofiles/Nikon D7000.dcp
 %%DATADIR%%/dcpprofiles/NIKON D7200.dcp
 %%DATADIR%%/dcpprofiles/NIKON D750.dcp
+%%DATADIR%%/dcpprofiles/NIKON D80.dcp
 %%DATADIR%%/dcpprofiles/Nikon D800.dcp
 %%DATADIR%%/dcpprofiles/NIKON D810.dcp
 %%DATADIR%%/dcpprofiles/Olympus E-1.dcp
 %%DATADIR%%/dcpprofiles/Olympus E-510.dcp
 %%DATADIR%%/dcpprofiles/Olympus E-520.dcp
 %%DATADIR%%/dcpprofiles/OLYMPUS E-M10.dcp
+%%DATADIR%%/dcpprofiles/OLYMPUS E-M1MarkII.dcp
 %%DATADIR%%/dcpprofiles/Olympus E-M5.dcp
 %%DATADIR%%/dcpprofiles/Olympus E-P2.dcp
 %%DATADIR%%/dcpprofiles/Olympus XZ-1.dcp
+%%DATADIR%%/dcpprofiles/Panasonic DC-TZ90.dcp
+%%DATADIR%%/dcpprofiles/Panasonic DC-TZ91.dcp
+%%DATADIR%%/dcpprofiles/Panasonic DC-TZ92.dcp
+%%DATADIR%%/dcpprofiles/Panasonic DC-TZ93.dcp
 %%DATADIR%%/dcpprofiles/Panasonic DMC-FZ150.dcp
 %%DATADIR%%/dcpprofiles/Panasonic DMC-FZ35.dcp
 %%DATADIR%%/dcpprofiles/Panasonic DMC-FZ38.dcp
@@ -73,6 +89,7 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/dcpprofiles/Panasonic DMC-G5.dcp
 %%DATADIR%%/dcpprofiles/Panasonic DMC-GH1.dcp
 %%DATADIR%%/dcpprofiles/Panasonic DMC-GH2.dcp
+%%DATADIR%%/dcpprofiles/Panasonic DMC-GX85.dcp
 %%DATADIR%%/dcpprofiles/PENTAX K-5 II.dcp
 %%DATADIR%%/dcpprofiles/PENTAX K-5.dcp
 %%DATADIR%%/dcpprofiles/Pentax K-r.dcp
@@ -80,10 +97,12 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/dcpprofiles/Pentax K200D.dcp
 %%DATADIR%%/dcpprofiles/RICOH PENTAX K-1.dcp
 %%DATADIR%%/dcpprofiles/RICOH PENTAX K-3.dcp
+%%DATADIR%%/dcpprofiles/SONY DSLR-A580.dcp
 %%DATADIR%%/dcpprofiles/Sony DSLR-A700.dcp
 %%DATADIR%%/dcpprofiles/Sony DSLR-A900.dcp
 %%DATADIR%%/dcpprofiles/SONY ILCE-6000.dcp
 %%DATADIR%%/dcpprofiles/SONY ILCE-7M2.dcp
+%%DATADIR%%/dcpprofiles/SONY ILCE-7RM3.dcp
 %%DATADIR%%/dcpprofiles/Sony NEX-5N.dcp
 %%DATADIR%%/dcpprofiles/Sony SLT-A55V.dcp
 %%DATADIR%%/dcpprofiles/SONY SLT-A99V.dcp
@@ -113,9 +132,6 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/iccprofiles/input/Panasonic DMC-GH1.icc
 %%DATADIR%%/iccprofiles/input/Panasonic DMC-GH2.icc
 %%DATADIR%%/iccprofiles/input/Pentax K200D.icc
-%%DATADIR%%/iccprofiles/input/Sony DSLR-A700.icc
-%%DATADIR%%/iccprofiles/input/Sony DSLR-A900.icc
-%%DATADIR%%/iccprofiles/input/Sony SLT-A55V.icc
 %%DATADIR%%/iccprofiles/input/sd14-bl15-crop-matrix-gamma-wp10.icm
 %%DATADIR%%/iccprofiles/input/sd14-bl15-crop-matrix-gamma-wp11.icm
 %%DATADIR%%/iccprofiles/input/sd14-bl15-crop-matrix-gamma-wp12.icm
@@ -125,6 +141,13 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/iccprofiles/input/sd1_merrill_sunny8161-crop-wp11.icm
 %%DATADIR%%/iccprofiles/input/sd1_merrill_tungsten8130-CROP-WP10.icm
 %%DATADIR%%/iccprofiles/input/sd1_merrill_tungsten8130-CROP-WP11.icm
+%%DATADIR%%/iccprofiles/input/Sony DSLR-A700.icc
+%%DATADIR%%/iccprofiles/input/Sony DSLR-A900.icc
+%%DATADIR%%/iccprofiles/input/Sony SLT-A55V.icc
+%%DATADIR%%/iccprofiles/output/ACES.icc
+%%DATADIR%%/iccprofiles/output/DCI-P3 D65.icc
+%%DATADIR%%/iccprofiles/output/DCI-P3 Theater.icc
+%%DATADIR%%/iccprofiles/output/Rec2020.icm
 %%DATADIR%%/iccprofiles/output/RT_Large_g10.icc
 %%DATADIR%%/iccprofiles/output/RT_Large_gBT709.icc
 %%DATADIR%%/iccprofiles/output/RT_Large_gsRGB.icc
@@ -132,7 +155,13 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/iccprofiles/output/RT_sRGB.icm
 %%DATADIR%%/iccprofiles/output/RT_sRGB_g10.icm
 %%DATADIR%%/iccprofiles/output/RT_sRGB_gBT709.icm
-%%DATADIR%%/iccprofiles/output/Rec2020.icm
+%%DATADIR%%/images/beforeafter.png
+%%DATADIR%%/images/cglabel0.png
+%%DATADIR%%/images/cglabel1.png
+%%DATADIR%%/images/cglabel2.png
+%%DATADIR%%/images/cglabel3.png
+%%DATADIR%%/images/cglabel4.png
+%%DATADIR%%/images/cglabel5.png
 %%DATADIR%%/images/Chanmixer-B.png
 %%DATADIR%%/images/Chanmixer-BB.png
 %%DATADIR%%/images/Chanmixer-BG.png
@@ -151,10 +180,27 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Chanmixer-RG.png
 %%DATADIR%%/images/Chanmixer-RR.png
 %%DATADIR%%/images/Chanmixer-Y.png
-%%DATADIR%%/images/Dark/actions/Chanmixer-Bgamma.png
-%%DATADIR%%/images/Dark/actions/Chanmixer-Ggamma.png
-%%DATADIR%%/images/Dark/actions/Chanmixer-Rgamma.png
-%%DATADIR%%/images/Dark/actions/PanelEnding.png
+%%DATADIR%%/images/clabel0.png
+%%DATADIR%%/images/clabel1.png
+%%DATADIR%%/images/clabel2.png
+%%DATADIR%%/images/clabel3.png
+%%DATADIR%%/images/clabel4.png
+%%DATADIR%%/images/clabel5.png
+%%DATADIR%%/images/closedhand.png
+%%DATADIR%%/images/colour.png
+%%DATADIR%%/images/crop-auto.png
+%%DATADIR%%/images/crop.png
+%%DATADIR%%/images/cross.png
+%%DATADIR%%/images/crossed-arrows-out.png
+%%DATADIR%%/images/curveType-controlPoints.png
+%%DATADIR%%/images/curveType-flatLinear.png
+%%DATADIR%%/images/curveType-linear.png
+%%DATADIR%%/images/curveType-NURBS.png
+%%DATADIR%%/images/curveType-parametric.png
+%%DATADIR%%/images/curveType-spline.png
+%%DATADIR%%/images/curveType-unchanged.png
+%%DATADIR%%/images/Dark/actions/adj-black.png
+%%DATADIR%%/images/Dark/actions/adj-white.png
 %%DATADIR%%/images/Dark/actions/ajd-ca-blue1.png
 %%DATADIR%%/images/Dark/actions/ajd-ca-blue2.png
 %%DATADIR%%/images/Dark/actions/ajd-ca-red1.png
@@ -173,6 +219,7 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/arrow-right.png
 %%DATADIR%%/images/Dark/actions/arrow-up-small.png
 %%DATADIR%%/images/Dark/actions/arrow-up.png
+%%DATADIR%%/images/Dark/actions/atom.png
 %%DATADIR%%/images/Dark/actions/beforeafter.png
 %%DATADIR%%/images/Dark/actions/cglabel0.png
 %%DATADIR%%/images/Dark/actions/cglabel1.png
@@ -180,6 +227,9 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/cglabel3.png
 %%DATADIR%%/images/Dark/actions/cglabel4.png
 %%DATADIR%%/images/Dark/actions/cglabel5.png
+%%DATADIR%%/images/Dark/actions/Chanmixer-Bgamma.png
+%%DATADIR%%/images/Dark/actions/Chanmixer-Ggamma.png
+%%DATADIR%%/images/Dark/actions/Chanmixer-Rgamma.png
 %%DATADIR%%/images/Dark/actions/clabel0.png
 %%DATADIR%%/images/Dark/actions/clabel1.png
 %%DATADIR%%/images/Dark/actions/clabel2.png
@@ -194,10 +244,10 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/crop.png
 %%DATADIR%%/images/Dark/actions/crossed-arrows-in.png
 %%DATADIR%%/images/Dark/actions/crossed-arrows-out.png
-%%DATADIR%%/images/Dark/actions/curveType-NURBS.png
 %%DATADIR%%/images/Dark/actions/curveType-controlPoints.png
 %%DATADIR%%/images/Dark/actions/curveType-flatLinear.png
 %%DATADIR%%/images/Dark/actions/curveType-linear.png
+%%DATADIR%%/images/Dark/actions/curveType-NURBS.png
 %%DATADIR%%/images/Dark/actions/curveType-parametric.png
 %%DATADIR%%/images/Dark/actions/curveType-spline.png
 %%DATADIR%%/images/Dark/actions/detail.png
@@ -216,6 +266,8 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/editednot-small.png
 %%DATADIR%%/images/Dark/actions/editednotg-small.png
 %%DATADIR%%/images/Dark/actions/editmodehand.png
+%%DATADIR%%/images/Dark/actions/equalizer-narrow.png
+%%DATADIR%%/images/Dark/actions/equalizer-wide.png
 %%DATADIR%%/images/Dark/actions/expanderClosed.png
 %%DATADIR%%/images/Dark/actions/expanderDisabled.png
 %%DATADIR%%/images/Dark/actions/expanderEnabled.png
@@ -228,6 +280,9 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/filterclear.png
 %%DATADIR%%/images/Dark/actions/fullscreen-exit.png
 %%DATADIR%%/images/Dark/actions/fullscreen.png
+%%DATADIR%%/images/Dark/actions/gamut-hist.png
+%%DATADIR%%/images/Dark/actions/gamut-softproof.png
+%%DATADIR%%/images/Dark/actions/gamut-warning.png
 %%DATADIR%%/images/Dark/actions/grayrated.png
 %%DATADIR%%/images/Dark/actions/gtk-add.png
 %%DATADIR%%/images/Dark/actions/gtk-apply.png
@@ -263,6 +318,7 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/gtk-zoom-in.png
 %%DATADIR%%/images/Dark/actions/gtk-zoom-out-small.png
 %%DATADIR%%/images/Dark/actions/gtk-zoom-out.png
+%%DATADIR%%/images/Dark/actions/HDR-thumbnail.png
 %%DATADIR%%/images/Dark/actions/histBar.png
 %%DATADIR%%/images/Dark/actions/histBarg.png
 %%DATADIR%%/images/Dark/actions/histBlue.png
@@ -302,10 +358,12 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/panel-to-left.png
 %%DATADIR%%/images/Dark/actions/panel-to-right.png
 %%DATADIR%%/images/Dark/actions/panel-to-top.png
+%%DATADIR%%/images/Dark/actions/PanelEnding.png
 %%DATADIR%%/images/Dark/actions/perspective-h1.png
 %%DATADIR%%/images/Dark/actions/perspective-h2.png
 %%DATADIR%%/images/Dark/actions/perspective-v1.png
 %%DATADIR%%/images/Dark/actions/perspective-v2.png
+%%DATADIR%%/images/Dark/actions/PixelShift-thumbnail.png
 %%DATADIR%%/images/Dark/actions/popuparrow.png
 %%DATADIR%%/images/Dark/actions/previewmodeB-off.png
 %%DATADIR%%/images/Dark/actions/previewmodeB-on.png
@@ -315,6 +373,10 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/actions/previewmodeBC1-on.png
 %%DATADIR%%/images/Dark/actions/previewmodeBC2-off.png
 %%DATADIR%%/images/Dark/actions/previewmodeBC2-on.png
+%%DATADIR%%/images/Dark/actions/previewmodeBC3-off.png
+%%DATADIR%%/images/Dark/actions/previewmodeBC3-on.png
+%%DATADIR%%/images/Dark/actions/previewmodeF-focusScreen-off.png
+%%DATADIR%%/images/Dark/actions/previewmodeF-focusScreen-on.png
 %%DATADIR%%/images/Dark/actions/previewmodeF-off.png
 %%DATADIR%%/images/Dark/actions/previewmodeF-on.png
 %%DATADIR%%/images/Dark/actions/previewmodeG-off.png
@@ -398,10 +460,50 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Dark/places/gtk-directory.png
 %%DATADIR%%/images/Dark/places/user-desktop.png
 %%DATADIR%%/images/Dark/places/user-home.png
-%%DATADIR%%/images/Light/actions/Chanmixer-Bgamma.png
-%%DATADIR%%/images/Light/actions/Chanmixer-Ggamma.png
-%%DATADIR%%/images/Light/actions/Chanmixer-Rgamma.png
-%%DATADIR%%/images/Light/actions/PanelEnding.png
+%%DATADIR%%/images/default-settings-ltr.png
+%%DATADIR%%/images/default-settings-rtl.png
+%%DATADIR%%/images/detail.png
+%%DATADIR%%/images/distortion-auto.png
+%%DATADIR%%/images/distortion.png
+%%DATADIR%%/images/edited-small.png
+%%DATADIR%%/images/edited.png
+%%DATADIR%%/images/editedg-small.png
+%%DATADIR%%/images/editednot-small.png
+%%DATADIR%%/images/editednotg-small.png
+%%DATADIR%%/images/empty.png
+%%DATADIR%%/images/exposure.png
+%%DATADIR%%/images/filter.png
+%%DATADIR%%/images/filterclear.png
+%%DATADIR%%/images/folder.png
+%%DATADIR%%/images/fullscreen-exit.png
+%%DATADIR%%/images/fullscreen.png
+%%DATADIR%%/images/grayrated.png
+%%DATADIR%%/images/gtk-add.png
+%%DATADIR%%/images/gtk-apply.png
+%%DATADIR%%/images/gtk-close-small.png
+%%DATADIR%%/images/gtk-close.png
+%%DATADIR%%/images/gtk-color-picker-small.png
+%%DATADIR%%/images/gtk-color-picker.png
+%%DATADIR%%/images/gtk-open.png
+%%DATADIR%%/images/gtk-save-large.png
+%%DATADIR%%/images/gtk-undo-ltr.png
+%%DATADIR%%/images/gtk-undo-rtl.png
+%%DATADIR%%/images/gtk-undoall-ltr.png
+%%DATADIR%%/images/gtk-undoall-rtl.png
+%%DATADIR%%/images/gtk-zoom-100.png
+%%DATADIR%%/images/gtk-zoom-fit.png
+%%DATADIR%%/images/gtk-zoom-in.png
+%%DATADIR%%/images/gtk-zoom-out.png
+%%DATADIR%%/images/histBar.png
+%%DATADIR%%/images/histBlue.png
+%%DATADIR%%/images/histGreen.png
+%%DATADIR%%/images/histRaw.png
+%%DATADIR%%/images/histRed.png
+%%DATADIR%%/images/histValue.png
+%%DATADIR%%/images/image-editor.png
+%%DATADIR%%/images/info.png
+%%DATADIR%%/images/Light/actions/adj-black.png
+%%DATADIR%%/images/Light/actions/adj-white.png
 %%DATADIR%%/images/Light/actions/ajd-ca-blue1.png
 %%DATADIR%%/images/Light/actions/ajd-ca-blue2.png
 %%DATADIR%%/images/Light/actions/ajd-ca-red1.png
@@ -420,6 +522,7 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/arrow-right.png
 %%DATADIR%%/images/Light/actions/arrow-up-small.png
 %%DATADIR%%/images/Light/actions/arrow-up.png
+%%DATADIR%%/images/Light/actions/atom.png
 %%DATADIR%%/images/Light/actions/beforeafter.png
 %%DATADIR%%/images/Light/actions/cglabel0.png
 %%DATADIR%%/images/Light/actions/cglabel1.png
@@ -427,6 +530,9 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/cglabel3.png
 %%DATADIR%%/images/Light/actions/cglabel4.png
 %%DATADIR%%/images/Light/actions/cglabel5.png
+%%DATADIR%%/images/Light/actions/Chanmixer-Bgamma.png
+%%DATADIR%%/images/Light/actions/Chanmixer-Ggamma.png
+%%DATADIR%%/images/Light/actions/Chanmixer-Rgamma.png
 %%DATADIR%%/images/Light/actions/clabel0.png
 %%DATADIR%%/images/Light/actions/clabel1.png
 %%DATADIR%%/images/Light/actions/clabel2.png
@@ -441,10 +547,10 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/crop.png
 %%DATADIR%%/images/Light/actions/crossed-arrows-in.png
 %%DATADIR%%/images/Light/actions/crossed-arrows-out.png
-%%DATADIR%%/images/Light/actions/curveType-NURBS.png
 %%DATADIR%%/images/Light/actions/curveType-controlPoints.png
 %%DATADIR%%/images/Light/actions/curveType-flatLinear.png
 %%DATADIR%%/images/Light/actions/curveType-linear.png
+%%DATADIR%%/images/Light/actions/curveType-NURBS.png
 %%DATADIR%%/images/Light/actions/curveType-parametric.png
 %%DATADIR%%/images/Light/actions/curveType-spline.png
 %%DATADIR%%/images/Light/actions/detail.png
@@ -463,6 +569,8 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/editednot-small.png
 %%DATADIR%%/images/Light/actions/editednotg-small.png
 %%DATADIR%%/images/Light/actions/editmodehand.png
+%%DATADIR%%/images/Light/actions/equalizer-narrow.png
+%%DATADIR%%/images/Light/actions/equalizer-wide.png
 %%DATADIR%%/images/Light/actions/expanderClosed.png
 %%DATADIR%%/images/Light/actions/expanderDisabled.png
 %%DATADIR%%/images/Light/actions/expanderEnabled.png
@@ -475,6 +583,9 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/filterclear.png
 %%DATADIR%%/images/Light/actions/fullscreen-exit.png
 %%DATADIR%%/images/Light/actions/fullscreen.png
+%%DATADIR%%/images/Light/actions/gamut-hist.png
+%%DATADIR%%/images/Light/actions/gamut-softproof.png
+%%DATADIR%%/images/Light/actions/gamut-warning.png
 %%DATADIR%%/images/Light/actions/grayrated.png
 %%DATADIR%%/images/Light/actions/gtk-add.png
 %%DATADIR%%/images/Light/actions/gtk-apply.png
@@ -510,6 +621,7 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/gtk-zoom-in.png
 %%DATADIR%%/images/Light/actions/gtk-zoom-out-small.png
 %%DATADIR%%/images/Light/actions/gtk-zoom-out.png
+%%DATADIR%%/images/Light/actions/HDR-thumbnail.png
 %%DATADIR%%/images/Light/actions/histBar.png
 %%DATADIR%%/images/Light/actions/histBarg.png
 %%DATADIR%%/images/Light/actions/histBlue.png
@@ -549,10 +661,12 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/panel-to-left.png
 %%DATADIR%%/images/Light/actions/panel-to-right.png
 %%DATADIR%%/images/Light/actions/panel-to-top.png
+%%DATADIR%%/images/Light/actions/PanelEnding.png
 %%DATADIR%%/images/Light/actions/perspective-h1.png
 %%DATADIR%%/images/Light/actions/perspective-h2.png
 %%DATADIR%%/images/Light/actions/perspective-v1.png
 %%DATADIR%%/images/Light/actions/perspective-v2.png
+%%DATADIR%%/images/Light/actions/PixelShift-thumbnail.png
 %%DATADIR%%/images/Light/actions/popuparrow.png
 %%DATADIR%%/images/Light/actions/previewmodeB-off.png
 %%DATADIR%%/images/Light/actions/previewmodeB-on.png
@@ -562,6 +676,10 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/actions/previewmodeBC1-on.png
 %%DATADIR%%/images/Light/actions/previewmodeBC2-off.png
 %%DATADIR%%/images/Light/actions/previewmodeBC2-on.png
+%%DATADIR%%/images/Light/actions/previewmodeBC3-off.png
+%%DATADIR%%/images/Light/actions/previewmodeBC3-on.png
+%%DATADIR%%/images/Light/actions/previewmodeF-focusScreen-off.png
+%%DATADIR%%/images/Light/actions/previewmodeF-focusScreen-on.png
 %%DATADIR%%/images/Light/actions/previewmodeF-off.png
 %%DATADIR%%/images/Light/actions/previewmodeF-on.png
 %%DATADIR%%/images/Light/actions/previewmodeG-off.png
@@ -645,75 +763,6 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/Light/places/gtk-directory.png
 %%DATADIR%%/images/Light/places/user-desktop.png
 %%DATADIR%%/images/Light/places/user-home.png
-%%DATADIR%%/images/PanelEnding.png
-%%DATADIR%%/images/beforeafter.png
-%%DATADIR%%/images/cglabel0.png
-%%DATADIR%%/images/cglabel1.png
-%%DATADIR%%/images/cglabel2.png
-%%DATADIR%%/images/cglabel3.png
-%%DATADIR%%/images/cglabel4.png
-%%DATADIR%%/images/cglabel5.png
-%%DATADIR%%/images/clabel0.png
-%%DATADIR%%/images/clabel1.png
-%%DATADIR%%/images/clabel2.png
-%%DATADIR%%/images/clabel3.png
-%%DATADIR%%/images/clabel4.png
-%%DATADIR%%/images/clabel5.png
-%%DATADIR%%/images/closedhand.png
-%%DATADIR%%/images/colour.png
-%%DATADIR%%/images/crop-auto.png
-%%DATADIR%%/images/crop.png
-%%DATADIR%%/images/cross.png
-%%DATADIR%%/images/crossed-arrows-out.png
-%%DATADIR%%/images/curveType-NURBS.png
-%%DATADIR%%/images/curveType-controlPoints.png
-%%DATADIR%%/images/curveType-flatLinear.png
-%%DATADIR%%/images/curveType-linear.png
-%%DATADIR%%/images/curveType-parametric.png
-%%DATADIR%%/images/curveType-spline.png
-%%DATADIR%%/images/curveType-unchanged.png
-%%DATADIR%%/images/default-settings-ltr.png
-%%DATADIR%%/images/default-settings-rtl.png
-%%DATADIR%%/images/detail.png
-%%DATADIR%%/images/distortion-auto.png
-%%DATADIR%%/images/distortion.png
-%%DATADIR%%/images/edited-small.png
-%%DATADIR%%/images/edited.png
-%%DATADIR%%/images/editedg-small.png
-%%DATADIR%%/images/editednot-small.png
-%%DATADIR%%/images/editednotg-small.png
-%%DATADIR%%/images/empty.png
-%%DATADIR%%/images/exposure.png
-%%DATADIR%%/images/filter.png
-%%DATADIR%%/images/filterclear.png
-%%DATADIR%%/images/folder.png
-%%DATADIR%%/images/fullscreen-exit.png
-%%DATADIR%%/images/fullscreen.png
-%%DATADIR%%/images/grayrated.png
-%%DATADIR%%/images/gtk-add.png
-%%DATADIR%%/images/gtk-apply.png
-%%DATADIR%%/images/gtk-close-small.png
-%%DATADIR%%/images/gtk-close.png
-%%DATADIR%%/images/gtk-color-picker-small.png
-%%DATADIR%%/images/gtk-color-picker.png
-%%DATADIR%%/images/gtk-open.png
-%%DATADIR%%/images/gtk-save-large.png
-%%DATADIR%%/images/gtk-undo-ltr.png
-%%DATADIR%%/images/gtk-undo-rtl.png
-%%DATADIR%%/images/gtk-undoall-ltr.png
-%%DATADIR%%/images/gtk-undoall-rtl.png
-%%DATADIR%%/images/gtk-zoom-100.png
-%%DATADIR%%/images/gtk-zoom-fit.png
-%%DATADIR%%/images/gtk-zoom-in.png
-%%DATADIR%%/images/gtk-zoom-out.png
-%%DATADIR%%/images/histBar.png
-%%DATADIR%%/images/histBlue.png
-%%DATADIR%%/images/histGreen.png
-%%DATADIR%%/images/histRaw.png
-%%DATADIR%%/images/histRed.png
-%%DATADIR%%/images/histValue.png
-%%DATADIR%%/images/image-editor.png
-%%DATADIR%%/images/info.png
 %%DATADIR%%/images/list-add-small.png
 %%DATADIR%%/images/list-remove-red-small.png
 %%DATADIR%%/images/list-remove.png
@@ -734,6 +783,7 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/images/panel-to-left.png
 %%DATADIR%%/images/panel-to-right.png
 %%DATADIR%%/images/panel-to-top.png
+%%DATADIR%%/images/PanelEnding.png
 %%DATADIR%%/images/popuparrow.png
 %%DATADIR%%/images/processing-pause.png
 %%DATADIR%%/images/processing-play.png
@@ -777,6 +827,7 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/languages/Chinese (Traditional)
 %%DATADIR%%/languages/Czech
 %%DATADIR%%/languages/Dansk
+%%DATADIR%%/languages/default
 %%DATADIR%%/languages/Deutsch
 %%DATADIR%%/languages/English (UK)
 %%DATADIR%%/languages/English (US)
@@ -787,8 +838,8 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/languages/Hebrew
 %%DATADIR%%/languages/Italiano
 %%DATADIR%%/languages/Japanese
-%%DATADIR%%/languages/LICENSE
 %%DATADIR%%/languages/Latvian
+%%DATADIR%%/languages/LICENSE
 %%DATADIR%%/languages/Magyar
 %%DATADIR%%/languages/Nederlands
 %%DATADIR%%/languages/Norsk BM
@@ -803,15 +854,14 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/languages/Suomi
 %%DATADIR%%/languages/Swedish
 %%DATADIR%%/languages/Turkish
-%%DATADIR%%/languages/default
 %%DATADIR%%/options
-%%DATADIR%%/profiles/BW/BW 1.pp3
-%%DATADIR%%/profiles/BW/BW 2.pp3
-%%DATADIR%%/profiles/BW/BW 3.pp3
-%%DATADIR%%/profiles/BW/BW 4.pp3
-%%DATADIR%%/profiles/Default ISO High.pp3
-%%DATADIR%%/profiles/Default ISO Medium.pp3
-%%DATADIR%%/profiles/Default.pp3
+%%DATADIR%%/profiles/Auto-Matched Curve - ISO High.pp3
+%%DATADIR%%/profiles/Auto-Matched Curve - ISO Low.pp3
+%%DATADIR%%/profiles/Auto-Matched Curve - ISO Medium.pp3
+%%DATADIR%%/profiles/Black-and-White/Black-and-White 1.pp3
+%%DATADIR%%/profiles/Black-and-White/Black-and-White 2.pp3
+%%DATADIR%%/profiles/Black-and-White/Black-and-White 3.pp3
+%%DATADIR%%/profiles/Black-and-White/Black-and-White 4.pp3
 %%DATADIR%%/profiles/Faded/Faded Amber 1 TM Bright.pp3
 %%DATADIR%%/profiles/Faded/Faded Amber 1 TM.pp3
 %%DATADIR%%/profiles/Faded/Faded Amber 1.pp3
@@ -852,6 +902,10 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/profiles/Generic/Punchy 1.pp3
 %%DATADIR%%/profiles/Generic/Punchy 2.pp3
 %%DATADIR%%/profiles/Non-raw/Brighten.pp3
+%%DATADIR%%/profiles/Pixel Shift/PS ISO High.pp3
+%%DATADIR%%/profiles/Pixel Shift/PS ISO Low.pp3
+%%DATADIR%%/profiles/Pixel Shift/PS ISO Medium.pp3
+%%DATADIR%%/profiles/Pixel Shift/PS No Motion.pp3
 %%DATADIR%%/profiles/Pop/Pop 1.pp3
 %%DATADIR%%/profiles/Pop/Pop 2 L.pp3
 %%DATADIR%%/profiles/Pop/Pop 3 Skin.pp3
@@ -869,14 +923,12 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/profiles/Skintones/Skintones - Studio.pp3
 %%DATADIR%%/profiles/Skintones/Skintones - StudioBase 1 TM.pp3
 %%DATADIR%%/profiles/Skintones/Skintones - StudioBase 1.pp3
+%%DATADIR%%/profiles/Standard Film Curve - ISO High.pp3
+%%DATADIR%%/profiles/Standard Film Curve - ISO Low.pp3
+%%DATADIR%%/profiles/Standard Film Curve - ISO Medium.pp3
 %%DATADIR%%/sounds/BatchComplete.wav
 %%DATADIR%%/sounds/Empty.wav
 %%DATADIR%%/sounds/ProcessComplete.wav
-%%DATADIR%%/themes/RawTherapee-GTK3-20_.css
-%%DATADIR%%/themes/RawTherapee-GTK3-_19.css
-%%DATADIR%%/themes/TooWaBlue-Dark-GTK3-20_.css
-%%DATADIR%%/themes/TooWaBlue-GTK3-20_.css
-%%DATADIR%%/themes/TooWaBlue-GTK3-_19.css
 %%DATADIR%%/themes/images/svg/twb/checkbox-checked-disabled.svg
 %%DATADIR%%/themes/images/svg/twb/checkbox-checked.svg
 %%DATADIR%%/themes/images/svg/twb/checkbox-inconsistent-disabled.svg
@@ -901,4 +953,11 @@ share/icons/hicolor/48x48/apps/rawtherapee.png
 %%DATADIR%%/themes/images/twb/radio-inconsistent.png
 %%DATADIR%%/themes/images/twb/radio-unchecked-disabled.png
 %%DATADIR%%/themes/images/twb/radio-unchecked.png
+%%DATADIR%%/themes/RawTherapee-GTK3-20_.css
+%%DATADIR%%/themes/RawTherapee-GTK3-_19.css
 %%DATADIR%%/themes/system.iconset
+%%DATADIR%%/themes/TooWaBlue - Bright-GTK3-20_.css
+%%DATADIR%%/themes/TooWaBlue - Dark-GTK3-20_.css
+%%DATADIR%%/themes/TooWaBlue-GTK3-20_.css
+%%DATADIR%%/themes/TooWaBlue-GTK3-_19.css
+%%DATADIR%%/themes/TooWaGrey - Average Surround-GTK3-20_.css

@@ -24,7 +24,6 @@
     SUBDIR += bookview
     SUBDIR += bugzilla44
     SUBDIR += bugzilla50
-    SUBDIR += calligra-l10n
     SUBDIR += canna-lib
     SUBDIR += canna-server
     SUBDIR += cannadic
@@ -49,7 +48,6 @@
     SUBDIR += edict-fpw
     SUBDIR += edict-utf-8
     SUBDIR += edyvalue
-    SUBDIR += egg-canna
     SUBDIR += eijiro-fpw
     SUBDIR += epwutil
     SUBDIR += esecanna
@@ -65,6 +63,7 @@
     SUBDIR += font-aozoramincho
     SUBDIR += font-ayu18
     SUBDIR += font-ayu20
+    SUBDIR += font-cica
     SUBDIR += font-elisa10
     SUBDIR += font-elisa8
     SUBDIR += font-genjyuugothic
@@ -125,7 +124,6 @@
     SUBDIR += japaneseAFM
     SUBDIR += jargon-fpw
     SUBDIR += jcode.pl
-    SUBDIR += jd
     SUBDIR += jed
     SUBDIR += jishyo
     SUBDIR += jls
@@ -145,6 +143,7 @@
     SUBDIR += kdrill
     SUBDIR += kinput2
     SUBDIR += kiten
+    SUBDIR += kiten-kde4
     SUBDIR += kon2-14dot
     SUBDIR += kon2-16dot
     SUBDIR += kpcal
@@ -172,7 +171,6 @@
     SUBDIR += mg
     SUBDIR += mh
     SUBDIR += migemo
-    SUBDIR += migemo-emacs23
     SUBDIR += migemo.el
     SUBDIR += mime_pls
     SUBDIR += ming
@@ -192,7 +190,6 @@
     SUBDIR += ng-canna
     SUBDIR += ng-devel
     SUBDIR += ngraph-fonts
-    SUBDIR += nhocr
     SUBDIR += nkf
     SUBDIR += onew
     SUBDIR += p5-2chproxy
@@ -296,7 +293,6 @@
     SUBDIR += wordpress
     SUBDIR += wwasw-fpw
     SUBDIR += xdtp
-    SUBDIR += xgate
     SUBDIR += xpdf
     SUBDIR += xshodou
     SUBDIR += xtr

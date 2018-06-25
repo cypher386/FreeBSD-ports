@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	fio
-PORTVERSION=	2.18
+PORTVERSION=	3.6
 CATEGORIES=	benchmarks
 MASTER_SITES=	http://brick.kernel.dk/snaps/
 
@@ -17,10 +17,6 @@ OPTIONS_DEFINE=	GNUPLOT EXAMPLES
 GNUPLOT_DESC=	Support for plotting graphs
 
 GNUPLOT_BUILD_DEPENDS=	${LOCALBASE}/bin/gnuplot:math/gnuplot
-
-BROKEN_aarch64=		Fails to compile: error: sys/auxv.h file not found
-BROKEN_armv6=		Fails to compile: error: use of undeclared identifier nop
-BROKEN_powerpc64=	Does not build on powerpc64
 
 do-install:
 	${INSTALL_PROGRAM} ${WRKSRC}/fio ${STAGEDIR}${PREFIX}/bin

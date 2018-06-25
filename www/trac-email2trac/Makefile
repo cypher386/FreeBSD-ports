@@ -2,12 +2,12 @@
 # $FreeBSD$
 
 PORTNAME=	email2trac
-PORTVERSION=	2.10.0
+PORTVERSION=	2.12.2
 CATEGORIES=	www devel python
 MASTER_SITES=	ftp://ftp.sara.nl/pub/outgoing/
 PKGNAMEPREFIX=	trac-
 
-MAINTAINER=	joneum@bsdproject.de
+MAINTAINER=	joneum@FreeBSD.org
 COMMENT=	Convert email to trac tickets
 
 LICENSE=	APACHE20
@@ -24,7 +24,7 @@ TRACUSER?=	${WWWOWN}
 
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--with-trac-user=${TRACUSER} --with-mta-user=${MTAUSER}
-USES=		python:2
+USES=		python:2.7
 
 PORTDOCS=	AUTHORS ChangeLog INSTALL README
 

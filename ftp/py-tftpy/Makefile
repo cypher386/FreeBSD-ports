@@ -2,23 +2,19 @@
 # $FreeBSD$
 
 PORTNAME=	tftpy
-PORTVERSION=	0.6.2
-PORTREVISION=	1
+PORTVERSION=	0.7.0
 CATEGORIES=	ftp python
+MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
 MAINTAINER=	sunpoet@FreeBSD.org
-COMMENT=	Pure Python TFTP Implementation
+COMMENT=	Pure Python TFTP library
 
 LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 NO_ARCH=	yes
-USE_PYTHON=	autoplist distutils
+USE_PYTHON=	autoplist concurrent distutils
 USES=		python
-
-GH_ACCOUNT=	msoulier
-GH_TAGNAME=	c5a7b52
-USE_GITHUB=	yes
 
 .include <bsd.port.mk>

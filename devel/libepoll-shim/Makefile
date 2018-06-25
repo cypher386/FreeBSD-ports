@@ -17,14 +17,19 @@ GH_TAGNAME=	c04b26b
 
 USE_LDCONFIG=	yes
 
-USES=		uidfix
-MAKE_ARGS=	LIBDIR=${PREFIX}/lib INCLUDEDIR=${PREFIX}/include
+USES=		compiler uidfix
+MAKE_ARGS=	INCSDIR=${PREFIX}/include/libepoll-shim/sys \
+		LIBDIR=${PREFIX}/lib WITHOUT_PROFILE=yes
+
+.include <bsd.port.pre.mk>
 
 post-patch:
-	# -Weverything is not recognized by GCC
-	@${REINPLACE_CMD} -e 's|Weverything|Wall|' ${WRKSRC}/Makefile
+.if "${CHOSEN_COMPILER_TYPE}" == "gcc"
+	@${REINPLACE_CMD} -e 's|Wno-missing-variable-declarations|Wno-missing-declarations|' \
+		-e 's|-Wno-thread-safety-analysis||' -e 's|Weverything|Wall|' ${WRKSRC}/Makefile
+.endif
 
 pre-install:
 	@${MKDIR} ${STAGEDIR}/${PREFIX}/include/libepoll-shim/sys
 
-.include <bsd.port.mk>
+.include <bsd.port.post.mk>

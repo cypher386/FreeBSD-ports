@@ -4,7 +4,7 @@
 PORTNAME=	fastnetmon
 PORTVERSION=	1.1.3
 DISTVERSIONPREFIX=	v
-PORTREVISION=	2
+PORTREVISION=	9
 CATEGORIES=	net-mgmt security
 
 MAINTAINER=	farrokhi@FreeBSD.org
@@ -15,10 +15,10 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 
 LIB_DEPENDS=	libboost_regex.so:devel/boost-libs \
 		liblog4cpp.so:devel/log4cpp \
-		libndpi.so:net/ndpi \
 		libluajit-5.1.so:lang/luajit \
 		libmongoc-1.0.so:devel/mongo-c-driver \
-		libjson-c.so:devel/json-c
+		libjson-c.so:devel/json-c \
+		libbson-1.0.so:devel/libbson
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	pavel-odintsov
@@ -33,6 +33,7 @@ CMAKE_ARGS+=	-DDISABLE_PF_RING_SUPPORT=ON
 CMAKE_INSTALL_PREFIX=	${PREFIX}
 
 BROKEN_armv6=		Does not build: invokes x86 assembler
+BROKEN_armv7=		Does not build: invokes x86 assembler
 BROKEN_powerpc64=	Does not build
 
 USE_RC_SUBR=	${PORTNAME}

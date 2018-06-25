@@ -4,6 +4,7 @@
     COMMENT = Communication utilities
 
     SUBDIR += acfax
+    SUBDIR += airspy
     SUBDIR += aldo
     SUBDIR += amtterm
     SUBDIR += anyremote
@@ -39,8 +40,8 @@
     SUBDIR += efax
     SUBDIR += efax-gtk
     SUBDIR += ems-flasher
-    SUBDIR += esmska
     SUBDIR += fl_moxgen
+    SUBDIR += flcluster
     SUBDIR += fldigi
     SUBDIR += fllog
     SUBDIR += flrig
@@ -70,15 +71,13 @@
     SUBDIR += hidapi
     SUBDIR += hylafax
     SUBDIR += ibp
-    SUBDIR += java-commapi
-    SUBDIR += java-commapi-freebsd
+    SUBDIR += inspectrum
     SUBDIR += java-simple-serial-connector
     SUBDIR += jerm
-    SUBDIR += jsdr
     SUBDIR += kb
     SUBDIR += kermit
     SUBDIR += klog
-    SUBDIR += kremotecontrol
+    SUBDIR += kremotecontrol-kde4
     SUBDIR += kvasd
     SUBDIR += libconcord
     SUBDIR += libfap
@@ -94,6 +93,7 @@
     SUBDIR += libusbmuxd
     SUBDIR += linpsk
     SUBDIR += linrad
+    SUBDIR += liquid-dsp
     SUBDIR += lirc
     SUBDIR += locator
     SUBDIR += lrzsz
@@ -136,6 +136,7 @@
     SUBDIR += predict
     SUBDIR += py-bulksms
     SUBDIR += py-gammu
+    SUBDIR += py-hidapi
     SUBDIR += py-libconcord
     SUBDIR += py-libimobiledevice
     SUBDIR += py-lirc
@@ -165,16 +166,17 @@
     SUBDIR += seyon
     SUBDIR += sms_client
     SUBDIR += smstools3
-    SUBDIR += soundmodem
     SUBDIR += spandsp
     SUBDIR += splat
     SUBDIR += sredird
+    SUBDIR += sunxi-tools
     SUBDIR += svxlink
     SUBDIR += syncterm
     SUBDIR += tcpser
     SUBDIR += telldus-core
     SUBDIR += thebridge
     SUBDIR += tilp2
+    SUBDIR += tio
     SUBDIR += tits
     SUBDIR += tkhylafax
     SUBDIR += tkscanfax

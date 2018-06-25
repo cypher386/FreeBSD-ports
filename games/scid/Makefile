@@ -3,17 +3,24 @@
 
 PORTNAME=	scid
 PORTVERSION=	4.6.4
+PORTREVISION=	1
 CATEGORIES=	games databases
 MASTER_SITES=	SF/${PORTNAME}/Scid/Scid%204.6/
 
 MAINTAINER=	bsd@volki.at
 COMMENT=	Free chess database application
 
+LICENSE=	GPLv2
+LICENSE_FILE=	${WRKSRC}/COPYING
+
 HAS_CONFIGURE=	yes
-USES=		gmake python shebangfix tk:84,85,86 zip
+USES=		gmake python shebangfix tk:85+ zip
 SHEBANG_FILES=	tcl/lang/checklangs.tcl \
 		tcl/lang/propagatelang.tcl \
-		tcl/lang/removetoken.tcl
+		tcl/lang/removetoken.tcl \
+		scripts/eco2pgn.py \
+		scripts/pgnfix.py \
+		scripts/twic2scid.py
 
 TCL_LIBRARY=	-L${LOCALBASE}/lib -ltcl${TCL_SHLIB_VER}
 

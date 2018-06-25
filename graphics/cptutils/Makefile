@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	cptutils
-PORTVERSION=	1.68
+PORTVERSION=	1.69
 DISTVERSIONPREFIX=	v
 CATEGORIES=	graphics
 MASTER_SITES=	http://soliton.vm.bytemark.co.uk/pub/jjg/src/

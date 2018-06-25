@@ -4,6 +4,7 @@
 PORTNAME=	kippo
 PORTVERSION=	0.9
 DISTVERSIONPREFIX=	v
+PORTREVISION=	1
 CATEGORIES=	net
 
 MAINTAINER=	culot@FreeBSD.org
@@ -11,14 +12,16 @@ COMMENT=	Medium interaction ssh honeypot
 
 LICENSE=	BSD3CLAUSE
 
-BUILD_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pycrypto>0:security/py-pycrypto \
-		${PYTHON_PKGNAMEPREFIX}zope.interface>0:devel/py-zope.interface
+BUILD_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pycrypto>0:security/py-pycrypto@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}twisted>=0:devel/py-twisted@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}zope.interface>0:devel/py-zope.interface@${PY_FLAVOR}
 RUN_DEPENDS:=	${BUILD_DEPENDS}
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	desaster
 
-USES=		python twisted:run,conch,web
+USES=		python
+NO_ARCH=	yes
 NO_BUILD=	yes
 
 USE_RC_SUBR=	kippo

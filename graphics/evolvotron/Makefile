@@ -3,7 +3,7 @@
 
 PORTNAME=	evolvotron
 PORTVERSION=	0.6.3
-PORTREVISION=	4
+PORTREVISION=	9
 CATEGORIES=	graphics
 MASTER_SITES=	SF \
 		SF/nemysisfreebsdp/${CATEGORIES}/:icons
@@ -14,6 +14,8 @@ MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Generative software that evolves images/textures/patterns
 
 LICENSE=	GPLv3+ # LICENSE file is GPLv2 though
+
+BROKEN_powerpc64=	fails to link: evolvotron.o: undefined reference to boost::program_options::options_description::options_description
 
 LIB_DEPENDS=	libboost_thread.so:devel/boost-libs
 

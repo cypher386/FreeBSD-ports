@@ -1,4 +1,3 @@
-# Created by: Jason Bacon <bacon4000@gmail.com>
 # $FreeBSD$
 
 PORTNAME=	praat
@@ -7,10 +6,12 @@ DISTVERSIONPREFIX=	v
 PORTREVISION=	3
 CATEGORIES=	audio science
 
-MAINTAINER=	bacon4000@gmail.com
+MAINTAINER=	jwb@FreeBSD.org
 COMMENT=	Phonetics by Computer
 
 LICENSE=	GPLv2
+
+BROKEN_powerpc64=	fails to compile: cc1plus: unrecognized command line option "-std=gnu++11"
 
 USE_GITHUB=	yes
 DOS2UNIX_REGEX=	.*Makefile

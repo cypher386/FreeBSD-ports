@@ -3,16 +3,18 @@
 
 PORTNAME=	gps
 PORTVERSION=	2016
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	devel
 MASTER_SITES=	http://downloads.dragonlace.net/src/
-DISTNAME=	gps-gpl-${PORTVERSION}-src
 PKGNAMESUFFIX=	-ide
+DISTNAME=	gps-gpl-${PORTVERSION}-src
 
-MAINTAINER=	freebsd.contact@marino.st
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	GNAT Programming Studio - IDE for Ada and many other languages
 
 LICENSE=	GPLv3
+
+BROKEN_aarch64=		fails to compile: No rule to make target 'default'
 
 BUILD_DEPENDS=	gprbuild:devel/gprbuild \
 		xmlada>=4.4:textproc/xmlada \
@@ -25,8 +27,8 @@ LIB_DEPENDS=	libfontconfig.so:x11-fonts/fontconfig \
 RUN_DEPENDS=	rsvg-convert:graphics/librsvg2 \
 		gdb${PORTGDB}:devel/gdb \
 		gprbuild:devel/gprbuild \
-		${PYTHON_PKGNAMEPREFIX}pep8>0:devel/pep8 \
-		${PYTHON_PKGNAMEPREFIX}jedi>0:devel/py-jedi
+		${PYTHON_PKGNAMEPREFIX}pep8>0:devel/pep8@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}jedi>0:devel/py-jedi@${PY_FLAVOR}
 
 GNU_CONFIGURE=	yes
 USES=		ada:run gettext gmake perl5 pkgconfig python

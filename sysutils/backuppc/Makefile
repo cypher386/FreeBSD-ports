@@ -3,9 +3,10 @@
 
 PORTNAME=	backuppc
 PORTVERSION=	3.3.2
-PORTREVISION=	2
+PORTREVISION=	3
 CATEGORIES=	sysutils
-MASTER_SITES=	SF
+MASTER_SITES=	https://github.com/backuppc/backuppc/releases/download/${PORTVERSION}/ \
+		SF
 DISTNAME=	BackupPC-${PORTVERSION}
 
 MAINTAINER=	moiseev@mezonplus.ru
@@ -14,7 +15,8 @@ COMMENT=	Multi-platform backup to disk-based storage
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-RUN_DEPENDS=	p5-File-Listing>=0:sysutils/p5-File-Listing
+RUN_DEPENDS=	p5-CGI>0:www/p5-CGI \
+		p5-File-Listing>=0:sysutils/p5-File-Listing
 
 CONFLICTS=	backuppc-devel-[0-9]*
 
@@ -22,6 +24,7 @@ USE_RC_SUBR=	backuppc
 
 USES=		cpe perl5
 CPE_VENDOR=	craig_barratt
+NO_ARCH=	yes
 NO_BUILD=	yes
 
 USERS=		backuppc
@@ -106,7 +109,7 @@ do-install:
 		--name=BackupPC --center="BackupPC user guide" \
 		${WRKSRC}/doc/BackupPC.pod ${WRKSRC}/${PORTNAME}.1
 	${INSTALL_MAN} ${WRKSRC}/${PORTNAME}.1 ${STAGEDIR}${MANPREFIX}/man/man1
-	cd ${WRKSRC} && ${INSTALL_MAN} ${PORTDOCS} ${STAGEDIR}${DOCSDIR}
+	cd ${WRKSRC} && ${INSTALL_DATA} ${PORTDOCS} ${STAGEDIR}${DOCSDIR}
 	${CP} ${WRKSRC}/doc/BackupPC.html ${STAGEDIR}${WWWDIR}
 	${RM} ${STAGEDIR}${ETCDIR}/config.pl
 	${RM} ${STAGEDIR}${ETCDIR}/hosts
@@ -116,10 +119,4 @@ do-install:
 	${MKDIR} ${STAGEDIR}${PREFIX}/libexec/backuppc
 	${CP} ${WRKSRC}/update.pl ${STAGEDIR}${PREFIX}/libexec/backuppc/update.pl
 
-.include <bsd.port.pre.mk>
-
-.if ${PERL_LEVEL} >= 502200
-RUN_DEPENDS+=	p5-CGI>0:www/p5-CGI
-.endif
-
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

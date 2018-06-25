@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	r18n-core
-PORTVERSION=	2.1.5
+PORTVERSION=	3.0.3
 CATEGORIES=	devel rubygems
 MASTER_SITES=	RG
 

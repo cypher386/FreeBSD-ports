@@ -2,19 +2,20 @@
 # $FreeBSD$
 
 PORTNAME=	mupdf
-PORTVERSION=	1.10a
+PORTVERSION=	1.12.0
 DISTVERSIONSUFFIX=	-source
-PORTREVISION=	2
 PORTEPOCH=	1
 CATEGORIES=	graphics
 MASTER_SITES=	http://www.mupdf.com/downloads/ \
 		http://www.mupdf.com/downloads/archive/
 
-MAINTAINER=	udvzsolt@gmail.com
+MAINTAINER=	uzsolt@uzsolt.hu
 COMMENT=	Lightweight PDF viewer and toolkit
 
 LICENSE=	AGPLv3
 LICENSE_FILE=	${WRKSRC}/COPYING
+
+BROKEN_powerpc64=	fails to compile: cmsmd5.c:36:51: 'ContextID' undeclared
 
 LIB_DEPENDS=	libcurl.so:ftp/curl \
 		libfreetype.so:print/freetype2 \
@@ -28,12 +29,12 @@ MAKE_ARGS=	build=release prefix=${PREFIX} mandir=${PREFIX}/man verbose=yes \
 		SOVERSION=${PORTVERSION}
 USES=		cpe compiler:c++11-lang gmake jpeg pkgconfig
 USE_XORG=	x11 xcursor xext xinerama xrandr
-USE_GL=		gl
+USE_GL=		gl glut
 USE_LDCONFIG=	yes
 
 CPE_VENDOR=	artifex
 
-OPTIONS_DEFINE=	JS SCROLL
+OPTIONS_DEFINE=	DOCS JS SCROLL
 OPTIONS_DEFAULT=SCROLL
 
 JS_DESC=	JavaScript support (V8 engine)
@@ -47,16 +48,16 @@ PLIST_SUB=	SOVERSION=${PORTVERSION}
 
 post-patch:
 	@${REINPLACE_CMD} -e 's/-pipe -O2 //' \
-		-e 's|/usr/local|${LOCALBASE}|' \
-		-e 's/Linux/FreeBSD/' \
 		${WRKSRC}/Makerules
+	@${REINPLACE_CMD} -e 's/-ldl //' ${WRKSRC}/Makerules ${WRKSRC}/Makethird
 	@${RM} -r ${WRKSRC}/thirdparty/curl \
 		${WRKSRC}/thirdparty/freetype \
+		${WRKSRC}/thirdparty/freeglut \
 		${WRKSRC}/thirdparty/harfbuzz \
-	 	${WRKSRC}/thirdparty/jbig2dec \
-	 	${WRKSRC}/thirdparty/jpeg \
-	 	${WRKSRC}/thirdparty/openjpeg \
-	 	${WRKSRC}/thirdparty/zlib
+		${WRKSRC}/thirdparty/jbig2dec \
+		${WRKSRC}/thirdparty/libjpeg \
+		${WRKSRC}/thirdparty/openjpeg \
+		${WRKSRC}/thirdparty/zlib
 
 post-install:
 	${MV} ${STAGEDIR}${PREFIX}/bin/mupdf-x11 ${STAGEDIR}${PREFIX}/bin/mupdf

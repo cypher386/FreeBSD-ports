@@ -1,10 +1,10 @@
 # $FreeBSD$
 
 PORTNAME=	ansiweather
-PORTVERSION=	1.10
+PORTVERSION=	1.11
 CATEGORIES=	misc
 
-MAINTAINER=	dbaio@bsd.com.br
+MAINTAINER=	dbaio@FreeBSD.org
 COMMENT=	Shell script for displaying the current weather in your terminal
 
 LICENSE=	BSD2CLAUSE
@@ -37,7 +37,7 @@ do-install-EXAMPLES-on:
 
 do-install-DOCS-on:
 	@${MKDIR} ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/README.md ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/AUTHORS ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/README.md ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/AUTHORS ${STAGEDIR}${DOCSDIR}
 
 .include <bsd.port.mk>

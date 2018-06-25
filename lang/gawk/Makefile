@@ -3,11 +3,15 @@
 
 PORTNAME=	gawk
 PORTVERSION=	4.1.4
+PORTREVISION=	2
 CATEGORIES=	lang
 MASTER_SITES=	GNU
 
 MAINTAINER=	johans@FreeBSD.org
 COMMENT=	GNU version of Awk
+
+LICENSE=	GPLv3+
+LICENSE_FILE=	${WRKSRC}/COPYING
 
 LIB_DEPENDS=	libsigsegv.so:devel/libsigsegv
 
@@ -27,6 +31,7 @@ CONFIGURE_ARGS=	${ICONV_CONFIGURE_ARG} \
 		--with-libintl-prefix=${LOCALBASE} \
 		AWK=${AWK}
 INSTALL_TARGET=	install-strip
+TEST_TARGET=	check
 
 PLIST_SUB+=	VERSION=${PORTVERSION}
 

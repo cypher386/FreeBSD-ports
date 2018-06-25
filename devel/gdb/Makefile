@@ -2,19 +2,29 @@
 # $FreeBSD$
 
 PORTNAME=	gdb
-PORTVERSION=	7.12.1
+PORTVERSION=	8.1
+PORTREVISION=	2
 CATEGORIES=	devel
 MASTER_SITES=	GNU
 
-MAINTAINER=	luca.pizzamiglio@gmail.com
+MAINTAINER=	pizzamig@FreeBSD.org
 COMMENT=	GNU GDB of newer version than comes with the system
 
 LICENSE=	GPLv3
+LICENSE_FILE=	${WRKSRC}/COPYING3
 
+# untested on sparc64, might work
+ONLY_FOR_ARCHS=	aarch64 amd64 armv6 armv7 i386 mips powerpc powerpc64
+
+LIB_DEPENDS=	libmpfr.so:math/mpfr
 TEST_DEPENDS=	runtest:misc/dejagnu
 
 TEST_TARGET=	check
-USES=		compiler:env cpe iconv gmake libtool tar:xz
+# XXX: This should be compiler:c++11-lib as GDB doesn't really require
+# C++14.  However, clang in 10.3 crashes while building this port.
+# Requiring C++14 forces 10.3 to use an external version of clang while
+# still using the base system clang on 11.0 and later.
+USES=		compiler:c++14-lang cpe iconv gmake libtool tar:xz
 USE_CSTD=	gnu89
 CPE_VENDOR=	gnu
 GNU_CONFIGURE=	yes
@@ -28,16 +38,23 @@ CONFIGURE_ARGS=	--program-suffix=${PORTVERSION:S/.//g} \
 		--without-libunwind-ia64
 CFLAGS:=	${CFLAGS:C/ +$//}	# blanks at EOL creep in sometimes
 CFLAGS+=	-DRL_NO_COMPAT -Wno-unused-function -Wno-unused-variable
+CFLAGS+=	-Wno-unknown-warning-option
 EXCLUDE=	dejagnu expect sim texinfo intl
 EXTRACT_AFTER_ARGS=	${EXCLUDE:S/^/--exclude /}
-EXTRA_PATCHES=	${FILESDIR}/commit-387360daf9 \
-		${FILESDIR}/commit-b268007c68
+EXTRA_PATCHES=	${FILESDIR}/commit-d2176225dc \
+		${FILESDIR}/commit-b999e2038d \
+		${FILESDIR}/commit-262f62f57d \
+		${FILESDIR}/commit-92fce24de2 \
+		${FILESDIR}/commit-2d97a5d9d3 \
+		${FILESDIR}/commit-906b4aac4c \
+		${FILESDIR}/commit-f169cfdc08 \
+		${FILESDIR}/commit-12279366d7 \
+		${FILESDIR}/commit-386a867618 \
+		${FILESDIR}/commit-7efba073e2
 LIB_DEPENDS+=	libexpat.so:textproc/expat2
 
 VER=		${PORTVERSION:S/.//g}
 PLIST_SUB=	VER=${VER}
-
-ONLY_FOR_ARCHS=	i386 amd64 powerpc powerpc64 armv6 mips	# untested elsewhere, might work
 
 OPTIONS_DEFINE=	DEBUG GDB_LINK GUILE KGDB PYTHON TUI
 
@@ -62,7 +79,7 @@ GUILE_LIB_DEPENDS=	libguile-2.0.so:lang/guile2
 PORT_READLINE_USES=	readline:port
 PYTHON_CONFIGURE_ON=	--with-python=${PYTHON_CMD}
 PYTHON_CONFIGURE_OFF=	--without-python
-PYTHON_USES=		python:2
+PYTHON_USES=		python
 TUI_CONFIGURE_ENABLE=	tui
 
 .include <bsd.port.pre.mk>
@@ -98,6 +115,8 @@ do-install:
 do-install-KGDB-on:
 	${INSTALL_PROGRAM} ${WRKSRC}/gdb/kgdb \
 		${STAGEDIR}${PREFIX}/bin/kgdb${VER}
+	${INSTALL_MAN} ${FILESDIR}/kgdb/kgdb.1 \
+		${STAGEDIR}${MAN1PREFIX}/man/man1/kgdb${VER}.1
 
 do-install-TUI-on:
 	${LN} -sf gdb${VER} ${STAGEDIR}${PREFIX}/bin/gdbtui${VER}

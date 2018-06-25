@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	dnsdist
-DISTVERSION=	1.1.0
-PORTREVISION=	3
+DISTVERSION=	1.3.0
+PORTREVISION=	5
 CATEGORIES=	dns net
 MASTER_SITES=	https://downloads.powerdns.com/releases/ \
 		LOCAL/cpm
@@ -13,9 +13,8 @@ COMMENT=	Highly DNS-, DoS- and abuse-aware loadbalancer
 
 LICENSE=	GPLv2 UNLICENSE
 LICENSE_COMB=	multi
-LICENSE_NAME_UNLICENSE=	The Unlicense
+LICENSE_FILE_GPLv2=	${WRKSRC}/COPYING
 LICENSE_FILE_UNLICENSE=	${WRKSRC}/ext/incbin/UNLICENSE
-LICENSE_PERMS_UNLICENSE=	dist-mirror dist-sell pkg-mirror pkg-sell auto-accept
 
 BUILD_DEPENDS=	${LOCALBASE}/lib/libatomic_ops.a:devel/libatomic_ops
 LIB_DEPENDS=	libboost_serialization.so:devel/boost-libs \
@@ -25,8 +24,9 @@ LIB_DEPENDS=	libboost_serialization.so:devel/boost-libs \
 
 GNU_CONFIGURE=	yes
 USES=		bison compiler:c++14-lang cpe gmake libedit libtool localbase \
-		lua:52 pkgconfig tar:bz2
+		pkgconfig tar:bz2
 CONFIGURE_ARGS=	--bindir=${PREFIX}/sbin \
+		--enable-dns-over-tls \
 		--enable-dnscrypt \
 		--enable-libsodium \
 		--enable-re2
@@ -37,6 +37,31 @@ USERS=		_dnsdist
 GROUPS=		_dnsdist
 
 USE_RC_SUBR=	dnsdist
+
+OPTIONS_DEFINE=		FSTRM LUAJIT SNMP
+OPTIONS_DEFAULT=	GNUTLS OPENSSL
+OPTIONS_MULTI=		TLS
+OPTIONS_MULTI_TLS=	GNUTLS OPENSSL
+
+FSTRM_DESC=		dnstap support (see dnstap.info)
+LUAJIT_DESC=		Use LuaJIT instead of Lua
+
+FSTRM_LIB_DEPENDS=	libfstrm.so:devel/fstrm
+FSTRM_CONFIGURE_ENABLE=	fstrm
+
+GNUTLS_LIB_DEPENDS=	libgnutls.so:security/gnutls
+GNUTLS_CONFIGURE_ENABLE=gnutls
+
+LUAJIT_LIB_DEPENDS=	libluajit-5.1.so.2:lang/luajit
+LUAJIT_USES_OFF=	lua
+LUAJIT_CONFIGURE_WITH=	luajit
+
+OPENSSL_USES=		ssl
+OPENSSL_CONFIGURE_ENABLE=libssl
+OPENSSL_CONFIGURE_ON=	LIBSSL_CFLAGS=-I${OPENSSLINC} LIBSSL_LIBS="-L${OPENSSLLIB} -lssl"
+
+SNMP_LIB_DEPENDS=	libnetsnmp.so:net-mgmt/net-snmp
+SNMP_CONFIGURE_WITH=	net-snmp
 
 post-install:
 	${INSTALL_DATA} ${FILESDIR}/dnsdist.conf.sample \

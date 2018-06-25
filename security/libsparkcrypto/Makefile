@@ -3,11 +3,11 @@
 
 PORTNAME=	libsparkcrypto
 PORTVERSION=	0.1.1
-PORTREVISION=	4
+PORTREVISION=	5
 CATEGORIES=	security
 MASTER_SITES=	http://senier.net/libsparkcrypto/
 
-MAINTAINER=	freebsd.contact@marino.st
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Cryptographic library implemented in SPARK
 
 LICENSE=	BSD3CLAUSE

@@ -2,12 +2,14 @@
 # $FreeBSD$
 
 PORTNAME=	adblock_plus
-PORTVERSION=	2.8.2
-DISTVERSIONSUFFIX=	-an+fx+sm+tb
+PORTVERSION=	3.0.4
+DISTVERSIONSUFFIX=	-an+fx
 CATEGORIES=	www
 
 MAINTAINER=	bar@FreeBSD.org
 COMMENT=	Content filtering extension
+
+USE_XPI=        *firefox*
 
 LICENSE=	GPLv3
 

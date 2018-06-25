@@ -54,6 +54,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/conf/dtd/relationships.dtd
 %%DATADIR%%/conf/dtd/snippets.dtd
 %%DATADIR%%/conf/dtd/source-code-highlight.dtd
+%%DATADIR%%/conf/dtd/sql-history.dtd
 %%DATADIR%%/conf/example.dbm
 %%DATADIR%%/conf/objects-style.conf
 %%DATADIR%%/conf/pattern-highlight.conf
@@ -62,6 +63,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/conf/pgmodeler_logo.png
 %%DATADIR%%/conf/relationships.conf
 %%DATADIR%%/conf/schemas/application-dbm.sch
+%%DATADIR%%/conf/schemas/commands.sch
 %%DATADIR%%/conf/schemas/connections.sch
 %%DATADIR%%/conf/schemas/desktop.sch
 %%DATADIR%%/conf/schemas/file.sch
@@ -71,6 +73,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/conf/schemas/relationships.sch
 %%DATADIR%%/conf/schemas/snippet.sch
 %%DATADIR%%/conf/schemas/snippets.sch
+%%DATADIR%%/conf/schemas/sql-history.sch
 %%DATADIR%%/conf/schemas/widget.sch
 %%DATADIR%%/conf/snippets.conf
 %%DATADIR%%/conf/sql-highlight.conf
@@ -86,6 +89,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/lang/pt_BR.ts
 %%DATADIR%%/lang/zh_CN.qm
 %%DATADIR%%/lang/zh_CN.ts
+%%DATADIR%%/samples/3dcitydb.dbm
 %%DATADIR%%/samples/demo.dbm
 %%DATADIR%%/samples/oldsample.dbm
 %%DATADIR%%/samples/pagila.dbm
@@ -96,12 +100,14 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/alter/database.sch
 %%DATADIR%%/schemas/alter/diff.sch
 %%DATADIR%%/schemas/alter/domain.sch
+%%DATADIR%%/schemas/alter/domconstraint.sch
 %%DATADIR%%/schemas/alter/eventtrigger.sch
 %%DATADIR%%/schemas/alter/extension.sch
 %%DATADIR%%/schemas/alter/function.sch
 %%DATADIR%%/schemas/alter/index.sch
 %%DATADIR%%/schemas/alter/owner.sch
 %%DATADIR%%/schemas/alter/permission.sch
+%%DATADIR%%/schemas/alter/policy.sch
 %%DATADIR%%/schemas/alter/relationship.sch
 %%DATADIR%%/schemas/alter/rename.sch
 %%DATADIR%%/schemas/alter/role.sch
@@ -115,6 +121,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/catalog/cast.sch
 %%DATADIR%%/schemas/catalog/collation.sch
 %%DATADIR%%/schemas/catalog/column.sch
+%%DATADIR%%/schemas/catalog/comment.sch
 %%DATADIR%%/schemas/catalog/constraint.sch
 %%DATADIR%%/schemas/catalog/conversion.sch
 %%DATADIR%%/schemas/catalog/database.sch
@@ -122,17 +129,18 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/catalog/eventtrigger.sch
 %%DATADIR%%/schemas/catalog/extension.sch
 %%DATADIR%%/schemas/catalog/function.sch
-%%DATADIR%%/schemas/catalog/getcomment.sch
 %%DATADIR%%/schemas/catalog/index.sch
 %%DATADIR%%/schemas/catalog/language.sch
 %%DATADIR%%/schemas/catalog/notextobject.sch
 %%DATADIR%%/schemas/catalog/opclass.sch
 %%DATADIR%%/schemas/catalog/operator.sch
 %%DATADIR%%/schemas/catalog/opfamily.sch
+%%DATADIR%%/schemas/catalog/policy.sch
 %%DATADIR%%/schemas/catalog/role.sch
 %%DATADIR%%/schemas/catalog/rule.sch
 %%DATADIR%%/schemas/catalog/schema.sch
 %%DATADIR%%/schemas/catalog/sequence.sch
+%%DATADIR%%/schemas/catalog/server.sch
 %%DATADIR%%/schemas/catalog/table.sch
 %%DATADIR%%/schemas/catalog/tablespace.sch
 %%DATADIR%%/schemas/catalog/template.sch
@@ -149,12 +157,14 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/sql/database.sch
 %%DATADIR%%/schemas/sql/dbmodel.sch
 %%DATADIR%%/schemas/sql/domain.sch
+%%DATADIR%%/schemas/sql/domconstraint.sch
 %%DATADIR%%/schemas/sql/drop.sch
 %%DATADIR%%/schemas/sql/element.sch
 %%DATADIR%%/schemas/sql/eventtrigger.sch
 %%DATADIR%%/schemas/sql/excelement.sch
 %%DATADIR%%/schemas/sql/extension.sch
 %%DATADIR%%/schemas/sql/function.sch
+%%DATADIR%%/schemas/sql/genericsql.sch
 %%DATADIR%%/schemas/sql/idxelement.sch
 %%DATADIR%%/schemas/sql/index.sch
 %%DATADIR%%/schemas/sql/language.sch
@@ -163,6 +173,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/sql/opfamily.sch
 %%DATADIR%%/schemas/sql/parameter.sch
 %%DATADIR%%/schemas/sql/permission.sch
+%%DATADIR%%/schemas/sql/policy.sch
 %%DATADIR%%/schemas/sql/relationship.sch
 %%DATADIR%%/schemas/sql/role.sch
 %%DATADIR%%/schemas/sql/rule.sch
@@ -187,6 +198,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/xml/database.sch
 %%DATADIR%%/schemas/xml/dbmodel.sch
 %%DATADIR%%/schemas/xml/domain.sch
+%%DATADIR%%/schemas/xml/domconstraint.sch
 %%DATADIR%%/schemas/xml/dtd/aggregate.dtd
 %%DATADIR%%/schemas/xml/dtd/baseelements.dtd
 %%DATADIR%%/schemas/xml/dtd/basetype.dtd
@@ -203,6 +215,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/xml/dtd/eventtrigger.dtd
 %%DATADIR%%/schemas/xml/dtd/extension.dtd
 %%DATADIR%%/schemas/xml/dtd/function.dtd
+%%DATADIR%%/schemas/xml/dtd/genericsql.dtd
 %%DATADIR%%/schemas/xml/dtd/index.dtd
 %%DATADIR%%/schemas/xml/dtd/label.dtd
 %%DATADIR%%/schemas/xml/dtd/language.dtd
@@ -211,6 +224,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/xml/dtd/operator.dtd
 %%DATADIR%%/schemas/xml/dtd/opfamily.dtd
 %%DATADIR%%/schemas/xml/dtd/permission.dtd
+%%DATADIR%%/schemas/xml/dtd/policy.dtd
 %%DATADIR%%/schemas/xml/dtd/relationship.dtd
 %%DATADIR%%/schemas/xml/dtd/role.dtd
 %%DATADIR%%/schemas/xml/dtd/rule.dtd
@@ -228,6 +242,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/xml/excelement.sch
 %%DATADIR%%/schemas/xml/extension.sch
 %%DATADIR%%/schemas/xml/function.sch
+%%DATADIR%%/schemas/xml/genericsql.sch
 %%DATADIR%%/schemas/xml/idxelement.sch
 %%DATADIR%%/schemas/xml/index.sch
 %%DATADIR%%/schemas/xml/info.sch
@@ -240,6 +255,7 @@ lib/pgmodeler/plugins/xml2object/xml2object.png
 %%DATADIR%%/schemas/xml/opfamily.sch
 %%DATADIR%%/schemas/xml/parameter.sch
 %%DATADIR%%/schemas/xml/permission.sch
+%%DATADIR%%/schemas/xml/policy.sch
 %%DATADIR%%/schemas/xml/position.sch
 %%DATADIR%%/schemas/xml/prependedsql.sch
 %%DATADIR%%/schemas/xml/reference.sch

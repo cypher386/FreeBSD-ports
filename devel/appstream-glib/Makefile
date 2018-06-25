@@ -40,8 +40,16 @@ OPTIONS_DEFINE=	MANPAGES
 OPTIONS_DEFAULT=MANPAGES
 OPTIONS_SUB=	yes
 MANPAGES_CONFIGURE_ENABLE=	man
-MANPAGE_BUILD_DEPENDS=	docbook-xml>=0:textproc/docbook-xml \
+MANPAGES_BUILD_DEPENDS=	docbook-xml>=0:textproc/docbook-xml \
 		docbook-xsl>=0:textproc/docbook-xsl
 MANPAGES_USE=	GNOME=libxslt:build
+
+.include <bsd.port.options.mk>
+
+.if ${ARCH} == powerpc || ${ARCH} == powerpc64
+post-patch:
+	@${REINPLACE_CMD} -e 's|-Wtype-limits||g' \
+		${WRKSRC}/configure
+.endif
 
 .include <bsd.port.mk>

@@ -4,11 +4,10 @@
 CATEGORIES=	devel lang
 PKGNAMESUFFIX=	-fcl-xml
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal XML and DOM library (FCL)
 
+USES=		fpc:run
 USE_FPC=	fcl-base fcl-res rtl-objpas iconvenc
-USE_FPC_RUN=	yes
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc
 WRKUNITDIR=	${FPCSRCDIR}/packages/${PKGNAMESUFFIX:S/-//}

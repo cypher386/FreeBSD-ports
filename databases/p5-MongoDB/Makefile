@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	MongoDB
-PORTVERSION=	1.6.1
+PORTVERSION=	1.8.2
 DISTVERSIONPREFIX=	v
 CATEGORIES=	databases perl5
 MASTER_SITES=	CPAN
@@ -14,7 +14,7 @@ COMMENT=	Mongo Driver for Perl
 LICENSE=	APACHE20
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-BUILD_DEPENDS=	p5-Authen-SCRAM>=0.003:security/p5-Authen-SCRAM \
+BUILD_DEPENDS=	p5-Authen-SCRAM>=0.009:security/p5-Authen-SCRAM \
 		p5-BSON>=1:databases/p5-BSON \
 		p5-Class-XSAccessor>0:devel/p5-Class-XSAccessor \
 		p5-DateTime>=0.78:devel/p5-DateTime \
@@ -44,11 +44,4 @@ USE_PERL5=	configure
 post-install:
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/${SITE_ARCH_REL}/auto/MongoDB/MongoDB.so
 
-.include <bsd.port.pre.mk>
-
-.if ${PERL_LEVEL} < 502200
-BUILD_DEPENDS+=	p5-JSON-PP>=2.27300:converters/p5-JSON-PP
-RUN_DEPENDS+=	p5-JSON-PP>=2.27300:converters/p5-JSON-PP
-.endif
-
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

@@ -1,7 +1,7 @@
-TIMESTAMP = 1487010279
-SHA256 (LibRaw-0.18.1.tar.gz) = 48228f733013a7a0cba08d1821438b983e698feeda7cbc3976ce46ceab07b899
-SIZE (LibRaw-0.18.1.tar.gz) = 1281109
-SHA256 (LibRaw-demosaic-pack-GPL2-0.18.1.tar.gz) = 51d42ef0992517969d1c9f876159ade1047b3772effcf7779b465ae7b98300b6
-SIZE (LibRaw-demosaic-pack-GPL2-0.18.1.tar.gz) = 30779
-SHA256 (LibRaw-demosaic-pack-GPL3-0.18.1.tar.gz) = 9e7020cf8a512f2c9b8699685e4657a474cc03a0314ba56a108ceda26013c841
-SIZE (LibRaw-demosaic-pack-GPL3-0.18.1.tar.gz) = 38536
+TIMESTAMP = 1520784815
+SHA256 (LibRaw-0.18.8.tar.gz) = 56aca4fd97038923d57d2d17d90aa11d827f1f3d3f1d97e9f5a0d52ff87420e2
+SIZE (LibRaw-0.18.8.tar.gz) = 1281773
+SHA256 (LibRaw-demosaic-pack-GPL2-0.18.8.tar.gz) = 0b24bcf7bbb5d13fde58bb071f94dc9354be09bc44b2bba0698493065e99f8da
+SIZE (LibRaw-demosaic-pack-GPL2-0.18.8.tar.gz) = 30868
+SHA256 (LibRaw-demosaic-pack-GPL3-0.18.8.tar.gz) = ffd6916cd66c8101e4e6b589799f256c897748d2fd2486aa34c3705146dbc701
+SIZE (LibRaw-demosaic-pack-GPL3-0.18.8.tar.gz) = 39002

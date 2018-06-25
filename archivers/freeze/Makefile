@@ -5,11 +5,11 @@ PORTNAME=	freeze
 PORTVERSION=	2.5
 PORTREVISION=	2
 CATEGORIES=	archivers
-MASTER_SITES=	ftp://ftp.warwick.ac.uk/pub/compression/ \
+MASTER_SITES=	http://web.warwick.ac.uk/ftp/pub/compression/ \
 		http://www.rebootking.de/distfiles/ \
 		http://ngsoftwareltd.com/freebsd/distfiles/
 
-MAINTAINER=	gabor@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Compression program - often used in QNX
 
 LICENSE=	NONE

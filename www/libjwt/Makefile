@@ -2,11 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	libjwt
-PORTVERSION=	1.7.4
+PORTVERSION=	1.9.0
 DISTVERSIONPREFIX=	v
 CATEGORIES=	www
 
-MAINTAINER=	kevlo@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	JSON Web Token implementation in C
 
 LICENSE=	GPLv2

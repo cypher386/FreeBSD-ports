@@ -3,7 +3,7 @@
 
 PORTNAME=	argyllcms
 PORTVERSION=	1.9.2
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	graphics
 MASTER_SITES=	http://www.argyllcms.com/
 DISTNAME=	Argyll_V${PORTVERSION}_src
@@ -13,11 +13,9 @@ COMMENT=	ICC compatible color management system
 
 LICENSE=	AGPLv3
 
-BROKEN_powerpc64=	Does not build
-
 BUILD_DEPENDS=	jam:devel/jam
 LIB_DEPENDS=	libtiff.so:graphics/tiff \
-		libpng16.so:graphics/png
+		libpng.so:graphics/png
 
 WRKSRC=		${WRKDIR}/Argyll_V${PORTVERSION}
 
@@ -28,13 +26,13 @@ post-patch:
 	@${REINPLACE_CMD} 's:711:755:g' ${WRKSRC}/Jambase
 
 do-build:
-	@cd ${WRKSRC} && ${MAKE_ENV} jam -q -fJambase -j${MAKE_JOBS_NUMBER}
+	@cd ${WRKSRC} && ${MAKE_ENV} jam -dx -q -fJambase -j${MAKE_JOBS_NUMBER}
 
 do-install:
-	@cd ${WRKSRC} && ${SETENV} DESTDIR=${STAGEDIR} PREFIX=${PREFIX} \
+	@cd ${WRKSRC} && ${SETENV} DESTDIR=${STAGEDIR} ${MAKE_ENV} \
 		REFSUBDIR=share/argyll/ref \
-		jam -q -fJambase -j${MAKE_JOBS_NUMBER} install
-	@${MV} ${STAGEDIR}${PREFIX}/bin/License.txt \
+		jam -dx -q -fJambase -j${MAKE_JOBS_NUMBER} install
+	${MV} ${STAGEDIR}${PREFIX}/bin/License.txt \
 		${STAGEDIR}${PREFIX}/share/argyll/
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/*
 

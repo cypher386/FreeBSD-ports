@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	astk
-DISTVERSION=	1.13.8-2
+DISTVERSION=	1.13.10-1
+PORTREVISION=	1
 CATEGORIES=	cad
 .if !defined(CLIENT_SEUL)
 PKGNAMESUFFIX=	-serveur
@@ -25,13 +26,14 @@ LICENSE=	GPLv2
 #
 #-----------------------------------------------------------------------
 
-# There exists a "logical" RUN_DEPENDS towards french/aster and french/eficas
-# for the server part, but it is not set to avoid circular dependences.
+# There exists a "logical" RUN_DEPENDS towards french/aster for the
+# server part, but it is not set to avoid circular dependences.
 
 RUN_DEPENDS+=	${SHELL_INSTALL_ASTER}:shells/${SHIADEP}
 
 .if !defined(CLIENT_SEUL)
-USES+=		gettext python tk:build
+USES+=		gettext python:2.7 shebangfix tk:build
+SHEBANG_FILES=	unittest/run_test.py
 .else
 USES+=		tk
 .endif
@@ -43,7 +45,6 @@ EXTRACT_WRKSRC=	${WRKDIR}/aster-${DISTVERSIONPREFIX}${ASTER_DISTVERSION:S/-/./:R
 NO_ARCH=	yes
 SUB_FILES=	pkg-message
 SUB_LIST=	inst_dir=${inst_dir} tools_dir=${tools_dir}
-PKGMESSAGE=	${WRKDIR}/pkg-message
 LINSTDIR=	aster/ASTK
 inst_dir=	${PREFIX}/${LINSTDIR}
 aster_dir=	${LOCALBASE}/aster/${vaster}
@@ -55,12 +56,6 @@ S_PYLIBS=	share/codeaster/asrun/examples/alamain.py		\
 C_SCRIPTS=	bin/astk bin/bsf
 tools_dir=	${LOCALBASE}/aster/outils
 conf_dir=	${WRKSRC}/etc/astkrc
-
-.if defined(LANG) && ${LANG:Mfr*} != ""
-ASTK_LANG=	FR
-.else
-ASTK_LANG=	ENG
-.endif
 
 .include <bsd.port.pre.mk>
 
@@ -147,7 +142,7 @@ WITH_ED=	gedit
 RUN_DEPENDS+=	${LOCALBASE}/bin/gedit:editors/gedit
 . elif exists(${LOCALBASE}/bin/kwrite)
 WITH_ED=	kwrite
-RUN_DEPENDS+=	${LOCALBASE}/bin/kwrite:editors/kate
+RUN_DEPENDS+=	${LOCALBASE}/bin/kwrite:editors/kate-kde4
 . elif exists(${LOCALBASE}/bin/xedit)
 WITH_ED=	xedit
 RUN_DEPENDS+=	${LOCALBASE}/bin/xedit:x11/xedit
@@ -168,6 +163,12 @@ DOMAIN_NAME=	${SERVER_NAME:S|${HOST_NAME}.||}
 SERVER_NAME=	put.your.fdqn
 HOST_NAME=	this-hostname
 DOMAIN_NAME=	your.domain-name
+.endif
+
+.if defined(LANG) && ${LANG:Mfr*} != ""
+ASTK_LANG=	FR
+.else
+ASTK_LANG=	ENG
 .endif
 
 pre-configure:
@@ -210,7 +211,7 @@ do-configure:
 	${REINPLACE_CMD} -e "s|/opt/aster/NEW9|${aster_dir}|"			\
 		 -e "s|/opt/aster/NEW10|${aster_dir}|"				\
 		-e "s|/opt/aster/ASTK|${inst_dir}|"				\
-		-e "s|/opt/aster/etc|${LOCALBASE}/aster/etc|"			\
+		-e "s|/opt/aster|${LOCALBASE}/aster|g"				\
 		-e "s|/usr/bin/editor|${WITH_ED}|"				\
 		-e "s|/usr/bin/nedit2|${WITH_ED}|"				\
 		-e "s|/usr/bin/nedit|${WITH_ED}|"				\

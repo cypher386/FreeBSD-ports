@@ -2,7 +2,7 @@
 
 PORTNAME=	libtorrent
 PORTVERSION=	0.13.6
-PORTREVISION=	2
+PORTREVISION=	5
 CATEGORIES=	net-p2p
 MASTER_SITES=	http://rtorrent.net/downloads/
 
@@ -11,6 +11,8 @@ COMMENT=	BitTorrent Library written in C++
 
 LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
+
+BROKEN_SSL=	openssl-devel
 
 CONFLICTS_INSTALL=	rblibtorrent-[0-9]* rblibtorrent-devel-[0-9]*
 
@@ -35,25 +37,22 @@ KQUEUE_CONFIGURE_WITH=	kqueue
 
 .include <bsd.port.pre.mk>
 
-.if ${SSL_DEFAULT:Mopenssl-devel}
-BROKEN=		Does not build with openssl-devel
-.endif
-
-# Disable amd64 atomic ops on i386 when using gcc
-# undefined reference to __sync_add_and_fetch_8
-# undefined reference to __sync_fetch_and_and_8
-.if ${ARCH} == i386 && ${CHOSEN_COMPILER_TYPE} == gcc
+# Disable instrumentation, which requires 64-bit atomic ops, on i386 (when
+# using gcc) and powerpc to avoid linking errors:
+# /usr/local/lib/libtorrent.so: undefined reference to `__sync_add_and_fetch_8'
+# /usr/local/lib/libtorrent.so: undefined reference to `__sync_fetch_and_and_8'
+.if ${ARCH} == i386 && ${CHOSEN_COMPILER_TYPE} == gcc || ${ARCH} == powerpc
 CONFIGURE_ARGS+=--disable-instrumentation
 .endif
 
 # Workaround to build on >= 10.x
-.if ${OPSYS} == FreeBSD && ${OSVERSION} >= 1000000
+.if ${OPSYS} == FreeBSD
 USE_CXXSTD=	c++11
 EXTRA_PATCHES+=	${FILESDIR}/extra-clang
 .endif
 
 post-patch:
-.if ${OPSYS} == FreeBSD && ${OSVERSION} >= 1000000
+.if ${OPSYS} == FreeBSD
 	@${FIND} ${WRKSRC} \( -name '*.h' -o -name '*.cc' \) -type f \
 		-exec ${REINPLACE_CMD} -e 's/tr1::/std::/g' {} \; \
 		-exec ${REINPLACE_CMD} -e 's/std::std::/std::/g' {} \; \

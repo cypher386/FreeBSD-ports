@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	shibboleth-sp
-PORTVERSION=	2.6.0
+PORTVERSION=	2.6.1
 PORTREVISION=	2
 CATEGORIES=	security www
 MASTER_SITES=	http://shibboleth.net/downloads/service-provider/${PORTVERSION}/
@@ -16,7 +16,7 @@ BUILD_DEPENDS=	boost-libs>=0:devel/boost-libs
 LIB_DEPENDS=	libsaml.so:security/opensaml2 \
 		libxmltooling-lite.so:devel/xmltooling \
 		liblog4shib.so:devel/log4shib \
-		libxerces-c-3.1.so:textproc/xerces-c3 \
+		libxerces-c.so:textproc/xerces-c3 \
 		libxml-security-c.so:security/apache-xml-security-c
 
 USES=		gmake tar:bzip2 ssl
@@ -45,6 +45,8 @@ MEMCACHED_DESC=	Store sessions in memcached
 FASTCGI_DESC=	FastCGI protocol support, e.g. for NGINX
 APACHE_DESC=	Build Apache module
 
+APACHE_USES=	apache:2.2+
+
 ODBC_CONFIGURE_ENABLE=	odbc
 ODBC_LIB_DEPENDS=	libodbc.so:databases/unixODBC
 
@@ -71,8 +73,7 @@ CONFIGURE_ARGS+=	--disable-doxygen-doc
 .include <bsd.port.pre.mk>
 
 .if ${PORT_OPTIONS:MAPACHE}
-USE_APACHE=	22+
-.if "${APACHE_VERSION}" == 22
+.if "${APACHE_VERSION}" == 2.2
 CONFIGURE_ARGS+=--disable-apache-24 --enable-apache-22 --with-apxs22=${APXS}
 PLIST_SUB+=	WITH_APACHE_22=""
 PLIST_SUB+=	WITH_APACHE_24="@comment "

@@ -3,36 +3,30 @@
 
 PORTNAME=	xface.el
 PORTVERSION=	1.3.6.24
-PORTREVISION=	13
+PORTREVISION=	17
 CATEGORIES=	graphics elisp
 MASTER_SITES=	http://www.jpl.org/ftp/pub/elisp/ \
 		ftp://ftp.jpl.org/pub/elisp/
-PKGNAMESUFFIX=	-${EMACS_PORT_NAME}
+PKGNAMESUFFIX=	${EMACS_PKGNAMESUFFIX}
 DISTNAME=	x-face-${PORTVERSION}
-DISTFILES=	${DISTNAME}.tar.gz \
-		x-face-e21.el.gz
-EXTRACT_ONLY=	${DISTNAME}.tar.gz
 
 MAINTAINER=	ports@FreeBSD.org
 COMMENT=	X-Face encoder/decoder/viewer for Emacsen
 
-EMACS_PORT_NAME?=	emacs25
+LICENSE=	GPLv2+
+
+.if ${FLAVOR:U} != devel && ${FLAVOR:U} != devel_nox
+# http://pkg.awarnach.mathstat.dal.ca/data/11i386-default/2018-05-30_07h36m11s/logs/errors/xface.el-emacs26-1.3.6.24_18.log
+BROKEN=		fails to build
+.endif
 
 RUN_DEPENDS=	compface:mail/faces
 
-USE_EMACS=	yes
+USES=		emacs
+EMACS_FLAVORS_EXCLUDE=	devel_full devel_nox # fail to build
 
 LISP_FILES=	x-face
-.if (${EMACS_PORT_NAME} == xemacs21 || ${EMACS_PORT_NAME} == xemacs21-mule)
-LISPDIR=	${EMACS_SITE_LISPDIR}/x-face
-LISP_FILES+=	x-face-xmas
-PLIST_SUB+=	E21_ONLY="@comment " \
-		XEMACS_ONLY=""
-.else
 LISPDIR=	${EMACS_VERSION_SITE_LISPDIR}/x-face
-PLIST_SUB+=	E21_ONLY="@comment " \
-		XEMACS_ONLY="@comment "
-.endif
 PLIST_SUB+=	LISPDIR=${LISPDIR} \
 		DOCSDIR=share/doc/${PORTNAME}
 
@@ -44,6 +38,8 @@ do-install:
 	${INSTALL_DATA} ${WRKSRC}/${i}.el ${WRKSRC}/${i}.elc \
 		${STAGEDIR}${PREFIX}/${LISPDIR}
 .endfor
+
+do-install-DOCS-on:
 	@${MKDIR} ${STAGEDIR}${DOCSDIR}
 	(cd ${WRKSRC} && ${INSTALL_DATA} METHOD.ja README.ja README-Anim.ja \
 		TODO.ja ${STAGEDIR}${DOCSDIR})

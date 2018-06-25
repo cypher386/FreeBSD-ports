@@ -12,6 +12,11 @@ COMMENT=	Graphic development lightweight API
 
 LICENSE=	LGPL21
 
+BROKEN_aarch64=		fails to install: armasm_memcpy.h:No such file or directory
+BROKEN_armv6=		fails to compile: invokes x86 assembler
+BROKEN_armv7=		fails to compile: invokes x86 assembler
+BROKEN_powerpc64=	fails to install: include/directfb/direct/ppc_asm.h:No such file or directory
+
 LIB_DEPENDS=	libpng.so:graphics/png
 
 OPTIONS_DEFINE=	FREETYPE X11 SDL UNIQUE TEST DOCS
@@ -27,8 +32,6 @@ USES=		cpe gmake jpeg libtool ncurses pathfix perl5 pkgconfig
 USE_LDCONFIG=	yes
 USE_PERL5=	build
 PORTDOCS=	*
-
-BROKEN_armv6=	fails to compile: invokes x86 assembler
 
 DIRECTFB_SHLIB=	6.0.11	# LT_BINARY.LT_AGE.LT_REVISION
 DIRECTFB_BIN=	${DIRECTFB_SHLIB:R:R}	# LT_BINARY
@@ -60,13 +63,13 @@ TEST_CONFIGURE_WITH=	tests
 
 .include <bsd.port.options.mk>
 
-.if ${ARCH} == "armv6" || ${ARCH} == "aarch64"
+.if ${ARCH} == aarch64 || ${ARCH} == armv6 || ${ARCH} == armv7
 PLIST_SUB+=	ARCH_ARM=""
 .else
 PLIST_SUB+=	ARCH_ARM="@comment "
 .endif
 
-.if ${ARCH} == "powerpc" || ${ARCH} == "powerpc64"
+.if ${ARCH} == powerpc || ${ARCH} == powerpc64
 PLIST_SUB+=	ARCH_POWERPC=""
 .else
 PLIST_SUB+=	ARCH_POWERPC="@comment "

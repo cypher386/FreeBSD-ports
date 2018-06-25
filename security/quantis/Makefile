@@ -3,7 +3,7 @@
 
 PORTNAME=	quantis
 DISTVERSION=	v13.11.08
-PORTREVISION=	3
+PORTREVISION=	9
 CATEGORIES=	security devel java
 MASTER_SITES=	http://www.idquantique.com/~download/Quantis/ \
 		LOCAL/ale
@@ -14,7 +14,11 @@ COMMENT=	Libraries and utilities to access Quantis devices
 
 LICENSE=	BSD3CLAUSE GPLv2
 LICENSE_COMB=	dual
-LICENSE_FILE=	${WRKSRC}/Quantis-${DISTVERSION}/License.txt
+LICENSE_FILE_BSD3CLAUSE=${WRKSRC}/../License.txt
+
+BROKEN_aarch64=		fails to build: Could not find JNI (missing: JAVA_AWT_LIBRARY JAVA_JVM_LIBRARY)
+BROKEN_armv6=		fails to build: Could not find JNI (missing: JAVA_AWT_LIBRARY JAVA_JVM_LIBRARY)
+BROKEN_armv7=		fails to build: Could not find JNI (missing: JAVA_AWT_LIBRARY JAVA_JVM_LIBRARY)
 
 OPTIONS_DEFINE=	PCI USB JAVA COMPAT TOOL GUI DOCS EXAMPLES
 OPTIONS_DEFAULT=PCI USB JAVA TOOL GUI

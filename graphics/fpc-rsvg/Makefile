@@ -4,9 +4,9 @@
 CATEGORIES=	graphics lang
 PKGNAMESUFFIX=	-rsvg
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal interface to librsvg2 library
 
+USES=		fpc
 USE_FPC=	cairo fcl-base fcl-image fcl-res gtk2 pasjpeg rtl-objpas x11
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

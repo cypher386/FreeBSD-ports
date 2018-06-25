@@ -1,12 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	meta1
-PORTVERSION=	1.1.0a.7.0
-DISTVERSION=	1.1.Alpha7.0
-PORTREVISION=	0
+PORTVERSION=	1.1.0a.10.0
 CATEGORIES=	mail ipv6
-MASTER_SITES=	http://www.MeTA1.org/download/.alpha/ween/
+MASTER_SITES=	http://www.MeTA1.org/download/.alpha/tlsa2/
 PKGNAMESUFFIX?=	${TLS_SUFFIX}${SASL_SUFFIX}${BERKELEYDB_SUFFIX}${PMILTER_SUFFIX}${PKGNAMESUFFIX2}
+DISTNAME=	${PORTNAME}-1.1.Alpha10.0
 
 MAINTAINER=	dinoex@FreeBSD.org
 COMMENT=	Secure and efficient mail gateway
@@ -14,7 +13,6 @@ COMMENT=	Secure and efficient mail gateway
 LICENSE=	BSD4CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-NOT_FOR_ARCHS=	ia64
 MAKE_JOBS_UNSAFE=	yes
 CONFLICTS=	smx-*
 MANUAL_PACKAGE_BUILD=	needs hostname
@@ -27,7 +25,6 @@ IGNORE=		your system does not support sysvipc
 .endif
 
 USES=	libtool
-WRKSRC=		${WRKDIR}/${PORTNAME}-${DISTVERSION}
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS+=	--disable-dependency-tracking
 MAKE_ENV+=	META1CONFDIR="${META1CONFDIR}"
@@ -67,7 +64,10 @@ SASL2_CONFIGURE_ENABLE=	SASL
 SASL2_CONFIGURE_ON=	--with-sasl-incdir=${LOCALBASE}/include \
 			--with-sasl-libdir=${LOCALBASE}/lib
 SASL2AUTHD_RUN_DEPENDS=	${LOCALBASE}/sbin/saslauthd:security/cyrus-sasl2-saslauthd
+TLS_USES=		ssl
 TLS_CONFIGURE_ENABLE=	TLS
+TLS_CPPFLAGS=		-I${LOCALBASE}/include
+TLS_LDFLAGS=		-I${LOCALBASE}/lib
 
 .include <bsd.port.options.mk>
 

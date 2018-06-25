@@ -6,7 +6,7 @@ DISTVERSION=	${QT5_VERSION}
 CATEGORIES=	misc
 MASTER_SITES=	QT/official_releases/qt/${QT5_VERSION:R}/${QT5_VERSION}/single
 PKGNAMEPREFIX=	qt5-
-DISTNAME=	qt-everywhere-opensource-src-${QT5_VERSION}
+DISTNAME=	qt-everywhere-src-${QT5_VERSION}
 DIST_SUBDIR=	KDE/Qt/${QT5_VERSION}
 
 MAINTAINER=	kde@FreeBSD.org
@@ -19,7 +19,7 @@ USES=		tar:xz
 USE_QT5=	#
 
 DESCR=		${.CURDIR:H:H}/devel/qt5/pkg-descr
-DISTINFO_FILE=	${.CURDIR:H:H}/misc/qt5-doc/distinfo
+DISTINFO_FILE=	${.CURDIR}/distinfo
 
 EXAMPLESDIR=	${PREFIX}/share/examples/qt5
 # The destination location depends on the values given in

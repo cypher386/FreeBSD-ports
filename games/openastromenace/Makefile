@@ -3,7 +3,7 @@
 
 PORTNAME=	openastromenace
 PORTVERSION=	1.3.2
-PORTREVISION=	3
+PORTREVISION=	4
 CATEGORIES=	games
 MASTER_SITES=	SF/${PORTNAME}/${PORTVERSION}/
 DISTNAME=	astromenace-src-${PORTVERSION}
@@ -25,6 +25,7 @@ USE_GL=		gl glu
 USE_SDL=	sdl
 WRKSRC=		${WRKDIR}/AstroMenace
 CMAKE_ARGS=	-DDATADIR="${DATADIR}"
+LLD_UNSAFE=	yes
 
 PLIST_FILES=	bin/AstroMenace \
 		share/pixmaps/${PORTNAME}.png

@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	freebsd-doc
-PORTVERSION=	50088
+PORTVERSION=	51730
 PORTEPOCH=	1
 CATEGORIES=	misc docs
 MASTER_SITES=	LOCAL/blackend
@@ -11,9 +11,11 @@ PKGNAMEPREFIX?=	en-
 MAINTAINER=	doceng@FreeBSD.org
 COMMENT?=	Documentation from the FreeBSD Documentation Project
 
+LICENSE=	BSD2CLAUSE
+
 BUILD_DEPENDS=	docproj>=2.0_6:textproc/docproj
 
-USES=		uidfix
+USES=		groff uidfix
 WRKSRC=		${WRKDIR}/doc
 PLIST_SUB=	DOCSDIR=${DOCBASE} \
 		DOCLANG=${DOCLANG} \
@@ -65,11 +67,7 @@ PLIST_FORMATS+=	${O:tl:S,_,-,}
 BUILD_DEPENDS+=	fop:textproc/fop \
 		${LOCALBASE}/share/fonts/GentiumPlus/GentiumPlus-R.ttf:x11-fonts/gentium-plus \
 		${LOCALBASE}/share/fonts/Droid/DroidSans.ttf:x11-fonts/droid-fonts-ttf \
-		${LOCALBASE}/share/fonts/Lohit/Lohit-Bengali.ttf:x11-fonts/lohit \
-		${LOCALBASE}/share/fonts/dejavu/DejaVuSansMono.ttf:x11-fonts/dejavu \
-		${LOCALBASE}/share/fonts/TrueType/gkai00mp.ttf:chinese/arphicttf \
-		${LOCALBASE}/share/fonts/OTF/ipam.otf:japanese/font-ipa \
-		${LOCALBASE}/share/fonts/nanum-ttf/NanumBarunGothic.ttf:korean/nanumfonts-ttf
+		${LOCALBASE}/share/fonts/dejavu/DejaVuSansMono.ttf:x11-fonts/dejavu
 .endif
 
 # when html or html-split is defined as the format, add HTML_COMMON.

@@ -3,7 +3,7 @@
 
 PORTNAME=	virtualgl
 PORTVERSION=	2.4.1
-PORTREVISION=	2
+PORTREVISION=	4
 CATEGORIES=	x11 graphics
 MASTER_SITES=	SF/${PORTNAME}/${PORTVERSION}
 DISTNAME=	VirtualGL-${PORTVERSION}
@@ -20,7 +20,7 @@ ONLY_FOR_ARCHS=	amd64 i386
 CMAKE_INSTALL_PREFIX=	${LOCALBASE}/VirtualGL
 DOCSDIR=	${LOCALBASE}/VirtualGL/doc
 
-USES=		cmake compiler:c++11-lang
+USES=		cmake:noninja compiler:c++11-lang
 USE_GL=		gl glu
 USE_XORG=	x11 xcb xext
 CMAKE_ARGS=	-DTJPEG_INCLUDE_DIR=${LOCALBASE}/include\
@@ -48,5 +48,9 @@ PLIST_SUB+=	AMD64="@comment "
 PLIST_SUB+=	I386="@comment "
 PLIST_SUB+=	AMD64=""
 .endif
+
+post-patch:
+	@${REINPLACE_CMD} -e '/^#define CHECKGL/s,m);, &,' \
+		${WRKSRC}/server/VirtualDrawable.cpp
 
 .include <bsd.port.post.mk>

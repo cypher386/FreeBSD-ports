@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	conform
-DISTVERSION=	2.3.2
+DISTVERSION=	2.5.2
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Easy release configuration for Elixir apps
 
 LICENSE=	APACHE20 MIT

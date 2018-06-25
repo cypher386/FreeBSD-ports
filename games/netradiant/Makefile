@@ -3,7 +3,7 @@
 
 PORTNAME=	netradiant
 PORTVERSION=	20130630
-PORTREVISION=	6
+PORTREVISION=	8
 CATEGORIES=	games cad
 MASTER_SITES=	http://ingar.satgnu.net/gtkradiant/files/ \
 		http://freebsd.nsu.ru/distfiles/
@@ -19,6 +19,10 @@ LICENSE=	GPLv2
 LIB_DEPENDS=	libgtkglext-x11-1.0.so:x11-toolkits/gtkglext \
 		libwebp.so:graphics/webp
 
+BROKEN_aarch64=		fails to link: ldd: install/modules/archivepak.so: not a FreeBSD ELF shared object
+BROKEN_armv6=		fails to build: h2data.armv6: No such file or directory
+BROKEN_armv7=		fails to build: h2data.armv7: No such file or directory
+
 USES=		gmake jpeg pkgconfig tar:bzip2
 USE_GL=		gl
 USE_GNOME=	gtk20 libxml2
@@ -32,18 +36,10 @@ SUB_FILES=	${PORTNAME}
 SUB_LIST=	ARCH=${ARCH}
 PLIST_SUB:=	${SUB_LIST}
 
-BROKEN_aarch64=		Fails to link: ldd: install/modules/archivepak.so: not a FreeBSD ELF shared object
-
 post-patch:
 # Add missing checks for __FreeBSD__
 	@${FIND} ${WRKSRC}/tools -name '*.[ch]' | ${XARGS} ${REINPLACE_CMD} \
 		-e 's/__linux__/__${OPSYS}__ ) || defined ( &/'
-# Fix the build against Clang
-	@${REINPLACE_CMD} -e '/#include "generic\/reference\.h"/x ; 288G' \
-		${WRKSRC}/libs/scenelib.h
-	@${REINPLACE_CMD} -e '/#include "generic\/referencecounted\.h/ { \
-		x ; s/^/#include "scenelib.h"/ ; G ; }' \
-			${WRKSRC}/plugins/mapq3/parse.h
 
 pre-install:
 # Fix permissions of some files (drop bogus execute bit)

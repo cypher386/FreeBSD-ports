@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	cyrus-imapd
-PORTVERSION=	3.0.0
-#PORTREVISION=	0
+PORTVERSION=	3.0.7
+PORTREVISION=	2
 CATEGORIES=	mail ipv6
 MASTER_SITES=	ftp://ftp.cyrusimap.org/cyrus-imapd/ \
-		http://cyrusimap.org/releases/
+		https://www.cyrusimap.org/releases/
 PKGNAMESUFFIX=	30
 
 MAINTAINER=	ume@FreeBSD.org
@@ -14,6 +14,10 @@ COMMENT=	The cyrus mail server, supporting POP3 and IMAP4 protocols
 LICENSE=	BSD4CLAUSE
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+BROKEN_armv6=		fails to compile: gmake[1]: *** [Makefile:6747: lib/imapopts.c] Error 1
+BROKEN_armv7=		fails to compile: gmake[1]: *** [Makefile:6718: lib/imapopts.c] Error 1
+BROKEN_powerpc64=	fails to compile: mailbox.h: redefinition of typedef 'message_t'
+
 LIB_DEPENDS=	libsasl2.so:security/cyrus-sasl2 \
 		libicuuc.so:devel/icu \
 		libjansson.so:devel/jansson \
@@ -21,9 +25,8 @@ LIB_DEPENDS=	libsasl2.so:security/cyrus-sasl2 \
 
 CONFLICTS_INSTALL=	cyrus-imapd-2.* cyrus-imapd2*
 
-USE_RC_SUBR=	imapd
-
 USES=		cpe gmake libtool perl5 pkgconfig ssl
+USE_RC_SUBR=	imapd
 GNU_CONFIGURE=	yes
 CYRUS_PREFIX=	${PREFIX}/cyrus
 CONFIGURE_ARGS=	--libexecdir=${CYRUS_PREFIX}/libexec \
@@ -42,10 +45,11 @@ MAKE_JOBS_UNSAFE=	yes
 CPE_VENDOR=	cmu
 CPE_PRODUCT=	cyrus_imap_server
 
-OPTIONS_DEFINE=		AUTOCREATE BACKUP CLAMAV HTTP IDLED LDAP MURDER MYSQL \
-			NNTP PGSQL REPLICATION SNMP SQLITE SQUAT DOCS EXAMPLES
+OPTIONS_DEFINE=		AUTOCREATE BACKUP CLAMAV HTTP IDLED LDAP LMDB MURDER \
+			MYSQL NNTP PGSQL REPLICATION SNMP SQLITE SQUAT XAPIAN \
+			DOCS
 #OPTIONS_DEFINE+=	DRAC
-OPTIONS_DEFAULT=	CLAMAV IDLED SQLITE SQUAT
+OPTIONS_DEFAULT=	AUTOCREATE CLAMAV IDLED SQLITE SQUAT
 OPTIONS_SUB=		yes
 AUTOCREATE_DESC=	Enable autocreate support
 AUTOCREATE_CONFIGURE_ENABLE=	autocreate
@@ -59,12 +63,10 @@ DRAC_CONFIGURE_ON=	--with-drac=${LOCALBASE}
 DRAC_BUILD_DEPENDS=	${LOCALBASE}/lib/libdrac.a:mail/drac
 HTTP_DESC=		Enable HTTP support
 HTTP_CONFIGURE_ENABLE=	http
-#HTTP_BUILD_DEPENDS=	${LOCALBASE}/bin/xxd:editors/vim-lite
 HTTP_LIB_DEPENDS=	libical.so:devel/libical \
 			libnghttp2.so:www/libnghttp2 \
-			libshp.so:devel/shapelib
-# Our libbrotli is too old
-#HTTP_LIB_DEPENDS+=	libbrotlidec.so:devel/libbrotli
+			libshp.so:devel/shapelib \
+			libbrotlidec.so:archivers/brotli
 # Need additional patch to opendkim
 #HTTP_LIB_DEPENDS+=	libopendkim.so:mail/opendkim
 #HTTP_CPPFLAGS+=	-I${LOCALBASE}/include/opendkim
@@ -74,13 +76,14 @@ IDLED_CONFIGURE_ENABLE=	idled
 LDAP_DESC=		Enable LDAP support (experimental)
 LDAP_USE=		OPENLDAP=yes
 LDAP_CONFIGURE_ON=	--with-ldap=${LOCALBASE}
+LMDB_DESC=		Use LMDB backend
+LMDB_LIB_DEPENDS=	liblmdb.so:databases/lmdb
+LMDB_CONFIGURE_WITH=	lmdb
 MURDER_DESC=		Enable IMAP Murder support
 MURDER_CONFIGURE_ENABLE=murder
 MURDER_MAKE_ENV=	PTHREAD_LIBS="-lpthread"
 MYSQL_USES=		mysql
-MYSQL_CONFIGURE_ON=	--with-mysql=yes \
-			--with-mysql-libdir=${LOCALBASE}/lib/mysql \
-			--with-mysql-incdir=${LOCALBASE}/include/mysql
+MYSQL_CONFIGURE_WITH=	mysql
 NNTP_DESC=		Enable NNTP support
 NNTP_CONFIGURE_ENABLE=	nntp
 PGSQL_USES=		pgsql
@@ -91,16 +94,14 @@ SNMP_LIB_DEPENDS=	libnetsnmp.so:net-mgmt/net-snmp
 SNMP_CONFIGURE_ON=	--with-snmp=${LOCALBASE}
 SNMP_CONFIGURE_OFF=	--with-snmp=no
 SQLITE_CONFIGURE_ON=	--with-sqlite=${LOCALBASE}
-SQLITE_BROKEN_OFF=	SQLITE is requited
+SQLITE_BROKEN_OFF=	SQLITE is required
 SQUAT_DESC=		Enable Squat support
 SQUAT_CONFIGURE_OFF=	--disable-squat
-# Need additional patch to xapian
-#OPTIONS_DEFINE+=	XAPIAN
-#XAPIAN_DESC=		Enable Xapian support
-#XAPIAN_CONFIGURE_ENABLE=xapian
-#XAPIAN_LIB_DEPENDS=	libxapian.so:databases/xapian-core
+XAPIAN_DESC=		Enable Xapian support
+XAPIAN_CONFIGURE_ENABLE=xapian
+XAPIAN_LIB_DEPENDS=	libxapian.so:databases/xapian-core
 
-OPTIONS_RADIO=			GSSAPI
+OPTIONS_RADIO=			GSSAPI READLINE
 OPTIONS_RADIO_GSSAPI=		GSSAPI_HEIMDAL GSSAPI_MIT
 .if exists(/usr/lib/libkrb5.a)
 OPTIONS_RADIO_GSSAPI+=		GSSAPI_BASE
@@ -115,6 +116,12 @@ GSSAPI_HEIMDAL_CONFIGURE_ON=	--enable-gssapi="${GSSAPIBASEDIR}" \
 GSSAPI_MIT_USES=		gssapi:mit
 GSSAPI_MIT_CONFIGURE_ON=	--enable-gssapi="${GSSAPIBASEDIR}" \
 				--with-gss_impl=mit
+
+OPTIONS_RADIO_READLINE=		READLINE_GNU READLINE_PERL
+READLINE_GNU_DESC=		Use Term::Readline::GNU for cyradm
+READLINE_GNU_RUN_DEPENDS=	p5-Term-ReadLine-Gnu>=0:devel/p5-Term-ReadLine-Gnu
+READLINE_PERL_DESC=		Use Term::Readline::Perl for cyradm
+READLINE_PERL_RUN_DEPENDS=	p5-Term-ReadLine-Perl>=0:devel/p5-Term-ReadLine-Perl
 
 MANDIRS=	${CYRUS_PREFIX}/man
 
@@ -137,21 +144,17 @@ CYRUS_MAN8=	arbitron backupd chk_cyrus ctl_backups ctl_conversationsdb \
 		cyr_buildinfo cyr_dbtool cyr_deny cyr_df cyr_expire cyr_info \
 		cyr_synclog cyr_virusscan deliver fud idled imapd ipurge lmtpd \
 		master mbexamine mbpath mbtool notifyd pop3d quota reconstruct \
-		restore rmnews smmapd squatter timsieved tls_prune unexpunge
+		restore rmnews smmapd timsieved tls_prune unexpunge
 CYRUS_PERL_MAN1=cyradm
 CYRUS_PERL_MAN3=Cyrus::Annotator::Daemon Cyrus::Annotator::Message \
 		Cyrus::IMAP Cyrus::IMAP::Admin Cyrus::IMAP::IMSP \
 		Cyrus::IMAP::Shell Cyrus::SIEVE::managesieve
-
-CONFS=		cmu-backend.conf cmu-frontend.conf normal.conf prefork.conf \
-		small.conf
 
 .include <bsd.port.options.mk>
 
 .if ${PORT_OPTIONS:MDRAC}
 IGNORE=		DRAC is not available
 # EXTRA_PATCHES+=	${FILESDIR}/extra-patch-cmulocal__sasl2.m4
-# USE_AUTOTOOLS=	autoconf autoheader
 .endif
 
 .if ${PORT_OPTIONS:MHTTP} || ${PORT_OPTIONS:MSQLITE}
@@ -171,6 +174,12 @@ CYRUS_MAN8+=	fetchnews nntpd
 .endif
 .if ${PORT_OPTIONS:MREPLICATION}
 CYRUS_MAN8+=	sync_client sync_reset sync_server
+.endif
+.if ${PORT_OPTIONS:MSQUAT} || ${PORT_OPTIONS:MXAPIAN}
+CYRUS_MAN8+=	squatter
+PLIST_SUB+=	SQUATTER=""
+.else
+PLIST_SUB+=	SQUATTER="@comment "
 .endif
 
 .if ${PORT_OPTIONS:MDRAC}
@@ -199,7 +208,7 @@ post-install:
 	${MKDIR} ${STAGEDIR}${EXAMPLESDIR}
 	${INSTALL_DATA} ${FILESDIR}/imapd.conf \
 		${STAGEDIR}${EXAMPLESDIR}
-	${INSTALL_DATA} ${WRKSRC}/master/conf/normal.conf \
+	${INSTALL_DATA} ${WRKSRC}/doc/examples/cyrus_conf/normal.conf \
 		${STAGEDIR}${EXAMPLESDIR}
 	${INSTALL_SCRIPT} ${WRKSRC}/tools/mkimap \
 		${STAGEDIR}${CYRUS_PREFIX}/sbin/mkimap
@@ -226,14 +235,5 @@ post-install-DOCS-on:
 	cd ${WRKSRC}/doc && ${COPYTREE_SHARE} . ${STAGEDIR}${DOCSDIR} \
 		"! ( -path */html/_sources* -o -name .buildinfo )"
 	${RM} -r ${STAGEDIR}${DOCSDIR}/rst ${STAGEDIR}${DOCSDIR}/source
-
-# there are already files in EXAMPLESDIR at that point, so no
-# need to create it.
-post-install-EXAMPLES-on:
-.for f in ${CONFS:Nnormal.conf}
-	@${INSTALL_DATA} ${WRKSRC}/master/conf/${f} \
-		${STAGEDIR}${EXAMPLESDIR}
-	@${ECHO_CMD} ${EXAMPLESDIR:S,^${PREFIX}/,,}/${f} >>${TMPPLIST}
-.endfor
 
 .include <bsd.port.mk>

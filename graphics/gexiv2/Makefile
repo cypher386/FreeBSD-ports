@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	gexiv2
-PORTVERSION=	0.10.5
+PORTVERSION=	0.10.6
+PORTREVISION=	1
 CATEGORIES=	graphics
 MASTER_SITES=	GNOME/sources/gexiv2/${PORTVERSION:R}
 
@@ -29,6 +30,6 @@ pre-install:
 
 post-install:
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/libgexiv2.so
-	${RM} ${STAGEDIR}${PREFIX}/lib/python*/site-packages/gi/overrides/GExiv2.py
+	${RM} -r ${STAGEDIR}${PREFIX}/lib/python*
 
 .include <bsd.port.mk>

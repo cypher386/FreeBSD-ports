@@ -7,7 +7,7 @@
 
 PORTNAME=	sphinxsearch
 PORTVERSION=	2.2.11
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	textproc databases
 MASTER_SITES=	http://sphinxsearch.com/files/ \
 		http://snowball.tartarus.org/dist/:libstemmer
@@ -80,6 +80,7 @@ PGSQL_USES=		pgsql
 RE2_DESC=		Enable re2 regular expression library
 RE2_CONFIGURE_WITH=	re2
 RE2_BUILD_DEPENDS=	${LOCALBASE}/lib/libre2.a:devel/re2
+RE2_BROKEN=		Bad C++ code in re2.h
 
 SYSLOG_DESC=		Enable logging via syslog
 SYSLOG_CONFIGURE_WITH=	syslog

@@ -3,9 +3,9 @@
 CATEGORIES=	lang
 PKGNAMESUFFIX=	-rtl-console
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal console abstraction unit (RTL)
 
+USES=		fpc
 USE_FPC=	rtl-extra
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

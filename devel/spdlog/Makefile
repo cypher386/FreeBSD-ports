@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	spdlog
-PORTVERSION=	0.13.0
-PORTREVISION=	1
+PORTVERSION=	0.17.0
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 
@@ -16,6 +15,6 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 USE_GITHUB=	yes
 GH_ACCOUNT=	gabime
 
-USES=		cmake dos2unix pathfix
+USES=		cmake compiler:c++11-lib dos2unix pathfix
 
 .include <bsd.port.mk>

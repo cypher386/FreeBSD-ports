@@ -2,8 +2,8 @@
 
 PORTNAME=	libvmod-awsrest
 DISTVERSIONPREFIX=	v
-DISTVERSION=	0.4
-DISTVERSIONSUFFIX=	-varnish40
+DISTVERSION=	51.8
+#DISTVERSIONSUFFIX=	-varnish40
 CATEGORIES=	www
 PKGNAMEPREFIX=	varnish-
 
@@ -16,7 +16,7 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 BUILD_DEPENDS=	rst2man:textproc/py-docutils
 LIB_DEPENDS=	libmhash.so:security/mhash
 
-USES=		autoreconf gmake libtool pkgconfig python:2,build varnish
+USES=		autoreconf gmake libtool pkgconfig python:2.7,build varnish
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--disable-static
 INSTALL_TARGET=	install-strip

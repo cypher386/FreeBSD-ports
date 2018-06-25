@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	libssh
-DISTVERSION=	0.7.4
+DISTVERSION=	0.7.5
 CATEGORIES=	security devel
 MASTER_SITES=	https://git.libssh.org/projects/libssh.git/snapshot/
 
@@ -11,6 +11,9 @@ COMMENT=	Library implementing the SSH1 and SSH2 protocol
 
 LICENSE=	LGPL21
 LICENSE_FILE=	${WRKSRC}/COPYING
+
+BROKEN_SSL=	openssl-devel
+BROKEN_SSL_REASON_openssl-devel=	error: variable has incomplete type 'EVP_MD_CTX' (aka 'struct evp_md_ctx_st')
 
 OPTIONS_DEFINE=	SSH1 STATIC
 OPTIONS_RADIO=	CRYPTO

@@ -1,4 +1,3 @@
-# Created by: Jason Bacon <bacon4000@gmail.com>
 # $FreeBSD$
 
 PORTNAME=	plinkseq
@@ -9,14 +8,14 @@ MASTER_SITES=	http://psychgen.u.hpc.mssm.edu/plinkseq_downloads/
 # Default DISTNAME is correct, so leave it alone.
 DISTFILES=	${PORTNAME}-src-${PORTVERSION}.tgz
 
-MAINTAINER=	bacon4000@gmail.com
+MAINTAINER=	jwb@FreeBSD.org
 COMMENT=	Toolset for working with human genetic variation data
 
 LICENSE=	GPLv2
 
 BROKEN_aarch64=		Does not build: Host architecture was not detected as supported by protobuf
 BROKEN_mips64=		Does not build: Host architecture was not detected as supported by protobuf
-BROKEN_powerpc64=	Does not build
+BROKEN_powerpc64=	Does not build: atomicops.h: error: stray '\#' in program
 
 USES=		libtool gmake
 

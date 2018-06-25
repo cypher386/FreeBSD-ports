@@ -2,20 +2,18 @@
 # $FreeBSD$
 
 PORTNAME=	pkg_replace
-PORTVERSION=	20161113
+PORTVERSION=	20180530
 CATEGORIES=	ports-mgmt
 MASTER_SITES=	http://member.tokoha-u.ac.jp/~kdeguchi/download/
 
 MAINTAINER=	kdeguchi@sz.tokoha-u.ac.jp
 COMMENT=	Utility for upgrading installed packages
 
+LICENSE=	PD
+
 USES=		tar:xz
 NO_ARCH=	yes
 NO_BUILD=	yes
-
-PLIST_FILES=	sbin/pkg_replace \
-		man/man1/pkg_replace.1.gz \
-		"@sample %%ETCDIR%%/pkg_replace.conf.sample"
 
 SUB_FILES=	pkg-message
 

@@ -1,31 +1,29 @@
 # $FreeBSD$
 
 PORTNAME=	packer
-PORTVERSION=	0.12.1
+PORTVERSION=	1.2.4
 DISTVERSIONPREFIX=	v
 CATEGORIES=	sysutils
 
-MAINTAINER=	swills@FreeBSD.org
+MAINTAINER=	lifanov@FreeBSD.org
 COMMENT=	Tool for creating machine images
 
-BUILD_DEPENDS=	${LOCALBASE}/bin/go:lang/go
+LICENSE=	MPL20
+LICENSE_FILE=	${WRKSRC}/LICENSE
+
+PLIST_FILES=	bin/${PORTNAME}
+
+USES=	go
 
 USE_GITHUB=	yes
-GH_ACCOUNT=	mitchellh
-GH_SUBDIR=	src/github.com/${GH_ACCOUNT}/${PORTNAME}
+GH_ACCOUNT=	hashicorp
 
-STRIP=		# stripping can break go binaries
+GO_PKGNAME=	github.com/${GH_ACCOUNT}/${PORTNAME}
 
-# Make it so that post-extract runs before the GH_SUBDIR targets.
-TARGET_ORDER_OVERRIDE=	680:post-extract
+.include <bsd.port.pre.mk>
 
-post-extract:
-	@${MV} ${WRKSRC}/vendor/ ${WRKSRC}/src/
+.if ${ARCH} == "i386"
+EXTRA_PATCHES=	${PATCHDIR}/extra-patch-i386
+.endif
 
-do-build:
-	@cd ${WRKSRC}/src/github.com/${GH_ACCOUNT}/${PORTNAME}; ${SETENV} GOPATH=${WRKSRC} go build -o bin/${PORTNAME}
-
-do-install:
-	${INSTALL_PROGRAM} ${WRKSRC}/src/github.com/${GH_ACCOUNT}/${PORTNAME}/bin/${PORTNAME} ${STAGEDIR}${PREFIX}/bin/${PORTNAME}
-
-.include <bsd.port.mk>
+.include <bsd.port.post.mk>

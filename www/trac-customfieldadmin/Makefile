@@ -3,7 +3,7 @@
 
 PORTNAME=	customfieldadmin
 PORTVERSION=	0.2.2.6485
-PORTREVISION=	3
+PORTREVISION=	4
 PORTEPOCH=	1
 CATEGORIES=	www devel python
 MASTER_SITES=	http://www.sourcehosting.net/freebsd/distfiles/ \
@@ -11,7 +11,7 @@ MASTER_SITES=	http://www.sourcehosting.net/freebsd/distfiles/ \
 PKGNAMEPREFIX=	trac-
 DISTNAME=	${PORTNAME}plugin-${PORTVERSION}
 
-MAINTAINER=	joneum@bsdproject.de
+MAINTAINER=	joneum@FreeBSD.org
 COMMENT=	Web interface to administer Trac ticket custom fields
 
 LICENSE=	BSD3CLAUSE
@@ -21,7 +21,7 @@ RUN_DEPENDS=	tracd:www/trac
 
 PORTSCOUT=	skipv:0.2.6485
 
-USES=		python:2 zip
+USES=		python:2.7 zip
 
 WRKSRC=		${WRKDIR}/${PORTNAME}plugin/0.11
 USE_PYTHON=	distutils autoplist

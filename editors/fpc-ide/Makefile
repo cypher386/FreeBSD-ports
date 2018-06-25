@@ -4,9 +4,9 @@
 CATEGORIES=	editors lang
 PKGNAMESUFFIX=	-ide
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal integrated IDE/compiler
 
+USES=		fpc
 USE_FPC=	chm fv gdbint regexpr rtl-extra rtl-console fcl-xml
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

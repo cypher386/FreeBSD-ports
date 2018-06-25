@@ -1,8 +1,9 @@
 # $FreeBSD$
 
 PORTNAME=	fossil
-PORTVERSION=	2.1
+PORTVERSION=	2.6
 DISTVERSIONPREFIX=	src-
+PORTREVISION=	1
 PORTEPOCH=	2
 CATEGORIES=	devel www
 MASTER_SITES=	http://fossil-scm.org/index.html/uv/
@@ -34,8 +35,10 @@ JSON_CONFIGURE_ON=	--json
 STATIC_CONFIGURE_ON=	--static
 FUSE_CONFIGURE_OFF=	--disable-fusefs
 TH1HOOKS_CONFIGURE_ON=	--with-th1-hooks
-TCL_CONFIGURE_ON=	--with-tcl-stubs=${TCL_LIBDIR} --with-tcl=${LOCALBASE}
+TCL_CONFIGURE_ON=	--with-tcl-stubs --with-tcl=${TCL_LIBDIR}
 TCL_USES=		tcl
+TCL_CFLAGS=		-DTCL_LIBRARY_NAME=\\\"libtcl${TCL_SHLIB_VER}.so\\\" \
+			-DTCL_MINOR_OFFSET=7
 FUSE_LIB_DEPENDS=	libfuse.so:sysutils/fusefs-libs
 FUSE_USES=		localbase:ldflags
 

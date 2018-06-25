@@ -2,13 +2,16 @@
 # $FreeBSD$
 
 PORTNAME=	pianobar
-PORTVERSION=	2016.06.02
-PORTREVISION=	2
+PORTVERSION=	2017.08.30
+PORTREVISION=	1
 CATEGORIES=	audio
-MASTER_SITES=	http://6xq.net/projects/${PORTNAME}/
+MASTER_SITES=	https://6xq.net/${PORTNAME}/
+
+PATCH_SITES=	https://github.com/PromyLOPh/${PORTNAME}/commit/
+PATCHFILES=	38b16f9957a7.patch:-p1
 
 MAINTAINER=	jhixson@gmail.com
-COMMENT=	Command line Pandora player
+COMMENT=	Command-line Pandora online radio player
 
 LICENSE=	MIT
 

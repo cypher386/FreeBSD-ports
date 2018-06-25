@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	openmw
-PORTVERSION=	0.41.0
 DISTVERSIONPREFIX=	openmw-
-PORTREVISION=	3
+DISTVERSION=	0.43.0
+PORTREVISION=	4
 CATEGORIES=	games
 
 MAINTAINER=	tobik@FreeBSD.org
@@ -23,7 +23,7 @@ LIB_DEPENDS=	libavcodec.so:multimedia/ffmpeg \
 USE_GITHUB=	yes
 GH_ACCOUNT=	OpenMW
 
-USES=		cmake:outsource compiler:c++14-lang ninja openal pkgconfig
+USES=		cmake:outsource compiler:c++14-lang openal pkgconfig
 USE_GL=		gl
 USE_QT5=	qmake_build buildtools_build core gui network opengl \
 		printsupport widgets

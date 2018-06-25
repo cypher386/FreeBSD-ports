@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	comeonin
-PORTVERSION=	3.0
+PORTVERSION=	3.2
 DISTVERSIONPREFIX=	v
 CATEGORIES=	security
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Password hashing library for Elixir
 
 LICENSE=	BSD3CLAUSE BSD4CLAUSE

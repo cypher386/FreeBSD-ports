@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	metasploit
-PORTVERSION=	4.14.2
+PORTVERSION=	4.16.63
 CATEGORIES=	security
 
 MAINTAINER=	tanawts@gmail.com
@@ -15,22 +15,24 @@ RUN_DEPENDS=	nmap:security/nmap \
 		rubygem-activerecord4>=4.2.6:databases/rubygem-activerecord4 \
 		rubygem-activesupport4>=4.2.6:devel/rubygem-activesupport4 \
 		rubygem-actionpack4>=4.2.6:www/rubygem-actionpack4 \
+		rubygem-backports>=0:devel/rubygem-backports \
 		rubygem-bcrypt>=0:security/rubygem-bcrypt \
 		rubygem-bundler>=0:sysutils/rubygem-bundler \
 		rubygem-jsobfu>=0:www/rubygem-jsobfu \
-		rubygem-json1>=0:devel/rubygem-json1 \
+		rubygem-json>=0:devel/rubygem-json \
 		rubygem-metasm>=0:devel/rubygem-metasm \
+		rubygem-metasploit-aggregator>=0:security/rubygem-metasploit-aggregator \
 		rubygem-metasploit-concern>=0:security/rubygem-metasploit-concern \
 		rubygem-metasploit-credential>=0:security/rubygem-metasploit-credential \
 		rubygem-metasploit_data_models>=0:security/rubygem-metasploit_data_models \
 		rubygem-metasploit-model>=0:security/rubygem-metasploit-model \
-		rubygem-metasploit-payloads>=1.2.18:security/rubygem-metasploit-payloads \
-		rubygem-metasploit_payloads-mettle>=0.1.7:security/rubygem-metasploit_payloads-mettle \
-		rubygem-msgpack>=0:devel/rubygem-msgpack \
+		rubygem-metasploit-payloads>=1.3.37:security/rubygem-metasploit-payloads \
+		rubygem-metasploit_payloads-mettle>=0.4.0:security/rubygem-metasploit_payloads-mettle \
+		rubygem-msgpack1>=0:devel/rubygem-msgpack1 \
 		rubygem-network_interface>=0:net/rubygem-network_interface \
 		rubygem-rubyntlm>=0:net/rubygem-rubyntlm \
 		rubygem-nokogiri>=0:textproc/rubygem-nokogiri \
-		rubygem-packetfu>=1.1.13.p:net/rubygem-packetfu \
+		rubygem-packetfu>=0:net/rubygem-packetfu \
 		rubygem-pcaprub>=0:net/rubygem-pcaprub \
 		rubygem-pg>=0:databases/rubygem-pg \
 		rubygem-railties4>=4.2.6:www/rubygem-railties4 \
@@ -42,8 +44,13 @@ RUN_DEPENDS=	nmap:security/nmap \
 		rubygem-sshkey>=0:security/rubygem-sshkey \
 		rubygem-bit-struct>=0:devel/rubygem-bit-struct \
 		rubygem-windows_error>=0:devel/rubygem-windows_error \
+		rubygem-pdf-reader>=0:print/rubygem-pdf-reader \
+		rubygem-ruby-macho>=0:devel/rubygem-ruby-macho \
+		rubygem-dnsruby>=0:dns/rubygem-dnsruby \
+		rubygem-mqtt>=0:net/rubygem-mqtt \
 		rubygem-net-ssh>=0:security/rubygem-net-ssh \
-		rubygem-rex-arch>=0.1.4:security/rubygem-rex-arch \
+		rubygem-ruby_smb>=0:net/rubygem-ruby_smb \
+		rubygem-rex-arch>=0:security/rubygem-rex-arch \
 		rubygem-rex-bin_tools>=0:security/rubygem-rex-bin_tools \
 		rubygem-rex-core>=0:security/rubygem-rex-core \
 		rubygem-rex-encoder>=0:security/rubygem-rex-encoder \
@@ -61,14 +68,16 @@ RUN_DEPENDS=	nmap:security/nmap \
 		rubygem-rex-struct2>=0:security/rubygem-rex-struct2 \
 		rubygem-rex-text>=0:security/rubygem-rex-text \
 		rubygem-rex-zip>=0:security/rubygem-rex-zip \
-		rubygem-robots>=0:www/rubygem-robots \
 		rubygem-rubyzip>=0:archivers/rubygem-rubyzip \
 		rubygem-sqlite3>=0:databases/rubygem-sqlite3 \
 		rubygem-tzinfo>=0:devel/rubygem-tzinfo \
+		rubygem-tzinfo-data>=0:devel/rubygem-tzinfo-data \
 		rubygem-filesize>=0:devel/rubygem-filesize \
 		rubygem-openvas-omp>=0:security/rubygem-openvas-omp \
 		rubygem-nessus_rest>=0:security/rubygem-nessus_rest \
-		rubygem-nexpose>=0:security/rubygem-nexpose
+		rubygem-nexpose>=0:security/rubygem-nexpose \
+		rubygem-xdr>=0:converters/rubygem-xdr \
+		rubygem-faker>=0:devel/rubygem-faker
 
 SCRIPTS=	msfconsole msfd msfrpc msfrpcd msfvenom
 
@@ -77,26 +86,63 @@ GH_ACCOUNT=	rapid7
 GH_PROJECT=	metasploit-framework
 
 NO_ARCH=	yes
+NO_ARCH_IGNORE=	template_x64_bsd.bin template_x86_bsd.bin CVE-2013-2171.bin
 STRIP=
 
+USES=		python:env shebangfix
 USE_RUBY=	yes
+SHEBANG_FILES=	data/exploits/CVE-2017-17562/build.sh \
+		data/exploits/CVE-2017-17562/install-deps.sh \
+		data/exploits/CVE-2017-7494/build.sh \
+		data/exploits/CVE-2017-7494/install-deps.sh \
+		docker/entrypoint.sh \
+		external/source/exploits/CVE-2016-4655/ssh_build.sh \
+		external/source/shellcode/windows/build.sh \
+		external/source/msfJavaToolkit/compile.sh \
+		external/source/msfJavaToolkit/testKeytool.rb \
+		external/source/msfJavaToolkit/testCompilation.rb \
+		external/source/metsvc/test.rb \
+		docker/bin/msfvenom \
+		docker/bin/msfconsole \
+		modules/auxiliary/dos/http/slowloris.py \
+		modules/auxiliary/dos/tcp/claymore_dos.py \
+		modules/auxiliary/scanner/smb/impacket/dcomexec.py \
+		modules/auxiliary/scanner/smb/impacket/wmiexec.py \
+		modules/auxiliary/scanner/ssl/bleichenbacher_oracle.py \
+		modules/auxiliary/scanner/wproxy/att_open_proxy.py \
+		tools/dev/import-dev-keys.sh \
+		tools/dev/sign-dev-keys.sh \
+		tools/hardware/killerbee_msfrelay.py \
+		tools/modules/aws-aggregator-userdata.sh
+
+.include <bsd.port.pre.mk>
+
+.if ${RUBY_VER} >= 2.4
+RUN_DEPENDS+=	rubygem-xmlrpc>=0:net/rubygem-xmlrpc
+.endif
 
 post-patch:
 	${REINPLACE_CMD} 's,git ls-files,find . ! -type d | sed "s|^./||", ; \
-		/rb-readline/d ; /tzinfo-data/d' \
+		/bcrypt_pbkdf/d ; \
+		/rbnacl/d ; \
+		/rb-readline/d' \
 		${WRKSRC}/metasploit-framework.gemspec
+	${REINPLACE_CMD} "/pg/s|, '0.20.0'||" ${WRKSRC}/metasploit-framework.gemspec
+.if ${RUBY_VER} < 2.4
+	${REINPLACE_CMD} '/xmlrpc/d' ${WRKSRC}/metasploit-framework.gemspec
+.endif
 
 do-build:
 	${RM} ${WRKSRC}/Gemfile.lock
 	${TOUCH} ${WRKSRC}/Gemfile.lock
-	${REINPLACE_CMD} '/^group :coverage/,/^end/d ; /^group :development/,/^end/d ; /^group :test/,/^end/d' \
+	${REINPLACE_CMD} '/^group :coverage/,/^end/d ; /^group :development/,/^end/d ; /^group :test/,/^end/d ; /git:/d' \
 		${WRKSRC}/Gemfile
 
 do-install:
 	@${MKDIR} ${STAGEDIR}${DATADIR}
 	cd ${WRKSRC} && ${PAX} -rw . ${STAGEDIR}${DATADIR}
 .for f in ${SCRIPTS}
-	${LN} -s ../${DATADIR_REL}/${f} ${STAGEDIR}${PREFIX}/bin/${f}
+	${RLN} ${STAGEDIR}${DATADIR}/${f} ${STAGEDIR}${PREFIX}/bin/${f}
 .endfor
 
 post-install:
@@ -105,4 +151,4 @@ post-install:
 	@${FIND} -ds ${STAGEDIR}${DATADIR} -type d -empty | \
 		${SED} 's,${STAGEDIR}${PREFIX}/,, ; s,^,@dir ,' >> ${TMPPLIST}
 
-.include <bsd.port.mk>
+.include <bsd.port.post.mk>

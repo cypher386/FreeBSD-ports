@@ -3,7 +3,7 @@
 
 PORTNAME=	phyml
 DISTVERSIONPREFIX=	v
-DISTVERSION=	3.2.0
+DISTVERSION=	3.3.20180621
 PORTEPOCH=	1
 CATEGORIES=	biology
 
@@ -11,12 +11,13 @@ MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Simple, fast, and accurate algorithm to estimate large phylogenies
 
 LICENSE=	GPLv2
-LICENSE_FILE=	${WRKSRC}/COPYING
+#LICENSE_FILE=	${WRKSRC}/COPYING
+
+USES=		autoreconf libtool pkgconfig
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	stephaneguindon
 
-USES=		autoreconf libtool pkgconfig
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--disable-beagle
 
@@ -46,6 +47,10 @@ BIN_SUFFIX=		# none
 post-patch:
 	@${REINPLACE_CMD} -e \
 		's|-O2 .* $${ARCH_flag}|$${CFLAGS}|' ${WRKSRC}/configure.ac
+.if ${ARCH} != amd64 && ${ARCH} != i386
+	@${REINPLACE_CMD} -e 's|VECTOR_FLAG=-march=native|dnl &|' ${WRKSRC}/configure.ac
+.endif
+	@${REINPLACE_CMD} -e 's|malloc.h|stdlib.h|' ${WRKSRC}/src/utilities.h
 
 post-install-DOCS-on:
 	@${MKDIR} ${STAGEDIR}${DOCSDIR}

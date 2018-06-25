@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	objecthash
-PORTVERSION=	20160121
+PORTVERSION=	20160802
 PORTREVISION=	4
 CATEGORIES=	devel
 
@@ -11,17 +11,19 @@ COMMENT=	Cross-language way to cryptographically hash JSON objects
 
 LICENSE=	APACHE20
 
-BROKEN_powerpc64=	Does not build
+BROKEN_powerpc64=	Does not build: error: variably modified hash at file scope
 
 LIB_DEPENDS=	libicudata.so:devel/icu \
 		libjson-c.so:devel/json-c
 
 USES=		pkgconfig ssl
+
 USE_GITHUB=	yes
-USE_LDCONFIG=	yes
 GH_ACCOUNT=	benlaurie
 GH_PROJECT=	objecthash
-GH_TAGNAME=	2024cf8
+GH_TAGNAME=	770874c
+
+USE_LDCONFIG=	yes
 
 ALL_TARGET=	libobjecthash.so
 

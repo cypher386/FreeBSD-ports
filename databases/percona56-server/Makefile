@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME?=	percona
-DISTVERSION=	5.6.35-80.0
+DISTVERSION=	5.6.39-83.1
 PORTREVISION?=	1
 CATEGORIES=	databases ipv6
 MASTER_SITES=	http://www.percona.com/downloads/Percona-Server-5.6/Percona-Server-${DISTVERSION}/source/tarball/
@@ -12,11 +12,16 @@ DISTNAME=	percona-server-${DISTVERSION}
 MAINTAINER=	flo@FreeBSD.org
 COMMENT?=	Multithreaded SQL database (server)
 
-BROKEN_powerpc64=	Does not build
+LICENSE?=	GPLv2+
+
+BROKEN_armv6=		fails to compile: sql/mysqld.cc:198:19: error: cannot combine with previous 'type-name' declaration specifier
+BROKEN_armv7=		fails to compile: sql/mysqld.cc:198:19: error: cannot combine with previous 'type-name' declaration specifier
+NOT_FOR_ARCHS=		powerpc64
+NOT_FOR_ARCHS_REASON=	unsupported platform
 
 SLAVEDIRS=	databases/percona56-client \
 		databases/percona-pam-for-mysql
-USES=		bison cmake perl5 shebangfix
+USES=		bison cmake:noninja perl5 shebangfix
 
 OPTIONS_DEFINE=	OPENSSL FASTMTX INNODBMEMCACHED TOKUDB
 OPTIONS_DEFAULT=	OPENSSL INNODBMEMCACHED
@@ -26,7 +31,8 @@ FASTMTX_DESC=	Replace mutexes with spinlocks
 FASTMTX_CMAKE_ON=	-DWITH_FAST_MUTEXES=1
 INNODBMEMCACHED_DESC=	InnoDB Memcached plugin
 INNODBMEMCACHED_CMAKE_ON=	-DWITH_INNODB_MEMCACHED=1
-OPENSSL_CMAKE_ON=	-DWITH_SSL=bundled
+OPENSSL_CMAKE_ON=	-DWITH_SSL=system
+OPENSSL_USES=	ssl
 TOKUDB_DESC=	TokuDB Engine (experimental)
 TOKUDB_CMAKE_ON=	-DUSE_CTAGS=0
 TOKUDB_EXTRA_PATCHES=${PATCHDIR}/extrapatch-tokudb
@@ -69,6 +75,7 @@ USES+=		libedit
 USES+=mysql:56p
 
 CONFLICTS_INSTALL=	mysql*-server-* \
+			mysqlwsrep* \
 			mariadb*-server-* \
 			percona5[0-57-9]-server-*
 
@@ -88,6 +95,14 @@ MANPAGES=	my_print_defaults.1 myisam_ftdump.1 myisamchk.1 myisamlog.1 myisampack
 
 CMAKE_ARGS+=	-DWITH_EMBEDDED_SERVER="ON"
 
+.include <bsd.port.options.mk>
+
+.if ${OPSYS} == FreeBSD && ${OSVERSION} >= 1200057
+SUB_LIST+=	LEGACY_LIMITS="@comment " MODERN_LIMITS=""
+.else
+SUB_LIST+=	LEGACY_LIMITS="" MODERN_LIMITS="@comment "
+.endif
+
 post-install:
 	@${MKDIR} ${STAGEDIR}/var/db/mysql
 .endif
@@ -96,10 +111,6 @@ post-patch:
 	@${REINPLACE_CMD} 's/*.1/${MANPAGES}/' ${WRKSRC}/man/CMakeLists.txt
 
 .include <bsd.port.pre.mk>
-
-.if ${ARCH} == "arm"
-BROKEN=		Does not compile on arm
-.endif
 
 .if ${PORT_OPTIONS:MTOKUDB}
 NOT_FOR_ARCHS=	i386

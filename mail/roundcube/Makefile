@@ -1,11 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	roundcube
-DISTVERSION=	1.2.3
+DISTVERSION=	1.3.6
 PORTEPOCH=	1
 CATEGORIES?=	mail www
 MASTER_SITES=	https://github.com/roundcube/roundcubemail/releases/download/${DISTVERSION}/
 DISTNAME=	${PORTNAME}mail-${DISTVERSION}-complete
+PKGNAMESUFFIX=	${PHP_PKGNAMESUFFIX}
 
 MAINTAINER?=	ale@FreeBSD.org
 COMMENT=	Fully skinnable XHTML/CSS webmail written in PHP
@@ -17,10 +18,10 @@ NO_BUILD=	yes
 WRKSRC=		${WRKDIR}/${PORTNAME}mail-${DISTVERSION}
 
 RCUBECOMP=	SQL config .htaccess index.php installer logs \
-		plugins program robots.txt skins temp vendor
+		plugins program skins temp vendor
 PORTDOCS=	CHANGELOG INSTALL README.md UPGRADING
 
-USES=		cpe php:web
+USES=		cpe php:web,flavors
 CPE_PRODUCT=	webmail
 CPE_VENDOR=	roundcube
 
@@ -63,9 +64,9 @@ do-install:
 .endfor
 	@(cd ${WRKSRC}; ${FIND} bin ${RCUBECOMP} -not -type d) | ${SORT} | \
 		${SED} -ne 's,^,${WWWDIR_REL}/,p' >> ${TMPPLIST}
-	@${ECHO_CMD} '@exec chown ${WWWOWN}:${WWWGRP} %D/${WWWDIR_REL}/logs' \
+	@${ECHO_CMD} '@postexec chown ${WWWOWN}:${WWWGRP} %D/${WWWDIR_REL}/logs' \
 		>> ${TMPPLIST}
-	@${ECHO_CMD} '@exec chown ${WWWOWN}:${WWWGRP} %D/${WWWDIR_REL}/temp' \
+	@${ECHO_CMD} '@postexec chown ${WWWOWN}:${WWWGRP} %D/${WWWDIR_REL}/temp' \
 		>> ${TMPPLIST}
 
 do-install-DOCS-on:

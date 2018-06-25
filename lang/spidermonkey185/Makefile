@@ -3,7 +3,7 @@
 
 PORTNAME=		spidermonkey185
 PORTVERSION=		1.8.5
-PORTREVISION=		3
+PORTREVISION=	4
 CATEGORIES=		lang
 MASTER_SITES=		MOZILLA/js
 DISTNAME=		js185-1.0.0
@@ -17,7 +17,7 @@ LIB_DEPENDS=		libnspr4.so:devel/nspr
 
 CONFLICTS=		njs-[0-9]*
 
-USES=			gmake pathfix perl5 pkgconfig python:2,build
+USES=			gmake pathfix perl5 pkgconfig python:2.7,build
 GNU_CONFIGURE=		yes
 USE_LDCONFIG=		yes
 USE_PERL5=		build
@@ -25,7 +25,6 @@ USE_PERL5=		build
 WRKSRC=			${WRKDIR}/js-${PORTVERSION}/js/src
 
 BROKEN_aarch64=		Does not compile: error: cacheFlush support is missing on this platform
-BROKEN_armv6=		Does not configure: error: compiler does not follow the C++ specification for temporary object destruction order
 BROKEN_mips64=		Does not compile: error: const union jsval_layout has no member named word
 BROKEN_sparc64=		Does not build: fails to link
 
@@ -111,7 +110,7 @@ PLIST_SUB+=	SPARC="@comment "
 pre-configure:
 	(cd ${WRKSRC} && ${LOCALBASE}/bin/autoconf-2.13)
 
-regression-test: build
+do-test:
 	@${ECHO_MSG} -n "===> Running jstests.py: "
 	@cd ${WRKSRC} && ${SETENV} TZ=PST8PDT ${PYTHON_CMD} tests/jstests.py \
 	--no-progress --worker-count=${MAKE_JOBS_NUMBER} ./js

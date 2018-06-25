@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	gphoto2
-PORTVERSION=	1.5.1
+PORTVERSION=	1.8.2
 CATEGORIES=	graphics python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
@@ -10,13 +10,16 @@ DIST_SUBDIR=	python-gphoto2
 MAINTAINER=	woodsb02@FreeBSD.org
 COMMENT=	Python bindings for libgphoto2
 
-LICENSE=	GPLv3
+LICENSE=	GPLv3+
 LICENSE_FILE=	${WRKSRC}/LICENSE.txt
+
+BROKEN_powerpc64=	fails to compile: unrecognized command line option "-Wno-unused-but-set-variable"
 
 LIB_DEPENDS=	libgphoto2.so:graphics/libgphoto2
 
-USES=		pkgconfig python
+USES=		pkgconfig python shebangfix
 USE_PYTHON=	autoplist concurrent distutils
+SHEBANG_FILES=	examples/*.py
 
 OPTIONS_DEFINE=	DOCS EXAMPLES
 

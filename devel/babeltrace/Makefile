@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	babeltrace
-PORTVERSION=	1.5.1
+PORTVERSION=	1.5.5
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 
-MAINTAINER=	luca.pizzamiglio@gmail.com
+MAINTAINER=	pizzamig@FreeBSD.org
 COMMENT=	Tool and library to read, write and convert execution traces
 
 # license is complicated
@@ -19,10 +19,11 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 LIB_DEPENDS=	libpopt.so:devel/popt \
 		libuuid.so:misc/e2fsprogs-libuuid
 
+USES=		autoreconf:build bison gmake libtool pathfix pkgconfig
+
 USE_GITHUB=	yes
 GH_ACCOUNT=	efficios
 
-USES=		autoreconf:build bison gmake libtool pathfix pkgconfig
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--disable-debug-info
 USE_GNOME=	glib20

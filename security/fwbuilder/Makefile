@@ -2,25 +2,23 @@
 # $FreeBSD$
 
 PORTNAME=	fwbuilder
-DISTVERSION=	5.1.0
-PORTVERSION=	${DISTVERSION}
-PORTREVISION=	3
-CATEGORIES=	security
-BUILD=		3599
-# XXX in developement version of this port: PKGNAMESUFFIX=	-devel
-.if defined(PKGNAMESUFFIX) && ${PKGNAMESUFFIX} == -devel
-MASTER_SITES=   http://www.fwbuilder.org/nightly_builds/fwbuilder-5.0/current_build/
-PORTVERSION=	${DISTVERSION}.b${BUILD}
-PORTREVISION=	1
-.else
-MASTER_SITES=	SF/${PORTNAME}/Current_Packages/${PORTVERSION}
-.endif
+PORTVERSION=	5.1.0
 DISTVERSIONSUFFIX=	.${BUILD}
+PORTREVISION=	4
+CATEGORIES=	security
+MASTER_SITES=	SF/${PORTNAME}/Current_Packages/${PORTVERSION}
 
 MAINTAINER=	cy@FreeBSD.org
 COMMENT=	Firewall Builder GUI and policy compilers
 
+BROKEN_powerpc64=	fails to configure: libz library not found
+
+LIB_DEPENDS=	libxslt.so:textproc/libxslt \
+		libnetsnmp.so:net-mgmt/net-snmp
+
 #OPTIONS_DEFINE=	DOCS
+
+BUILD=		3599
 
 .if defined(PKGNAMESUFFIX) && ${PKGNAMESUFFIX} == -devel
 CONFLICTS=	fwbuilder-[234].* fwbuilder-devel-[234].* \
@@ -29,10 +27,9 @@ CONFLICTS=	fwbuilder-[234].* fwbuilder-devel-[234].* \
 CONFLICTS=	fwbuilder-[234].* fwbuilder-devel-* \
 		libfwbuilder-[234].* libfwbuilder-devel-*
 .endif
-LIB_DEPENDS=	libxslt.so:textproc/libxslt \
-		libnetsnmp.so:net-mgmt/net-snmp
 
-PLIST_SUB=	BUILD_VERSION=${DISTVERSION}.${BUILD}
+USES=		autoreconf:build gmake libtool ssl
+PLIST_SUB=	BUILD_VERSION=${PORTVERSION}.${BUILD}
 USE_QT4=	corelib \
 		gui \
 		iconengines \
@@ -47,11 +44,11 @@ USE_QT4=	corelib \
 
 QTDIR?=		${PREFIX}
 
-USES=		autoreconf:build gmake libtool ssl
 GNU_CONFIGURE=	yes
 CONFIGURE_ENV=	QMAKESPEC=${LOCALBASE}/share/qt/mkspecs/freebsd-g++ \
 		INSTALL_ROOT=${STAGEDIR}
 CPPFLAGS+=	-I${LOCALBASE}/include
+CXXFLAGS+=	-Wno-reserved-user-defined-literal
 LDFLAGS+=	-L${LOCALBASE}/lib
 CONFIGURE_ARGS=	--with-docdir=${DOCSDIR} --with-qtdir=${QTDIR} \
 		--prefix=${PREFIX}

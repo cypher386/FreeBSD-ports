@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	samhain
-PORTVERSION=	4.2.0
+PORTVERSION=	4.2.4
 CATEGORIES=	security
 MASTER_SITES=	http://la-samhna.de/archive/
 DISTNAME=	samhain_signed-${PORTVERSION}
@@ -12,11 +12,15 @@ COMMENT=	Samhain Intrusion Detection System
 
 LICENSE=	GPLv2
 
-OPTIONS_DEFINE=	ASM DB_RELOAD DEBUG DNMALLOC ENCRYPT GNUPG IPV6 KCHECK LIBWRAP \
-		LOGFILE_MONITOR LOGIN_WATCH MAIL MOUNTS_CHECK MYSQL ODBC PGSQL \
-		PORT_CHECK PROCESS_CHECK POSIX_ACL PRELUDE PTRACE SRP STATIC \
-		SUIDCHECK UDP USERFILES XML_LOGS
-OPTIONS_DEFAULT=ASM DNMALLOC ENCRYPT IPV6 LIBWRAP MAIL SRP
+BROKEN_aarch64=		fails to build: undefined reference to sbrk
+BROKEN_mips=		fails to configure: error: Could not find the libwrap library
+BROKEN_mips64=		fails to configure: error: Could not find the libwrap library
+
+OPTIONS_DEFINE=	ASM DB_RELOAD DEBUG DNMALLOC DOCS ENCRYPT GNUPG IPV6 KCHECK \
+		LIBWRAP LOGFILE_MONITOR LOGIN_WATCH MAIL MOUNTS_CHECK MYSQL \
+		ODBC PGSQL PORT_CHECK PROCESS_CHECK POSIX_ACL PRELUDE PTRACE \
+		SRP STATIC SUIDCHECK UDP USERFILES XML_LOGS
+OPTIONS_DEFAULT=ASM DNMALLOC ENCRYPT LIBWRAP MAIL SRP
 
 DB_RELOAD_DESC=	Enable database reload on SIGHUP
 DNMALLOC_DESC=	Enable dnmalloc
@@ -128,8 +132,6 @@ CONFIGURE_ARGS+=	--enable-network=client \
 			--with-config-file=REQ_FROM_SERVER
 PLIST_SUB+=		SAMHAIN="" SETPWD="" YULE="@comment "
 EXTRA_PATCHES+=		${FILESDIR}/fixsamhainrc.patch
-MAN5+=			samhainrc.5
-MAN8+=			samhain.8
 .elif defined(WITH_SERVER)
 USERS=			yule
 GROUPS=			yule
@@ -137,14 +139,10 @@ CONFIGURE_ARGS+=	--enable-network=server
 SUB_LIST+=		WITH_YULE="yes"
 PLIST_SUB+=		YULE="" SAMHAIN="@comment " SETPWD="@comment "
 EXTRA_PATCHES+=		${FILESDIR}/fixyulerc.patch
-MAN5+=			yulerc.5
-MAN8+=			yule.8
 .else
 SUB_LIST+=		WITH_YULE=""
 PLIST_SUB+=		SAMHAIN="" YULE="@comment " SETPWD="@comment "
 EXTRA_PATCHES+=		${FILESDIR}/fixsamhainrc.patch
-MAN5+=			samhainrc.5
-MAN8+=			samhain.8
 .endif
 
 pre-everything::
@@ -187,34 +185,30 @@ post-install:
 	@${CP} ${WRKSRC}/init/samhain.startFreeBSD ${STAGEDIR}${PREFIX}/etc/rc.d/samhain.sh
 	@${CP} ${WRKSRC}/samhainrc ${STAGEDIR}${PREFIX}/etc/samhainrc.sample
 	@${CHGRP} wheel ${STAGEDIR}${PREFIX}/etc/samhainrc.sample
+	${STRIP_CMD} ${STAGEDIR}${PREFIX}/sbin/samhain
 .else
 	@${CP} ${WRKSRC}/init/samhain.startFreeBSD ${STAGEDIR}${PREFIX}/etc/rc.d/yule.sh
 	@${CP} ${WRKSRC}/yulerc ${STAGEDIR}${PREFIX}/etc/yulerc.sample
-.endif
-	${MKDIR} ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/MANUAL-2_4.pdf ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/HOWTO-client+server.html ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/HOWTO-client+server-troubleshooting.html ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/HOWTO-samhain+GnuPG.html ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/HOWTO-write-modules.html ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/FAQ.html ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/README.UPGRADE ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/README ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/BUGS ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/sh_mounts.txt ${STAGEDIR}${DOCSDIR}
-	${INSTALL_MAN} ${WRKSRC}/docs/sh_userfiles.txt ${STAGEDIR}${DOCSDIR}
-
-post-stage:
-.if !defined(WITH_SERVER)
-	${STRIP_CMD} ${STAGEDIR}${PREFIX}/sbin/samhain
-.endif
-.if defined(WITH_CLIENT)
-	${STRIP_CMD} ${STAGEDIR}${PREFIX}/sbin/samhain_setpwd
-.endif
-.if defined(WITH_SERVER)
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/sbin/yule
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/sbin/yulectl
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/sbin/yule_setpwd
 .endif
+.if defined(WITH_CLIENT)
+	${STRIP_CMD} ${STAGEDIR}${PREFIX}/sbin/samhain_setpwd
+.endif
+
+post-install-DOCS-on:
+	${MKDIR} ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/MANUAL-2_4.pdf ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/HOWTO-client+server.html ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/HOWTO-client+server-troubleshooting.html ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/HOWTO-samhain+GnuPG.html ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/HOWTO-write-modules.html ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/FAQ.html ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/README.UPGRADE ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/README ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/BUGS ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/sh_mounts.txt ${STAGEDIR}${DOCSDIR}
+	${INSTALL_DATA} ${WRKSRC}/docs/sh_userfiles.txt ${STAGEDIR}${DOCSDIR}
 
 .include <bsd.port.post.mk>

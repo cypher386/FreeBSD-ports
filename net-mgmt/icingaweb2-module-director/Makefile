@@ -2,8 +2,7 @@
 
 PORTNAME=	icingaweb2-module-director
 DISTVERSIONPREFIX=	v
-DISTVERSION=	1.3.1
-PORTREVISION=	1
+DISTVERSION=	1.4.3
 CATEGORIES=	net-mgmt www
 
 MAINTAINER=	lme@FreeBSD.org
@@ -17,7 +16,8 @@ RUN_DEPENDS=	icingaweb2>=2.4.1:net-mgmt/icingaweb2
 USE_GITHUB=	yes
 GH_ACCOUNT=	icinga
 
-USES_PHP=	curl
+USES=		php
+USE_PHP=	yes
 
 NO_BUILD=	yes
 NO_ARCH=	yes

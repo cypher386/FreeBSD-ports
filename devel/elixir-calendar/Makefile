@@ -1,12 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	calendar
-PORTVERSION=	0.17.2
+PORTVERSION=	0.17.4
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Date-time and time zone handling in Elixir
 
 LICENSE=	MIT

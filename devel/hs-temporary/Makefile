@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	temporary
-PORTVERSION=	1.2.0.3
+PORTVERSION=	1.2.1
 PORTREVISION=	2
 CATEGORIES=	devel haskell
 

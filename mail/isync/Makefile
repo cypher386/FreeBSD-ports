@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	isync
-PORTVERSION=	1.2.1
-PORTREVISION=	1
+PORTVERSION=	1.3.0
 CATEGORIES=	mail
 MASTER_SITES=	SF
 
@@ -12,9 +11,12 @@ COMMENT=	Maintain local copies of remote IMAP folders w/synchronized flags
 
 LICENSE=	GPLv2
 
+BROKEN_powerpc64=	fails to compile: util.c:523: #pragma GCC diagnostic not allowed inside functions
+
 LIB_DEPENDS=	libsasl2.so:security/cyrus-sasl2
 
-USES=		alias bdb cpe ssl
+USES=		alias bdb cpe perl5 ssl
+USE_PERL5=	build
 CPE_VENDOR=	oswald_buddenhagen
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--with-sasl=${LOCALBASE} \

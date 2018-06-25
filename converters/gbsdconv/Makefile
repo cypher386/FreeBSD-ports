@@ -3,6 +3,7 @@
 
 PORTNAME=	gbsdconv
 PORTVERSION=	11.3
+PORTREVISION=	1
 CATEGORIES=	converters python
 
 MAINTAINER=	buganini@gmail.com
@@ -11,13 +12,14 @@ COMMENT=	GUI for bsdconv
 LICENSE=	ISCL
 
 LIB_DEPENDS=	libtag.so:audio/taglib
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}bsdconv>=8.0:converters/py-bsdconv
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}bsdconv>=8.0:converters/py-bsdconv@${PY_FLAVOR}
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	buganini
 
-USES=		python
+USES=		python shebangfix
 USE_GNOME=	gtk30 introspection:run
+SHEBANG_FILES=	gbsdconv
 
 USE_LDCONFIG=	yes
 

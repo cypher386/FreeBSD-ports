@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	git
-DISTVERSION=	2.12.1
+DISTVERSION=	2.18.0
 CATEGORIES=	devel
 MASTER_SITES=	KERNEL_ORG/software/scm/git
 DISTFILES=	${DISTNAME}${EXTRACT_SUFX} \
@@ -15,16 +15,17 @@ MAINTAINER=	garga@FreeBSD.org
 COMMENT?=	Distributed source code management tool
 
 LICENSE=	GPLv2
+LICENSE_FILE=	${WRKSRC}/COPYING
 
 CONFLICTS_INSTALL?=	git-gui-[0-9]* git-subversion-[0-9]* git-lite-[0-9]*
 
 USERS=		git_daemon
 GROUPS=		git_daemon
 
-SUB_FILES=	pkg-message
+SUB_FILES=	pkg-message gitweb.conf
 
 GNU_CONFIGURE=	yes
-USES=		autoreconf gmake shebangfix ssl tar:xz
+USES=		autoreconf gmake iconv shebangfix ssl tar:xz
 CPPFLAGS+=	-isystem${LOCALBASE}/include
 LDFLAGS+=	-L${LOCALBASE}/lib
 MAKE_ARGS+=	DEVELOPER_CFLAGS=
@@ -32,11 +33,19 @@ MAKE_ENV+=	V=1
 USE_RC_SUBR=	git_daemon
 SHEBANG_FILES=	*.perl */*.perl */*/*.perl */*.pl */*/*.pl */*/*/*.pl \
 		t/*/*/pre t/*/*/post t/Git-SVN/Utils/*.t \
+		git-p4.py \
+		contrib/hg-to-git/hg-to-git.py \
 		contrib/hooks/update-paranoid \
+		contrib/hooks/multimail/post-receive.example \
+		contrib/hooks/multimail/git_multimail.py \
+		contrib/hooks/multimail/migrate-mailhook-config \
+		contrib/fast-import/import-zips.py \
+		contrib/remote-helpers/git-remote-bzr \
+		contrib/remote-helpers/git-remote-hg \
 		contrib/credential/netrc/git-credential-netrc \
-		contrib/diff-highlight/diff-highlight \
 		contrib/buildsystems/generate contrib/contacts/git-contacts \
-		contrib/svn-fe/svnrdump_sim.py
+		contrib/svn-fe/svnrdump_sim.py \
+		templates/hooks--fsmonitor-watchman.sample
 TEST_TARGET=	test
 
 CONFIGURE_ARGS=	--enable-pthreads=-pthread ac_cv_header_libcharset_h=no
@@ -65,6 +74,7 @@ PERL_RUN_DEPENDS=	p5-Error>=0:lang/p5-Error
 PERL_MAKE_ARGS_OFF=	NO_PERL=1
 
 GITWEB_IMPLIES=		PERL
+GITWEB_RUN_DEPENDS=	p5-CGI>=0:www/p5-CGI
 
 PCRE_LIB_DEPENDS=	libpcre.so:devel/pcre
 PCRE_CONFIGURE_WITH=	libpcre
@@ -145,7 +155,11 @@ post-patch:
 .for FILE in ${RMMAN7}
 	@${RM} ${WRKDIR}/man7/${FILE}
 .endfor
-	@${REINPLACE_CMD} -e 's|share/man/man3|man/man3|' ${WRKSRC}/perl/Makefile.PL
+	@${REINPLACE_CMD} -e "s,%%SITE_PERL%%,${SITE_PERL},g" ${WRKSRC}/Makefile
+
+post-patch-CONTRIB-on:
+	@${REINPLACE_CMD} -e "s,/usr/bin/perl,${PERL}," \
+		${WRKSRC}/contrib/diff-highlight/Makefile
 
 post-patch-CVS-off:
 	@${REINPLACE_CMD} -e '/git-cvsexportcommit.perl/d; \
@@ -171,6 +185,10 @@ post-patch-P4-off:
 post-build:
 	@${FIND} ${WRKSRC} -name "*.bak" -delete
 .endif
+
+post-build-CONTRIB-on:
+	${SETENV} ${MAKE_ENV} ${MAKE_CMD} -C ${WRKSRC}/contrib/diff-highlight
+	${RM} ${WRKSRC}/contrib/diff-highlight/shebang.perl
 
 post-install:
 	(cd ${WRKDIR}/man1/ && ${COPYTREE_SHARE} . ${STAGEDIR}${MANPREFIX}/man/man1)
@@ -209,10 +227,15 @@ post-install-CONTRIB-on:
 post-install-CONTRIB-off:
 	# Install the contrib completions anyway
 	@${MKDIR} ${STAGEDIR}${PREFIX}/etc/bash_completion.d
-	@${INSTALL_SCRIPT} ${WRKSRC}/contrib/completion/git-completion.bash \
+	${INSTALL_SCRIPT} ${WRKSRC}/contrib/completion/git-completion.bash \
 		${STAGEDIR}${PREFIX}/etc/bash_completion.d/git.sh
 
 post-install-P4-on:
 	${INSTALL_SCRIPT} ${WRKSRC}/git-p4.py ${STAGEDIR}${PREFIX}/bin/
+
+post-install-GITWEB-on:
+	${MKDIR} ${STAGEDIR}${ETCDIR}
+	${INSTALL_DATA} ${WRKDIR}/gitweb.conf \
+		${STAGEDIR}${ETCDIR}/gitweb.conf.sample
 
 .include <bsd.port.mk>

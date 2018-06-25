@@ -3,32 +3,32 @@
 
 PORTNAME=	digikam
 PORTVERSION=	${DIGIKAM_VER}
-PORTREVISION=	2
+PORTREVISION=	15
 PORTEPOCH=	2
 CATEGORIES=	graphics kde
+PKGNAMESUFFIX=	-kde4
 
 MAINTAINER=	kde@FreeBSD.org
 COMMENT=	KDE4 digital photo management application
 
 .include "${.CURDIR}/Makefile.common"
 
-BUILD_DEPENDS=	${LOCALBASE}/include/eigen3/Eigen/Eigen:math/eigen3
 LIB_DEPENDS=	libtiff.so:graphics/tiff \
 		liblcms.so:graphics/lcms \
 		libpng.so:graphics/png \
 		libjasper.so:graphics/jasper \
 		liblensfun.so:graphics/lensfun \
 		liblqr-1.so:graphics/liblqr-1 \
-		libkface.so:graphics/libkface \
+		libopencv_video.so:graphics/opencv \
 		libpgf.so:graphics/libpgf \
-		libkgeomap.so:astro/libkgeomap \
+		libkgeomap.so:astro/libkgeomap-kde4 \
 		libboost_graph.so:devel/boost-libs
 
-USES+=		pkgconfig shebangfix
+USES+=		eigen:3 pkgconfig shebangfix
 USE_KDE+=	libkdcraw libkexiv2 libkipi runtime_run
 USE_QT4+=	sql-sqlite3_run
 USE_LDCONFIG=	yes
-CMAKE_ARGS+=	-DWITH_Sqlite2:BOOL=OFF
+CMAKE_ARGS+=	-DWITH_Sqlite2:BOOL=OFF -DENABLE_OPENCV3:BOOL=true
 
 WRKSRC=		${WRKDIR}/${DISTNAME}/core
 SHEBANG_FILES=	data/scripts/digitaglinktree/digitaglinktree

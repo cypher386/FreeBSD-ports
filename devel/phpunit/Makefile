@@ -1,19 +1,25 @@
-# Created by: Torsten Zühlsdorff (<ports@toco-domains.de>)
 # $FreeBSD$
 
 PORTNAME=	phpunit
-PORTVERSION=	5.7.14
+DISTVERSION=	5.7.27
 CATEGORIES=	devel www
-MASTER_SITES=	https://phar.phpunit.de/ \
-		http://ports.toco-domains.de/
+MASTER_SITES=	https://phar.phpunit.de/
 EXTRACT_SUFX=	.phar
+PKGNAMEPREFIX=	${PHP_PKGNAMEPREFIX}
 
-MAINTAINER=	tz@FreeBSD.org
+MAINTAINER=	joneum@FreeBSD.org
 COMMENT=	Testing framework for unit tests
 
 LICENSE=	BSD3CLAUSE
 
-USES=		cpe php
+DEPRECATED=	No longer maintained upstream
+EXPIRATION_DATE=	2018-02-02
+
+CONFLICTS_INSTALL=	phpunit6
+
+PORTSCOUT=	limit:^5\.7\.[0-9]*
+
+USES=		cpe php:flavors
 CPE_VENDOR=	phpunit_project
 USE_PHP=	dom json spl pcre phar
 

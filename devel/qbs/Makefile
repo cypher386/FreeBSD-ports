@@ -1,25 +1,29 @@
 # $FreeBSD$
 
 PORTNAME=	qbs
-PORTVERSION=	1.7.1
-PORTREVISION=	1
 DISTVERSIONPREFIX=	src-
+DISTVERSION=	1.11.1
+PORTREVISION=	1
 CATEGORIES=	devel
 MASTER_SITES=	QT/official_releases/${PORTNAME}/${PORTVERSION}
 DIST_SUBDIR=	KDE/Qt/qbs
 
 MAINTAINER=	kde@FreeBSD.org
-COMMENT=	Qt Build Suite
+COMMENT=	Qbs Build Suite
 
 LICENSE=	GPLv3 LGPL21
 LICENSE_COMB=	dual
 
-USES=		compiler:c++11-lib qmake:outsource
+USES=		compiler:c++11-lib python:run qmake:outsource shebangfix
 USE_GL=		gl
 USE_LDCONFIG=	yes
 USE_QT5=	buildtools_build core concurrent gui network script testlib \
 		widgets xml
 
+SHEBANG_FILES=	src/3rdparty/python/bin/dmgbuild
+
+QMAKE_ARGS=		CONFIG+=qbs_disable_rpath \
+			CONFIG+=qbs_enable_project_file_updates
 QMAKE_SOURCE_PATH=	${WRKSRC}/qbs.pro
 
 OPTIONS_DEFINE=		DOCS
@@ -45,5 +49,9 @@ pre-configure:
 # See QTBUG-40825 and ports bugs 194088, 195105 and 198720.
 	${MKDIR} ${CONFIGURE_WRKSRC}
 	${ECHO_CMD} 'QMAKE_LIBDIR_FLAGS = -L${CONFIGURE_WRKSRC}/lib' >> ${CONFIGURE_WRKSRC}/.qmake.cache
+
+# The file in question is not used on FreeBSD. To silence stage-qa, remove it from stage-dir.
+post-install:
+	${RM} ${STAGEDIR}${DATADIR}/modules/bundle/update-specs.sh
 
 .include <bsd.port.mk>

@@ -4,6 +4,7 @@
     COMMENT = CAD tools
 
     SUBDIR += NASTRAN-95
+    SUBDIR += abc
     SUBDIR += admesh
     SUBDIR += adms
     SUBDIR += alliance
@@ -14,9 +15,9 @@
     SUBDIR += brickutils
     SUBDIR += brlcad
     SUBDIR += calculix
+    SUBDIR += calculix-ccx
     SUBDIR += cascade
     SUBDIR += chipvault
-    SUBDIR += cider
     SUBDIR += cura-engine
     SUBDIR += dinotrace
     SUBDIR += dxf2fig
@@ -45,6 +46,8 @@
     SUBDIR += jspice3
     SUBDIR += kicad
     SUBDIR += kicad-devel
+    SUBDIR += kicad-library
+    SUBDIR += kicad-library-devel
     SUBDIR += klayout
     SUBDIR += layouteditor
     SUBDIR += ldraw
@@ -61,6 +64,7 @@
     SUBDIR += ngspice_rework
     SUBDIR += opencascade
     SUBDIR += openscad
+    SUBDIR += openscad-devel
     SUBDIR += openvsp
     SUBDIR += p5-GDS2
     SUBDIR += p5-Verilog-Perl
@@ -69,6 +73,7 @@
     SUBDIR += py-gdspy
     SUBDIR += py-lcapy
     SUBDIR += py-pycam
+    SUBDIR += py-pyfda
     SUBDIR += python-gdsii
     SUBDIR += pythoncad
     SUBDIR += qcad
@@ -78,12 +83,12 @@
     SUBDIR += qucs
     SUBDIR += repsnapper
     SUBDIR += rubygem-gdsii
-    SUBDIR += sceptre
     SUBDIR += scotch
     SUBDIR += solvespace
     SUBDIR += sp2sp
     SUBDIR += spice
     SUBDIR += stepcode
+    SUBDIR += sumo
     SUBDIR += sweethome3d
     SUBDIR += tkgate
     SUBDIR += tochnog
@@ -92,5 +97,6 @@
     SUBDIR += verilog-mode.el
     SUBDIR += xcircuit
     SUBDIR += z88
+    SUBDIR += zcad
 
 .include <bsd.port.subdir.mk>

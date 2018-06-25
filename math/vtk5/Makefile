@@ -3,7 +3,7 @@
 
 PORTNAME=	vtk
 PORTVERSION=	5.10.1
-PORTREVISION=	5
+PORTREVISION=	7
 CATEGORIES=	math graphics
 MASTER_SITES=	http://www.vtk.org/files/release/${PORTVERSION:R}/
 PKGNAMESUFFIX=	5
@@ -13,6 +13,8 @@ COMMENT=	The Visualization Toolkit
 
 LICENSE=	BSD3CLAUSE
 LICENSE_FILE=	${WRKSRC}/Copyright.txt
+
+BROKEN_powerpc64=	fails to build: sibling call optimization to `_ZN14vtkProbeFilter26SetValidPointMaskArrayNameEPKc' does not allow automatic multiple TOCs
 
 LIB_DEPENDS=	libexpat.so:textproc/expat2 \
 		libpng.so:graphics/png \
@@ -71,7 +73,6 @@ QT4_CMAKE_BOOL=		VTK_USE_GUISUPPORT
 TCLTK_CMAKE_BOOL=	VTK_WRAP_TCL
 DBGLEAKS_CMAKE_BOOL=	VTK_DEBUG_LEAKS
 LEGACY_CMAKE_BOOL_OFF=	VTK_LEGACY_REMOVE
-
 
 .include <bsd.port.options.mk>
 
@@ -138,7 +139,7 @@ IGNORE=		python wrapping requires shared libraries.\
 		Run make config again and enable the SHARED option
 .endif
 USES+=		python
-USE_PYTHON=	distutils
+USE_PYTHON=	distutils noflavors
 PYDISTUTILS_PKGNAME=	VTK
 # INSTALLS_EGGINFO support has been removed
 # INSTALLS_EGGINFO=	yes

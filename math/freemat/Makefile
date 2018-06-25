@@ -4,7 +4,7 @@
 PORTNAME=	FreeMat
 PORTVERSION=	4.2
 DISTVERSIONSUFFIX=	-Source
-PORTREVISION=	9
+PORTREVISION=	18
 CATEGORIES=	math science
 MASTER_SITES=	SF/freemat/FreeMat4
 
@@ -12,6 +12,9 @@ MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Numerical computing environment
 
 LICENSE=	GPLv2
+
+DEPRECATED=	Complex, unmaintained software with obsolete dependencies
+EXPIRATION_DATE=	2018-07-01
 
 BUILD_DEPENDS=	${LOCALBASE}/share/llvm33/cmake/LLVMConfig.cmake:devel/llvm33 \
 		${LOCALBASE}/llvm33/lib/libclang.a:lang/clang33
@@ -24,7 +27,7 @@ LIB_DEPENDS=	libarpack.so:math/arpack			\
 		libportaudio.so:audio/portaudio		\
 		libumfpack.so:math/suitesparse
 
-USES=		blaslapack cmake:outsource dos2unix fortran pkgconfig python:build
+USES=		blaslapack cmake:outsource dos2unix fortran pkgconfig python:2.7,build
 USE_GL=		yes
 USE_QT4=	gui network opengl svg webkit xml			\
 		moc_build qmake_build rcc_build uic_build

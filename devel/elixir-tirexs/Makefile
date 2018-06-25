@@ -1,15 +1,17 @@
 # $FreeBSD$
 
 PORTNAME=	tirexs
-PORTVERSION=	0.8.13
+PORTVERSION=	0.8.15
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	ElasticSearch client library for Elixir
 
 LICENSE=	APACHE20
+
+IGNORE=		does not build with Elixir 1.5
 
 USES=		elixir
 USE_GITHUB=	yes

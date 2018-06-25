@@ -1,16 +1,21 @@
 # $FreeBSD$
 
 PORTNAME=	ShellCheck
-PORTVERSION=	0.4.5
+DISTVERSIONPREFIX=	v
+DISTVERSION=	0.4.7-129
+DISTVERSIONSUFFIX=	-gb5e5d24
 CATEGORIES=	devel haskell
 
-MAINTAINER=	luca.pizzamiglio@gmail.com
+MAINTAINER=	pizzamig@FreeBSD.org
 COMMENT=	Shell script analysis tool
 
 LICENSE=	GPLv3
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-USE_CABAL=	json mtl>=2.2.1 parsec QuickCheck>=2.7.4 regex-tdfa
+USE_CABAL=	aeson QuickCheck>=2.7.4 regex-tdfa
+USE_GITHUB=	yes
+GH_ACCOUNT=	koalaman
+GH_PROJECT=	${PORTNAME:tl}
 
 EXECUTABLE=	shellcheck
 

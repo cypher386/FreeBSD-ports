@@ -3,12 +3,14 @@
 
 PORTNAME=	acidrip
 PORTVERSION=	0.14
-PORTREVISION=	10
+PORTREVISION=	11
 CATEGORIES=	multimedia
 MASTER_SITES=	SF/${PORTNAME}/${PORTNAME}/${PORTVERSION}%20-%20Your%20two-wheeled%20knife
 
 MAINTAINER=	ports@FreeBSD.org
 COMMENT=	GTK2::Perl wrapper for MPlayer and MEncoder for ripping DVDs
+
+BROKEN_aarch64=		fails to build: test for MEncoder: sh: mplayer: not found
 
 BUILD_DEPENDS=	lsdvd:multimedia/lsdvd \
 		mencoder:multimedia/mencoder \

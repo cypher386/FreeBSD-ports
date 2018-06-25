@@ -8,11 +8,13 @@ CATEGORIES=	devel deskutils gnome
 MASTER_SITES=	GNOME
 PKGNAMESUFFIX=	0
 
-MAINTAINER=	amdmi3@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	GTK-based git repository viewer (gtk2 version)
 
 LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
+
+BROKEN_powerpc64=	fails to link: gitg-branch-actions.o(.text+0x46c): unresolvable R_PPC64_REL24 relocation against symbol gitg_revision_get_subject
 
 RUN_DEPENDS=	git:devel/git
 

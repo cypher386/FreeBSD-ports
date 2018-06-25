@@ -16,8 +16,8 @@ LIB_DEPENDS=	libcurl.so:ftp/curl
 
 OPTIONS_DEFINE=	DOCS EXAMPLES
 
+USES=		cmake compiler:c++11-lang localbase pathfix
 USE_LDCONFIG=	yes
-USES=		cmake localbase pathfix
 
 PORTDOCS=	*
 PORTEXAMPLES=	*

@@ -2,10 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	stratagus
-PORTVERSION=	2.3.0
+PORTVERSION=	2.4.1
+DISTVERSIONPREFIX=	v
+PORTREVISION=	2
 CATEGORIES=	games
-MASTER_SITES=	http://launchpadlibrarian.net/200661330/
-DISTNAME=	${PORTNAME}_${PORTVERSION}.orig
 
 MAINTAINER=	amdmi3@FreeBSD.org
 COMMENT=	Free cross-platform real-time strategy gaming engine
@@ -13,17 +13,24 @@ COMMENT=	Free cross-platform real-time strategy gaming engine
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+BROKEN_powerpc64=	fails to compile: cc1plus: unrecognized command line option "-std=gnu++0x"
+
 LIB_DEPENDS=	libpng.so:graphics/png \
 		libtolua++-${LUA_VER}.so:lang/tolua++
 
+USE_GITHUB=	yes
+GH_ACCOUNT=	Wargus
+
+USES=		cmake:outsource lua:51 pkgconfig sqlite
 USE_GL=		gl glu
 USE_SDL=	sdl
-USES=		cmake:outsource lua:51 pkgconfig sqlite
 CMAKE_ARGS=	-DGAMEDIR:STRING="bin" \
 		-DTOLUA++_APP:STRING="tolua++-${LUA_VER}" \
 		-DTOLUA++_INCLUDE_DIR:STRING="${LUA_INCDIR}" \
 		-DTOLUA++_LIBRARY:STRING="${LUA_LIBDIR}/libtolua++.so" \
 		-DENABLE_DEV:BOOL=ON
+
+CXXFLAGS+=	-Wno-c++11-narrowing
 
 PORTDOCS=	*
 
@@ -31,34 +38,31 @@ OPTIONS_DEFINE=	MIKMOD MNG THEORA VORBIS X11 FLUIDSYNTH DOCS
 OPTIONS_DEFAULT=MIKMOD MNG THEORA VORBIS X11 FLUIDSYNTH
 
 MIKMOD_LIB_DEPENDS=	libmikmod.so:audio/libmikmod
-MIKMOD_CMAKE_ON=	-DWITH_MIKMOD:BOOL=ON
-MIKMOD_CMAKE_OFF=	-DWITH_MIKMOD:BOOL=OFF
+MIKMOD_CMAKE_BOOL=	WITH_MIKMOD
 
 MNG_DESC=		MNG image library support
 MNG_LIB_DEPENDS=	libmng.so:graphics/libmng
-MNG_CMAKE_ON=		-DWITH_MNG:BOOL=ON
-MNG_CMAKE_OFF=		-DWITH_MNG:BOOL=OFF
+MNG_CMAKE_BOOL=		WITH_MNG
 
 THEORA_LIB_DEPENDS=	libtheora.so:multimedia/libtheora
-THEORA_CMAKE_ON=	-DWITH_THEORA:BOOL=ON
-THEORA_CMAKE_OFF=	-DWITH_THEORA:BOOL=OFF
+THEORA_CMAKE_BOOL=	WITH_THEORA
 
-VORBIS_LIB_DEPENDS=	libvorbis.so:audio/libvorbis
-VORBIS_CMAKE_ON=	-DWITH_OGGVORBIS:BOOL=ON
-VORBIS_CMAKE_OFF=	-DWITH_OGGVORBIS:BOOL=OFF
+VORBIS_LIB_DEPENDS=	libvorbis.so:audio/libvorbis \
+			libogg.so:audio/libogg
+VORBIS_CMAKE_BOOL=	WITH_OGGVORBIS
 
 X11_DESC=		X11 clipboard pasting support
 X11_USE=		XORG=x11
-X11_CMAKE_ON=		-DWITH_X11:BOOL=ON
-X11_CMAKE_OFF=		-DWITH_X11:BOOL=OFF
+X11_CMAKE_BOOL=		WITH_X11
 
 FLUIDSYNTH_LIB_DEPENDS=	libfluidsynth.so:audio/fluidsynth
-FLUIDSYNTH_CMAKE_ON=	-DWITH_FLUIDSYNTH:BOOL=ON
-FLUIDSYNTH_CMAKE_OFF=	-DWITH_FLUIDSYNTH:BOOL=OFF
+FLUIDSYNTH_CMAKE_BOOL=	WITH_FLUIDSYNTH
 
 post-install:
 	${INSTALL_DATA} ${WRKSRC}/doc/stratagus.6 ${STAGEDIR}${MAN6PREFIX}/man/man6
-	cd ${WRKSRC}/doc && ${COPYTREE_SHARE} "[a-z]*.html *.txt graphics scripts" \
+
+post-install-DOCS-on:
+	@cd ${WRKSRC}/doc && ${COPYTREE_SHARE} "[a-z]*.html *.txt graphics scripts" \
 		${STAGEDIR}${DOCSDIR}
 
 .include <bsd.port.mk>

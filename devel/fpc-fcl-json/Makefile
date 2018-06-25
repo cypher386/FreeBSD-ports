@@ -3,10 +3,11 @@
 
 CATEGORIES=	devel lang
 PKGNAMESUFFIX=	-fcl-json
+PORTREVISION=	1
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal JavaScript Object Notation implemenation (FCL)
 
+USES=		fpc
 USE_FPC=	fcl-base rtl-objpas fcl-res
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc

@@ -7,13 +7,16 @@ PORTREVISION=	2
 CATEGORIES=	dns
 MASTER_SITES=	http://www.wolfermann.org/
 
-MAINTAINER=	ports@FreeBSD.org
-COMMENT=	proxy for DNS queries
+MAINTAINER=	krion@FreeBSD.org
+COMMENT=	Proxy for DNS queries
+
+LICENSE=	MIT
 
 LIB_DEPENDS=	libevent.so:devel/libevent
 
 GNU_CONFIGURE=	yes
 
+USES=		groff
 USE_RC_SUBR=	dnsproxy
 
 PLIST_FILES=	sbin/dnsproxy etc/${PORTNAME}/dnsproxy.conf.sample \

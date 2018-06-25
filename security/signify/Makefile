@@ -1,8 +1,9 @@
 # $FreeBSD$
 
 PORTNAME=	signify
-PORTVERSION=	0.6
 DISTVERSIONPREFIX=	v
+DISTVERSION=	0.7
+PORTREVISION=	1
 PORTEPOCH=	1
 CATEGORIES=	security
 
@@ -16,8 +17,6 @@ LICENSE=	ISCL BSD4CLAUSE BSD3CLAUSE
 LICENSE_COMB=	multi
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-# gmake is required on FreeBSD 9.3, on FreeBSD >= 10 we get away with
-# regular make with tiny changes in the Makefile.
 USES=		gmake
 USE_GITHUB=	yes
 GH_ACCOUNT=	chneukirchen
@@ -26,15 +25,13 @@ GH_PROJECT=	outils
 ALL_TARGET=	src/usr.bin/signify/signify
 
 post-patch:
-# sys/cdefs.h and sys/limits.h override is not needed on FreeBSD
-	${RM} ${WRKSRC}/src/liboutils/include/sys/cdefs.h
-	${RM} ${WRKSRC}/src/liboutils/include/sys/limits.h
+# The sys/* overrides are not needed on FreeBSD
+	@${RM} ${WRKSRC}/src/liboutils/include/sys/*
 # Replace /etc/signify paths in man page and signify's safe path to
 # point to /usr/local/etc/signify
-	${REINPLACE_CMD} 's|/etc/signify/|${ETCDIR}/|g' \
+	@${REINPLACE_CMD} 's|/etc/signify|${ETCDIR}|g' \
 		${WRKSRC}/src/usr.bin/signify/signify.c \
 		${WRKSRC}/src/usr.bin/signify/signify.1
-	${REINPLACE_CMD} -e 's|-lcrypto||' ${WRKSRC}/Makefile
 
 do-install:
 	${INSTALL_PROGRAM} ${WRKSRC}/src/usr.bin/signify/signify \

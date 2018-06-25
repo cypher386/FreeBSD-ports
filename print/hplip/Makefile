@@ -2,22 +2,21 @@
 # $FreeBSD$
 
 PORTNAME=	hplip
-PORTVERSION=	3.16.11
-PORTREVISION=	2
+PORTVERSION=	3.17.11
 CATEGORIES=	print
 MASTER_SITES=	SF
 
 MAINTAINER=	woodsb02@FreeBSD.org
 COMMENT=	Drivers and utilities for HP printers and All-in-One devices
 
-LICENSE=	GPLv2 MIT BSD3CLAUSE
+LICENSE=	GPLv2+ MIT BSD3CLAUSE
 LICENSE_COMB=	multi
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 LIB_DEPENDS=	libcupsimage.so:print/cups \
 		libdbus-1.so:devel/dbus
 RUN_DEPENDS=	cups-filters>=0:print/cups-filters \
-		${PYTHON_PKGNAMEPREFIX}dbus>=0:devel/py-dbus
+		${PYTHON_PKGNAMEPREFIX}dbus>=0:devel/py-dbus@${PY_FLAVOR}
 
 CONFLICTS_INSTALL=	hpijs-[0-9]*
 
@@ -48,12 +47,12 @@ OPTIONS_SUB=		yes
 DOCS_CONFIGURE_ENABLE=	doc-build
 
 FAX_DESC=		PC Send Fax support
-FAX_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}reportlab>=0:print/py-reportlab
+FAX_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}reportlab>=0:print/py-reportlab@${PY_FLAVOR}
 FAX_CONFIGURE_ENABLE=	fax-build
 
 SCAN_DESC=		Scanning support
 SCAN_LIB_DEPENDS=	libsane.so:graphics/sane-backends
-SCAN_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pillow>0:graphics/py-pillow
+SCAN_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pillow>0:graphics/py-pillow@${PY_FLAVOR}
 SCAN_CONFIGURE_ENABLE=	scan-build
 
 SNMP_DESC=		Network/JetDirect support
@@ -72,7 +71,7 @@ XSANE_RUN_DEPENDS=	xsane:graphics/xsane
 
 .if ${PORT_OPTIONS:MQT4} && ${PORT_OPTIONS:MX11}
 USES+=			pyqt:4
-USE_PYQT=		core_run dbussupport_run gui_run
+USE_PYQT=		core_run dbussupport_run gui_run sip
 CONFIGURE_ARGS+=	--enable-qt4
 .else
 CONFIGURE_ARGS+=	--disable-qt4
@@ -80,7 +79,7 @@ CONFIGURE_ARGS+=	--disable-qt4
 
 .if ${PORT_OPTIONS:MQT5} && ${PORT_OPTIONS:MX11}
 USES+=			pyqt:5
-USE_PYQT=		core_run dbussupport_run gui_run widgets_run
+USE_PYQT=		core_run dbussupport_run gui_run sip widgets_run
 CONFIGURE_ARGS+=	--enable-qt5
 .else
 CONFIGURE_ARGS+=	--disable-qt5
@@ -130,7 +129,8 @@ post-patch:
 		${WRKSRC}/prnt/hpijs/hpcupsfax.cpp \
 		${WRKSRC}/prnt/hpijs/hpijs.cpp \
 		${WRKSRC}/ui/devmgr4.py \
-		${WRKSRC}/ui4/devmgr5.py
+		${WRKSRC}/ui4/devmgr5.py \
+		${WRKSRC}/ui5/devmgr5.py
 	@${REINPLACE_CMD} -e 's/umask(0)/umask(0o022)/' \
 		-e 's/umask(0o111)/umask(0o133)/' \
 		${WRKSRC}/base/os_utils.py \

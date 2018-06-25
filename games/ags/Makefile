@@ -1,8 +1,8 @@
 # $FreeBSD$
 
 PORTNAME=	ags
-PORTVERSION=	3.4.1.1
 DISTVERSIONPREFIX=	v.
+DISTVERSION=	3.4.1.13
 CATEGORIES=	games
 
 MAINTAINER=	tobik@FreeBSD.org
@@ -17,6 +17,8 @@ LIB_DEPENDS=	liballeg.so:devel/allegro \
 		libtheora.so:multimedia/libtheora \
 		libvorbis.so:audio/libvorbis \
 		libfreetype.so:print/freetype2
+
+BROKEN_powerpc64=	fails to compile: cc1plus: unrecognized command line option "-std=c++11"
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	adventuregamestudio

@@ -2,13 +2,19 @@
 
 PORTNAME=	ppsspp
 DISTVERSIONPREFIX=	v
-DISTVERSION?=	1.4
+DISTVERSION?=	1.6.3
 PORTREVISION?=	1
 CATEGORIES=	emulators
 # XXX Get from Debian once #697821 lands
 MASTER_SITES=	https://bazaar.launchpad.net/~sergio-br2/${PORTNAME}/debian-sdl/download/5/${PORTNAME}.1-20140802045408-dd26dik367ztj5xg-8/:manpage
 DISTFILES=	${PORTNAME}.1:manpage
 EXTRACT_ONLY=	${DISTFILES:N*\:manpage:C/:.*//}
+
+PATCH_SITES=	https://github.com/${GH_ACCOUNT}/${GH_PROJECT}/commit/
+PATCHFILES=	c783e7761c2a.patch:-p1
+PATCHFILES+=	f2a75719d843.patch:-p1
+PATCHFILES+=	78a41980dfd7.patch:-p1
+PATCHFILES+=	7a7c655615a4.patch:-p1
 
 MAINTAINER=	jbeich@FreeBSD.org
 COMMENT=	PSP emulator in C++ with dynarec JIT for x86, ARM, MIPS
@@ -22,27 +28,20 @@ RUN_DEPENDS=	xdg-open:devel/xdg-utils
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	hrydgard
-GH_TUPLE?=	hrydgard:glslang:b16f7e68:glslang/ext/glslang \
-		hrydgard:${PORTNAME}-lang:ed0bbfb:lang/assets/lang \
-		KhronosGroup:SPIRV-Cross:6381b2f:SPIRV/ext/SPIRV-Cross \
-		Kingcom:armips:v0.9-26-g770365d:armips/ext/armips \
+GH_TUPLE?=	hrydgard:glslang:2edde666:glslang/ext/glslang \
+		hrydgard:${PORTNAME}-lang:1153a42:lang/assets/lang \
+		KhronosGroup:SPIRV-Cross:90966d5:SPIRV/ext/SPIRV-Cross \
+		Kingcom:armips:v0.9-89-g8b4cada:armips/ext/armips \
 		Kingcom:tinyformat:Release-2.0.1-7-gb7f5a22:tinyformat/ext/armips/ext/tinyformat
 
 CONFLICTS_INSTALL=	${PORTNAME}-*
-
-# [QT5] c++: error: the clang compiler does not support '-march=armv7-a'
-# [SDL] SplineCommon.cpp:639:17: error: use of undeclared identifier 'AllocateAlignedMemory'
-BROKEN_aarch64=		https://github.com/hrydgard/ppsspp/issues/9032
-.if ${MACHINE_ARCH} == aarch64
-TRYBROKEN=	need logs for v1.4
-.endif
 
 USES=		cmake:outsource compiler:c++11-lib localbase:ldflags pkgconfig
 EXCLUDE=	libzip zlib
 EXTRACT_AFTER_ARGS=${EXCLUDE:S,^,--exclude ,}
 USE_GL=		gl glew glu
 USE_SDL=	sdl2 # joystick
-CMAKE_ARGS=	-DUSE_SYSTEM_FFMPEG=on
+CMAKE_ON=	USE_SYSTEM_FFMPEG USE_SYSTEM_LIBZIP
 SUB_FILES=	pkg-message
 PORTDATA=	assets ${PORTNAME}
 
@@ -56,9 +55,13 @@ DESKTOP_ENTRIES="PPSSPP" \
 OPTIONS_DEFINE=	OLDJOY
 OPTIONS_SINGLE=	GUI
 OPTIONS_SINGLE_GUI=	QT5 SDL
-OPTIONS_SLAVE?=	SDL
+OPTIONS_SLAVE?=	LIBRETRO SDL
 OPTIONS_EXCLUDE:=	${OPTIONS_SINGLE_GUI}
 
+LIBRETRO_DESC=	libretro core for games/retroarch
+LIBRETRO_CMAKE_BOOL=	LIBRETRO
+LIBRETRO_PLIST_FILES=	lib/libretro/${PORTNAME}_libretro.so
+LIBRETRO_IMPLIES=	SDL
 OLDJOY_DESC=	Old joystick support with fixed button mappings (deprecated)
 OLDJOY_EXTRA_PATCHES=	${PATCHDIR}/extra-patch-old-joy
 QT5_USE=	QT5=qmake_build,buildtools_build,linguisttools_build,gui,opengl,widgets
@@ -73,9 +76,7 @@ post-patch:
 		${WRKSRC}/assets/gamecontrollerdb.txt
 	@${REINPLACE_CMD} -e 's,/usr/share,${PREFIX}/share,' \
 		${WRKSRC}/UI/NativeApp.cpp
-	@${REINPLACE_CMD} \
-		-e 's/"unknown"/"${GH_TAGNAME}"/' \
-		-e 's/^\(VERSION =\).*/\1 ${GH_TAGNAME}/' \
+	@${REINPLACE_CMD} -e 's/"unknown"/"${GH_TAGNAME}"/' \
 		${WRKSRC}/git-version.cmake
 
 do-install:
@@ -94,5 +95,10 @@ do-install:
 	${MKDIR} ${STAGEDIR}${PREFIX}/share/icons/hicolor/scalable/apps
 	${INSTALL_DATA} ${WRKSRC}/icons/icon-512.svg \
 		${STAGEDIR}${PREFIX}/share/icons/hicolor/scalable/apps/${PORTNAME}.svg
+
+do-install-LIBRETRO-on:
+	${MKDIR} ${STAGEDIR}${PREFIX}/${LIBRETRO_PLIST_FILES:H}
+	${INSTALL_LIB} ${BUILD_WRKSRC}/lib/${LIBRETRO_PLIST_FILES:T} \
+		${STAGEDIR}${PREFIX}/${LIBRETRO_PLIST_FILES:H}
 
 .include <bsd.port.mk>

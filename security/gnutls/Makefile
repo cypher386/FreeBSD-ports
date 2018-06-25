@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	gnutls
-PORTVERSION=	3.5.9
+PORTVERSION=	3.5.18
 CATEGORIES=	security net
 MASTER_SITES=	GNUPG/gnutls/v${PORTVERSION:R}
 
@@ -20,21 +20,20 @@ LIB_DEPENDS=	libgmp.so:math/gmp \
 BUILD_DEPENDS+=	${LOCALBASE}/share/certs/ca-root-nss.crt:security/ca_root_nss
 RUN_DEPENDS+=	${LOCALBASE}/share/certs/ca-root-nss.crt:security/ca_root_nss
 
-USES=		compiler cpe gmake iconv libtool localbase makeinfo \
+USES=		cpe gmake iconv libtool localbase makeinfo \
 		pathfix pkgconfig tar:xz
 USE_LDCONFIG=	yes
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--disable-guile \
 		--enable-local-libopts \
 		--with-trousers-lib=${LOCALBASE}/lib/libtspi.so.1 \
-		--without-libidn2 \
 		ac_cv_type_max_align_t=yes
 MAKE_ENV=	MAKEINFOFLAGS=--no-split
 INSTALL_TARGET=	install-strip
 
 CPE_VENDOR=	gnu
 
-OPTIONS_DEFINE=		DANE EXAMPLES IDN NLS P11KIT TPM ZLIB
+OPTIONS_DEFINE=		DANE DOCS EXAMPLES IDN NLS P11KIT TPM ZLIB
 OPTIONS_DEFAULT=	IDN P11KIT TPM ZLIB
 OPTIONS_SUB=		yes
 
@@ -43,7 +42,7 @@ DANE_LIB_DEPENDS=	libunbound.so:dns/unbound
 DANE_CONFIGURE_ENABLE=	libdane
 
 IDN_CONFIGURE_WITH=	idn
-IDN_LIB_DEPENDS=	libidn.so:dns/libidn
+IDN_LIB_DEPENDS=	libidn2.so:dns/libidn2
 
 NLS_CONFIGURE_ENABLE=	nls
 NLS_CONFIGURE_OFF=	ac_cv_lib_intl_gettext=no
@@ -61,15 +60,6 @@ ZLIB_CONFIGURE_WITH=	zlib
 
 INFO=		gnutls gnutls-guile
 
-.include <bsd.port.pre.mk>
-
-# XXX CHOSEN_COMPILER_VERSION isn't supported, so check CC hasn't changed
-.if ${ARCH} == aarch64 && ${CC} == cc && \
-    ${COMPILER_TYPE} == clang && ${COMPILER_VERSION} < 40
-BUILD_DEPENDS+=	as:devel/binutils
-CFLAGS+=	-no-integrated-as
-.endif
-
 post-patch:
 	@${RM} ${WRKSRC}/doc/*.info*
 
@@ -77,4 +67,4 @@ post-install:
 	@${MKDIR} ${STAGEDIR}${EXAMPLESDIR}
 	${INSTALL_DATA} ${WRKSRC}/doc/examples/*.[ch] ${STAGEDIR}${EXAMPLESDIR}
 
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

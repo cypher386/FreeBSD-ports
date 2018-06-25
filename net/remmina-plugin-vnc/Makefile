@@ -1,8 +1,8 @@
 # Created by: Alexander Logvinov <avl@FreeBSD.org>
 # $FreeBSD$
 
-PKGNAMESUFFIX=	-vnc
 PORTREVISION=	1
+PKGNAMESUFFIX=	-vnc
 
 COMMENT=	Remmina plugin for VNC protocol
 
@@ -14,7 +14,5 @@ USES=		jpeg
 USE_GNOME+=	cairo
 
 MASTERDIR=	${.CURDIR}/../remmina-plugins
-
-PLIST_SUB+=	ICONS="" SSH=""
 
 .include "${MASTERDIR}/Makefile"

@@ -3,7 +3,7 @@
 
 PORTNAME=	eblob
 PORTVERSION=	0.18.2
-PORTREVISION=	5
+PORTREVISION=	10
 CATEGORIES=	devel
 
 MAINTAINER=	ports@FreeBSD.org
@@ -11,15 +11,12 @@ COMMENT=	Append-only low-level I/O library
 
 LICENSE=	GPLv2
 
-BROKEN_powerpc64=	Does not build
-
 LIB_DEPENDS=	libboost_iostreams.so:devel/boost-libs
 
+USES=		cmake compiler:c++11-lang
 USE_GITHUB=	yes
 GH_ACCOUNT=	zloidemon
 GH_TAGNAME=	0a75b89
-
-USES=		cmake
 USE_LDCONFIG=	yes
 
 OPTIONS_DEFINE=	ASSERT PYTHON SNAPPY EXAMPLES TESTS
@@ -35,8 +32,8 @@ CMAKE_ARGS+=	-DWITH_ASSERTS=OFF
 .endif
 
 .if ${PORT_OPTIONS:MPYTHON}
-LIB_DEPENDS+=	libboost_python.so:devel/boost-python-libs
-USES+=		python
+LIB_DEPENDS+=	${PY_BOOST}
+USES+=		python:2.7
 CMAKE_ARGS+=	-DWITH_PYTHON=ON
 PLIST_SUB+=	PYTHON="" PYTHON_VER=${PYTHON_VER}
 .else

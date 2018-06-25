@@ -16,6 +16,7 @@ USE_GITHUB=	yes
 GH_ACCOUNT=	raboof
 
 USES=	gmake shebangfix
+CXXFLAGS+=	-D_GLIBCXX_USE_C99 # XXX ports/193528
 
 SHEBANG_FILES=	determineVersion.sh
 bash_CMD=	/bin/sh

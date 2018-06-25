@@ -2,9 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	mercurial
-PORTVERSION=	4.1.1
+PORTVERSION=	4.6
+PORTREVISION=	1
 CATEGORIES=	devel python
-MASTER_SITES=	http://mercurial-scm.org/release/
+MASTER_SITES=	https://www.mercurial-scm.org/release/
 
 MAINTAINER=	python@FreeBSD.org
 COMMENT=	Fast, lightweight source control management system
@@ -12,7 +13,7 @@ COMMENT=	Fast, lightweight source control management system
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-USES=	cpe python:2.7
+USES=		cpe python:2.7
 USE_PYTHON=	distutils
 
 OPTIONS_DEFINE=	CA_BUNDLE DATA DOCS NLS FREEBSD
@@ -52,14 +53,12 @@ CONTRIB_FILES=	bash_completion \
 		vim/hgtest.vim \
 		vim/patchreview.txt \
 		vim/patchreview.vim
-DOCS=		CONTRIBUTORS README
+PORTDOCS=	CONTRIBUTORS README.rst
 
 post-install:
 	${INSTALL_MAN} ${WRKSRC}/doc/*.1 ${STAGEDIR}${PREFIX}/man/man1/
 	${INSTALL_MAN} ${WRKSRC}/doc/*.5 ${STAGEDIR}${PREFIX}/man/man5/
-	${STRIP_CMD} ${STAGEDIR}${PYTHON_SITELIBDIR}/${PORTNAME}/*.so
-	${STRIP_CMD} \
-		${STAGEDIR}${PYTHON_SITELIBDIR}/hgext/fsmonitor/pywatchman/*.so
+	${FIND} ${STAGEDIR}${PYTHON_SITELIBDIR}/ -name '*.so' -exec ${STRIP_CMD} {} +
 
 post-install-DATA-on:
 .for d in hgsh vim
@@ -70,10 +69,10 @@ post-install-DATA-on:
 	${INSTALL_DATA} ${WRKSRC}/contrib/${f} \
 		${STAGEDIR}${DATADIR}/contrib/${f}
 .endfor
-	${INSTALL_DATA} ${WRKSRC}/contrib/hgweb.* ${STAGEDIR}${DATADIR}/www
+	${INSTALL_DATA} ${WRKSRC}/hgweb.cgi ${WRKSRC}/contrib/hgweb.* ${STAGEDIR}${DATADIR}/www
 
 post-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}
-	cd ${WRKSRC} && ${INSTALL_DATA} ${DOCS} ${STAGEDIR}${DOCSDIR}
+	cd ${WRKSRC} && ${INSTALL_DATA} ${PORTDOCS} ${STAGEDIR}${DOCSDIR}
 
 .include <bsd.port.mk>

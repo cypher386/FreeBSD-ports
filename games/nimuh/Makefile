@@ -3,7 +3,7 @@
 
 PORTNAME=	nimuh
 PORTVERSION=	1.02
-PORTREVISION=	10
+PORTREVISION=	11
 CATEGORIES=	games
 MASTER_SITES=	SF/${PORTNAME}/${PORTNAME}%20${PORTVERSION}/Nimuh%20SRC%20%28Source%20Code%29
 DISTFILES=	${DISTNAME}${EXTRACT_SUFX} ${PORTNAME}-data-${PORTVERSION}${EXTRACT_SUFX}
@@ -11,15 +11,16 @@ DISTFILES=	${DISTNAME}${EXTRACT_SUFX} ${PORTNAME}-data-${PORTVERSION}${EXTRACT_S
 MAINTAINER=	amdmi3@FreeBSD.org
 COMMENT=	Puzzle game destined to improve the knowledge of Andalusia
 
+LICENSE=	CC-BY-NC-SA-2.0
+
 LIB_DEPENDS=	libexpat.so:textproc/expat2
 
 GNU_CONFIGURE=	yes
-USES=		gmake
+USES=		gmake localbase
 USE_SDL=	sdl image mixer
-USE_GL=		gl
+USE_GL=		gl glu
 
-CPPFLAGS+=	-I${LOCALBASE}/include
-LDFLAGS+=	-L${LOCALBASE}/lib
+CXXFLAGS+=	-Wno-c++11-narrowing
 
 DATA_WRKSRC=	${WRKDIR}/${PORTNAME}-data-${PORTVERSION}
 

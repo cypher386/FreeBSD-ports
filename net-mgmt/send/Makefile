@@ -3,7 +3,7 @@
 
 PORTNAME=	send
 PORTVERSION=	0.3
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	net-mgmt ipv6
 MASTER_SITES=	LOCAL/hrs
 DISTNAME=	${PORTNAME}_${PORTVERSION}
@@ -19,7 +19,6 @@ LIB_DEPENDS=	libdnet.so:net/libdnet
 USES=		gmake readline ssl
 USE_RC_SUBR=	sendd
 SUB_FILES=	pkg-message
-PKGMESSAGE=	${WRKDIR}/pkg-message
 PORTDOCS=	README UserGuide.pdf
 MAKE_JOBS_UNSAFE=yes
 

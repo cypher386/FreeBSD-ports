@@ -1,12 +1,20 @@
---- config.mk.orig	2016-03-15 17:46:09 UTC
+--- config.mk.orig	2018-04-11 10:59:06 UTC
 +++ config.mk
-@@ -18,8 +18,8 @@ LIBS = -L${PNGLIB} -L${JPGLIB} -lpng -lj
+@@ -5,14 +5,14 @@ VERSION = 4
+ 
+ # paths
+ PREFIX = /usr/local
+-MANPREFIX = $(PREFIX)/share/man
++MANPREFIX = $(PREFIX)/man
  
  # flags
  CPPFLAGS = -D_DEFAULT_SOURCE
--CFLAGS   = -std=c99 -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
-+CFLAGS   += -std=c99 -pedantic -Wall -Os ${INCS} ${CPPFLAGS}
- LDFLAGS  = -s ${LIBS}
+-CFLAGS   = -std=c99 -pedantic -Wall -Wextra -Os
+-LDFLAGS  = -s
++CFLAGS   += -std=c99 -pedantic -Wall -Wextra -Os -I${LOCALBASE}/include
++LDFLAGS  = -s -L${LOCALBASE}/lib
+ PNG-LDLIBS = -lpng
+ JPG-LDLIBS = -ljpeg
  
  # compiler and linker
 -CC = cc

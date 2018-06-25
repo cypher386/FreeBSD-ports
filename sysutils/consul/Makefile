@@ -1,14 +1,14 @@
 # $FreeBSD$
 
 PORTNAME=	consul
-PORTVERSION=	0.7.5
+PORTVERSION=	1.1.0
 DISTVERSIONPREFIX=	v
 CATEGORIES=	sysutils
 
 MAINTAINER=	swills@FreeBSD.org
 COMMENT=	Service discovery and configuration made easy
 
-LICENSE=	MPL
+LICENSE=	MPL20
 
 BUILD_DEPENDS=	${LOCALBASE}/bin/go:lang/go
 
@@ -20,6 +20,8 @@ GH_SUBDIR=	src/github.com/${GH_ACCOUNT}/${PORTNAME}
 
 USE_RC_SUBR=	consul
 
+PLIST_FILES=	bin/consul
+
 USERS=		consul
 GROUPS=		consul
 
@@ -27,8 +29,12 @@ post-extract:
 	@${MV} ${WRKSRC}/vendor/ ${WRKSRC}/src/
 
 do-build:
-	@cd ${WRKSRC}/src/github.com/hashicorp/consul; ${SETENV} ${BUILD_ENV} GOPATH=${WRKSRC} go build \
-		-ldflags "-X github.com/hashicorp/consul/version.GitDescribe=v${PORTVERSION}" \
+	@cd ${WRKSRC}/src/github.com/hashicorp/consul; ${SETENV} ${MAKE_ENV} CGO_ENABLED=0 ${BUILD_ENV} GOPATH=${WRKSRC} go build \
+		-ldflags "\
+		-X github.com/hashicorp/consul/version.Version=${PORTVERSION}  \
+		-X github.com/hashicorp/consul/version.VersionPrerelease=  \
+		-X github.com/hashicorp/consul/version.GitDescribe=v${PORTVERSION} \
+		" \
 		-o bin/consul
 
 do-install:

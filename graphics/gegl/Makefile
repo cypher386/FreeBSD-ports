@@ -3,7 +3,7 @@
 
 PORTNAME=	gegl
 PORTVERSION=	0.2.0
-PORTREVISION=	19
+PORTREVISION=	23
 CATEGORIES=	graphics
 MASTER_SITES=	GIMP
 
@@ -14,6 +14,8 @@ LICENSE=	GPLv3+ LGPL20+ LGPL3+
 LICENSE_COMB=	multi
 LICENSE_FILE_GPLv3+ =	${WRKSRC}/COPYING
 LICENSE_FILE_LGPL3+ =	${WRKSRC}/COPYING.LESSER
+
+BROKEN_aarch64=		fails to build: gmake index.html: Segmentation fault in docs/gallery/
 
 LIB_DEPENDS=	libbabl-0.1.so:x11/babl
 
@@ -39,7 +41,7 @@ CONFIGURE_ARGS=	--without-vala --disable-docs
 INSTALL_TARGET=	install-strip
 
 CPPFLAGS+=	-I${LOCALBASE}/include
-LDFLAGS+=	-L${LOCALBASE}/lib -lintl
+LDFLAGS+=	-L${LOCALBASE}/lib -lintl -lm
 
 GEGL_MINOR=	199
 GEGL_VER=	0.2

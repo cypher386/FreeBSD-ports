@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	p1_utils
-PORTVERSION=	1.0.7
+PORTVERSION=	1.0.11
 CATEGORIES=	textproc
 PKGNAMEPREFIX=	erlang-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	Erlang utility modules from ProcessOne
 
 LICENSE=	APACHE20

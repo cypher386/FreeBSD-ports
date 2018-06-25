@@ -4,7 +4,7 @@
 PORTNAME=	kore
 PORTVERSION=	2.0.0
 DISTVERSIONSUFFIX=	-release
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	devel www
 
 MAINTAINER=	tobik@FreeBSD.org
@@ -13,6 +13,11 @@ COMMENT=	Web application framework for writing web APIs in C
 LICENSE=	ISCL
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
+BROKEN_powerpc64=	fails to compile: cc1: error: -Werror=c11-extensions: No option -Wc11-extensions
+
+FLAVORS=	default notls
+notls_PKGNAMESUFFIX=	-notls
+
 USES=		compiler gmake
 
 USE_GITHUB=	yes
@@ -20,49 +25,59 @@ GH_ACCOUNT=	jorisvink
 
 CFLAGS+=	${CFLAGS_${CHOSEN_COMPILER_TYPE}}
 CFLAGS_clang=	-Wno-error=c11-extensions # 12.0 + -pedantic
-MAKE_ARGS=	INSTALL_DIR="${STAGEDIR}${PREFIX}/bin" \
-		INCLUDE_DIR="${STAGEDIR}${PREFIX}/include/kore"
 
-OPTIONS_DEFINE=	DEBUG HTTP JSONRPC PGSQL TASKS TLS
+KORE_BIN=	kore${PKGNAMESUFFIX}
+EXAMPLESDIR=	${PREFIX}/share/examples/${KORE_BIN}
+PLIST_SUB=	KORE_BIN="${KORE_BIN}"
+
+OPTIONS_DEFINE=	DEBUG EXAMPLES HTTP JSONRPC PGSQL TASKS TLS
 OPTIONS_DEFAULT=	HTTP JSONRPC PGSQL TASKS TLS
+.if ${FLAVOR:U} == notls
+OPTIONS_EXCLUDE=	TLS
+.endif
+OPTIONS_SUB=	yes
 
 HTTP_DESC=	Build with HTTP support
 JSONRPC_DESC=	Build with JSON-RPC support
 TASKS_DESC=	Build with tasks support
 
-TASKS_VARS=	MAKE_ARGS+=TASKS=1
-
-PGSQL_IMPLIES=	HTTP
-PGSQL_VARS=	MAKE_ARGS+=PGSQL=1
-PGSQL_USES=	pgsql
-
-TLS_VARS_OFF=	MAKE_ARGS+=NOTLS=1
-TLS_USES=	ssl
-
-HTTP_VARS_OFF=	MAKE_ARGS+=NOHTTP=1
-# If TLS=off and HTTP=on kore will still link with libcrypto, so add
-# an OpenSSL dependency here.
-HTTP_USES=	ssl
+DEBUG_MAKE_ARGS=	DEBUG=1
 
 JSONRPC_IMPLIES=	HTTP
-JSONRPC_VARS=	MAKE_ARGS+=JSONRPC=1
 JSONRPC_LIB_DEPENDS=	libyajl.so:devel/yajl
+JSONRPC_MAKE_ARGS=	JSONRPC=1
 
-DEBUG_VARS=	MAKE_ARGS+=DEBUG=1
+HTTP_MAKE_ARGS_OFF=	NOHTTP=1
+# If TLS=off and HTTP=on kore will still link with libcrypto, so add
+# an OpenSSL dependency here.
+HTTP_USES=		ssl
+
+PGSQL_IMPLIES=		HTTP
+PGSQL_MAKE_ARGS=	PGSQL=1
+PGSQL_USES=		pgsql
+
+TASKS_MAKE_ARGS=	TASKS=1
+
+TLS_MAKE_ARGS_OFF=	NOTLS=1
+TLS_USES=		ssl
 
 post-patch:
-# Disable kore's own optimizations flags, make sure the correct flags
-# are set when LOCALBASE is not /usr/local, and allow __generic on
-# FreeBSD 12.0-CURRENT after r308264
+# Disable kore's own optimizations flags, make sure the correct paths
+# are set when LOCALBASE is not /usr/local
 	@${REINPLACE_CMD} -e 's|CFLAGS+=-O|#|g' \
 		-e 's|/usr/local/|${LOCALBASE}/|g' \
 		${WRKSRC}/Makefile
+	@${REINPLACE_CMD} -e 's|"kore"|"${PREFIX}/bin/${KORE_BIN}"|g' \
+		-e 's|%%KORE_BIN%%|${KORE_BIN}|g' \
+		${WRKSRC}/src/cli.c ${WRKSRC}/src/utils.c
 
-pre-install:
-	${STRIP_CMD} ${WRKSRC}/kore
+do-install:
+	${INSTALL_PROGRAM} ${WRKSRC}/kore ${STAGEDIR}${PREFIX}/bin/${KORE_BIN}
+	@${MKDIR} ${STAGEDIR}${PREFIX}/include/${KORE_BIN}/kore
+	@cd ${WRKSRC}/includes && ${COPYTREE_SHARE} . ${STAGEDIR}${PREFIX}/include/${KORE_BIN}/kore
 
-post-install:
-	cd ${WRKSRC}/examples && ${COPYTREE_SHARE} . ${STAGEDIR}${EXAMPLESDIR}
-	cd ${WRKSRC}/conf && ${COPYTREE_SHARE} . ${STAGEDIR}${EXAMPLESDIR}
+do-install-EXAMPLES-on:
+	@cd ${WRKSRC}/examples && ${COPYTREE_SHARE} . ${STAGEDIR}${EXAMPLESDIR}
+	@cd ${WRKSRC}/conf && ${COPYTREE_SHARE} . ${STAGEDIR}${EXAMPLESDIR}
 
 .include <bsd.port.mk>

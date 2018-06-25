@@ -3,6 +3,7 @@
 
     COMMENT = Benchmarking tools
 
+    SUBDIR += apib
     SUBDIR += autobench
     SUBDIR += blogbench
     SUBDIR += bombardier
@@ -14,7 +15,6 @@
     SUBDIR += dbs
     SUBDIR += dhrystone
     SUBDIR += dkftpbench
-    SUBDIR += expedite
     SUBDIR += fhourstones
     SUBDIR += filebench
     SUBDIR += fio
@@ -23,8 +23,8 @@
     SUBDIR += flowgrind
     SUBDIR += forkbomb
     SUBDIR += glmark2
-    SUBDIR += gobench
     SUBDIR += gtkperf
+    SUBDIR += hey
     SUBDIR += himenobench
     SUBDIR += hpl
     SUBDIR += hs-criterion
@@ -38,12 +38,12 @@
     SUBDIR += iperf3
     SUBDIR += libmicro
     SUBDIR += lmbench
+    SUBDIR += lzbench
     SUBDIR += mdtest
     SUBDIR += nbench
     SUBDIR += netio
     SUBDIR += netperf
     SUBDIR += netperfmeter
-    SUBDIR += netpipe
     SUBDIR += nosqlbench
     SUBDIR += nqueens
     SUBDIR += nttcp
@@ -55,12 +55,14 @@
     SUBDIR += pathload
     SUBDIR += pathrate
     SUBDIR += pear-Benchmark
+    SUBDIR += perftest
     SUBDIR += phoronix-test-suite
     SUBDIR += pipebench
     SUBDIR += polygraph
     SUBDIR += postal
     SUBDIR += postmark
     SUBDIR += py-naarad
+    SUBDIR += py-throughpy
     SUBDIR += py-zopkio
     SUBDIR += pybench
     SUBDIR += raidtest
@@ -83,8 +85,11 @@
     SUBDIR += thrulay
     SUBDIR += tsung
     SUBDIR += ttcp
+    SUBDIR += typometer
     SUBDIR += ubench
     SUBDIR += unixbench
+    SUBDIR += uperf
+    SUBDIR += vegeta
     SUBDIR += webbench
     SUBDIR += wrk
 

@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	Scrapy
-PORTVERSION=	1.1.1
+PORTVERSION=	1.3.3
+PORTREVISION=	2
 CATEGORIES=	www python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
@@ -12,14 +13,18 @@ COMMENT=	High level scraping and web crawling framework
 
 LICENSE=	BSD3CLAUSE
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}lxml>=2.0:devel/py-lxml \
-		${PYTHON_PKGNAMEPREFIX}sqlite3>0:databases/py-sqlite3 \
-		${PYTHON_PKGNAMEPREFIX}w3lib>=1.2:www/py-w3lib \
-		${PYTHON_PKGNAMEPREFIX}cssselect>=0.9:www/py-cssselect \
-		${PYTHON_PKGNAMEPREFIX}queuelib>=1.2.2:sysutils/py-queuelib
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}twisted>=15.5.0:devel/py-twisted@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}lxml>=3.2.4:devel/py-lxml@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}sqlite3>0:databases/py-sqlite3@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}w3lib>=1.14.2:www/py-w3lib@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}cssselect>=0.9:www/py-cssselect@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}queuelib>=1.2.2:sysutils/py-queuelib@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pydispatcher>=2.0.5:devel/py-pydispatcher@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}service_identity>0:security/py-service_identity@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}parsel>=1.1:textproc/py-parsel@${PY_FLAVOR}
 
-USES=		python:2 twisted:run,web
-USE_PYTHON=	distutils autoplist
+USES=		python
+USE_PYTHON=	distutils concurrent autoplist
 
 OPTIONS_DEFINE=	SSL
 OPTIONS_DEFAULT=SSL
@@ -27,7 +32,7 @@ OPTIONS_DEFAULT=SSL
 .include <bsd.port.options.mk>
 
 .if ${PORT_OPTIONS:MSSL}
-RUN_DEPENDS+=	${PYTHON_PKGNAMEPREFIX}openssl>0:security/py-openssl
+RUN_DEPENDS+=	${PYTHON_PKGNAMEPREFIX}openssl>0:security/py-openssl@${PY_FLAVOR}
 .endif
 
 .include <bsd.port.mk>

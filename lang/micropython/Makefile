@@ -3,7 +3,7 @@
 PORTNAME=	micropython
 PORTVERSION=	1.5.1
 DISTVERSIONPREFIX=	v
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	lang python
 
 MAINTAINER=	ports@FreeBSD.org
@@ -13,13 +13,14 @@ LICENSE=	MIT
 
 LIB_DEPENDS=	libffi.so:devel/libffi
 
-USES=		gmake pkgconfig python:3,build readline shebangfix
+USES=		gmake pkgconfig python:3.4+,build readline shebangfix
 
 USE_GITHUB=	yes
 
 PLIST_FILES=	bin/micropython
 
 BROKEN_armv6=	fails to assemble: error: invalid operand for instruction
+BROKEN_armv7=	fails to assemble: error: invalid operand for instruction
 
 WRKSRC_SUBDIR=	unix
 

@@ -4,11 +4,10 @@
 CATEGORIES=	graphics lang
 PKGNAMESUFFIX=	-libpng
 
-MAINTAINER=	freebsd-fpc@FreeBSD.org
 COMMENT=	Free Pascal interface to libpng, for reading PNG image files
 
+USES=		fpc:run
 USE_FPC=	zlib
-USE_FPC_RUN=	yes
 
 MASTERDIR=	${.CURDIR}/../../lang/fpc
 WRKUNITDIR=	${FPCSRCDIR}/packages/${PKGNAMESUFFIX:S/-//}

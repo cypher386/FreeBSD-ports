@@ -2,14 +2,14 @@
 # $FreeBSD$
 
 PORTNAME=	mpir
-PORTVERSION=	2.7.2
+PORTVERSION=	3.0.0
 CATEGORIES=	math
 MASTER_SITES=	http://mpir.org/
 
-MAINTAINER=	ports@FreeBSD.org
+MAINTAINER=	wen@FreeBSD.org
 COMMENT=	Multiprecision integer library
 
-LICENSE=	LGPL3
+LICENSE=	LGPL3+
 LICENSE_FILE=	${WRKSRC}/COPYING.LIB
 
 BUILD_DEPENDS=	yasm:devel/yasm
@@ -18,10 +18,11 @@ USES=		libtool tar:bzip2
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--enable-cxx --with-system-yasm
 INSTALL_TARGET=	install-strip
+TEST_TARGET=	check
 USE_LDCONFIG=	yes
 
-MPIR_VERSION=	16.6.2
-MPIRXX_VERSION=	8.4.2
+MPIR_VERSION=	23.0.3
+MPIRXX_VERSION=	8.4.3
 
 INFO=		mpir
 
@@ -35,8 +36,5 @@ PLIST_FILES=	include/mpir.h \
 		lib/libmpirxx.so \
 		lib/libmpirxx.so.${MPIRXX_VERSION} \
 		lib/libmpirxx.so.${MPIRXX_VERSION:R:R}
-
-regression-test:
-	${MAKE_CMD} -C ${WRKSRC} check
 
 .include <bsd.port.mk>

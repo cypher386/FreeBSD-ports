@@ -2,14 +2,12 @@
 # $FreeBSD$
 
 PORTNAME=	pcre
-PORTVERSION=	8.40
+PORTVERSION=	8.42
 CATEGORIES=	devel
-MASTER_SITES=	SF \
-		ftp://ftp.csx.cam.ac.uk/pub/software/programming/${PORTNAME}/ \
-		ftp://ftp.fu-berlin.de/unix/misc/${PORTNAME}/ \
-		ftp://ftp.tin.org/pub/libs/${PORTNAME}/
+MASTER_SITES=	https://ftp.pcre.org/pub/pcre/ \
+		SF
 
-MAINTAINER=	adamw@FreeBSD.org
+MAINTAINER=	krion@FreeBSD.org
 COMMENT=	Perl Compatible Regular Expressions library
 
 LICENSE=	BSD3CLAUSE
@@ -80,7 +78,7 @@ CONFIGURE_ARGS+=	--with-parens-nest-limit=${WITH_PARENS_NEST_LIMIT}
 CONFIGURE_ARGS+=	--with-posix-malloc-threshold=${WITH_POSIX_MALLOC_THRESHOLD}
 .endif
 
-.if ${ARCH} != "sparc64" && ${ARCH} != "ia64" && empty(ARCH:Mmips64*)
+.if ${ARCH} != "sparc64" && empty(ARCH:Mmips64*)
 CONFIGURE_ARGS+=	--enable-jit
 .else
 CONFIGURE_ARGS+=	--disable-jit

@@ -1,8 +1,8 @@
 # $FreeBSD$
 
 PORTNAME=	zoneminder-h264
-PORTVERSION=	1.30.20161104
-PORTREVISION=	2
+PORTVERSION=	1.30.20170222
+PORTREVISION=	4
 CATEGORIES=	multimedia
 
 MAINTAINER=	bsd@abinet.ru
@@ -18,7 +18,7 @@ ZM_DEPENDS=	p5-DBI>=0:databases/p5-DBI \
 		p5-Test-LWP-UserAgent>=0:www/p5-Test-LWP-UserAgent \
 		p5-Sys-Mmap>=0:devel/p5-Sys-Mmap \
 		p5-LWP-Protocol-https>=0:www/p5-LWP-Protocol-https \
-		p5-Sys-CPU>=0:devel/p5-Sys-Cpu \
+		p5-Sys-CPU>=0:devel/p5-Sys-CPU \
 		p5-Sys-MemInfo>=0:devel/p5-Sys-MemInfo \
 		p5-Data-Dump>=0:devel/p5-Data-Dump \
 		p5-SOAP-WSDL>=0:devel/p5-SOAP-WSDL \
@@ -38,10 +38,10 @@ RUN_DEPENDS=	${ZM_DEPENDS} \
 		zip:archivers/zip
 
 USE_GITHUB=	yes
-GH_TUPLE=	zoneminder:ZoneMinder:a2f782d \
+GH_TUPLE=	zoneminder:ZoneMinder:e723b6d \
 		FriendsOfCake:crud:c3976f1:crud
 
-USES=		cmake jpeg mysql perl5 php shebangfix ssl
+USES=		cmake:noninja jpeg mysql perl5 php shebangfix ssl
 USE_RC_SUBR=	zoneminder
 USE_PHP=	json pdo_mysql session gd sockets ctype
 
@@ -53,7 +53,6 @@ NLS_USES=	gettext
 NLS_CONFIGURE_ENABLE=	nls
 V4L_BUILD_DEPENDS=	${LOCALBASE}/include/linux/videodev2.h:multimedia/v4l_compat
 V4L_LIB_DEPENDS=	libv4l2.so:multimedia/libv4l
-OPTIONS_DEFAULT=	NLS
 
 PLIST_SUB=	WWWOWN="${WWWOWN}" WWWGRP="${WWWGRP}"
 
@@ -108,6 +107,6 @@ post-install:
 
 post-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}
-	cd ${WRKSRC} && ${INSTALL_MAN} ${PORTDOCS} ${STAGEDIR}${DOCSDIR}
+	cd ${WRKSRC} && ${INSTALL_DATA} ${PORTDOCS} ${STAGEDIR}${DOCSDIR}
 
 .include <bsd.port.mk>

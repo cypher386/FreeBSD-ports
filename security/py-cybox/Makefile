@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	cybox
-PORTVERSION=	2.1.0.13
+PORTVERSION=	2.1.0.17
+DISTVERSIONPREFIX=	v
 CATEGORIES=	security python
-MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 
 MAINTAINER=	antoine@FreeBSD.org
@@ -13,14 +13,18 @@ COMMENT=	Python library for parsing, manipulating, and generating CybOX content
 LICENSE=	BSD3CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE.txt
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}dateutil>=0:devel/py-dateutil \
-		${PYTHON_PKGNAMEPREFIX}lxml>=2.2.3:devel/py-lxml \
-		${PYTHON_PKGNAMEPREFIX}mixbox>=0.0.13:security/py-mixbox
-TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}nose>=0:devel/py-nose
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}dateutil>=0:devel/py-dateutil@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}lxml>=2.2.3:devel/py-lxml@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}mixbox>=1.0.2:security/py-mixbox@${PY_FLAVOR}
+TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}nose>=0:devel/py-nose@${PY_FLAVOR}
+
+USE_GITHUB=	yes
+GH_ACCOUNT=	CybOXProject
+GH_PROJECT=	python-${PORTNAME}
 
 NO_ARCH=	yes
 USES=		python
-USE_PYTHON=	distutils autoplist
+USE_PYTHON=	concurrent distutils autoplist
 
 PORTDOCS=	README.rst
 PORTEXAMPLES=	*

@@ -2,14 +2,17 @@
 # $FreeBSD$
 
 PORTNAME=	babl
-PORTVERSION=	0.1.14
+PORTVERSION=	0.1.48
 CATEGORIES=	x11
 MASTER_SITES=	GIMP
 
 MAINTAINER=	gnome@FreeBSD.org
 COMMENT=	Dynamic pixel format conversion library
 
-USES=		gmake libtool pathfix pkgconfig tar:bzip2
+LICENSE=	LGPL3
+LICENSE_FILE=	${WRKSRC}/COPYING
+
+USES=		compiler:c11 gmake libtool pathfix pkgconfig tar:bzip2
 USE_LDCONFIG=	yes
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip

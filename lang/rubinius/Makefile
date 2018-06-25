@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	rubinius
-PORTVERSION=	3.70
+PORTVERSION=	3.86
 CATEGORIES=	lang
 MASTER_SITES=	http://releases.rubini.us/:source
 DISTFILES=	${DISTNAME}${EXTRACT_SUFX}:source
@@ -11,7 +11,7 @@ EXTRACT_ONLY=	${DISTNAME}${EXTRACT_SUFX}
 MAINTAINER=	ashish@FreeBSD.org
 COMMENT=	LLVM based ruby language implementation
 
-LICENSE=	MPL
+LICENSE=	MPL20
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
 BUILD_DEPENDS=	${LOCALBASE}/bin/bundle:sysutils/rubygem-bundler \
@@ -38,16 +38,15 @@ CONFIGURE_ARGS=	-P "${PREFIX}" \
 
 OPTIONS_RADIO=		LLVM
 OPTIONS_DEFAULT=	LLVM40
-OPTIONS_RADIO_LLVM=	LLVM36 LLVM38 LLVM39 LLVM40
+OPTIONS_RADIO_LLVM=	LLVM38 LLVM39 LLVM40
 
 ONLY_FOR_ARCHS=	amd64
 
-LLVM36_DESC=	LLVM 3.6
 LLVM38_DESC=	LLVM 3.8
 LLVM39_DESC=	LLVM 3.9
 LLVM40_DESC=	LLVM 4.0
 
-USES=		execinfo gmake perl5 readline tar:bzip2 libedit ssl
+USES=		gmake perl5 readline tar:bzip2 libedit ssl
 USE_LOCALE=	en_US.UTF-8
 USE_RUBY=	yes
 RUBY_NO_RUN_DEPENDS=	yes
@@ -75,10 +74,6 @@ LLVM_CC_PATH=	${LOCALBASE}/bin/${LLVM_CC}
 LLVM_CXX_PATH=	${LOCALBASE}/bin/${LLVM_CXX}
 LLVM_CONFIG_PATH=	${LOCALBASE}/bin/${LLVM_CONFIG}
 
-LLVM36_VARS=	LLVM_CONFIG=llvm-config36 \
-		LLVM_PORT=devel/llvm36 \
-		LLVM_CC=clang36 \
-		LLVM_CXX=clang++36
 LLVM38_VARS=	LLVM_CONFIG=llvm-config38 \
 		LLVM_PORT=devel/llvm38 \
 		LLVM_CC=clang38 \
@@ -93,10 +88,6 @@ LLVM40_VARS=	LLVM_CONFIG=llvm-config40 \
 		LLVM_CXX=clang++40
 
 .include <bsd.port.pre.mk>
-
-.if !exists(/usr/lib/libexecinfo.so)
-CONFIGURE_ARGS+=	--with-opt-dir "${LOCALBASE}"
-.endif
 
 .if ${ARCH} == "sparc64"
 BROKEN=		Does not compile on sparc64

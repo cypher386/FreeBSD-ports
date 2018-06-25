@@ -1,8 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	openmpi
-PORTVERSION=	2.0.2
-PORTREVISION=	4
+PORTVERSION=	2.1.3
 CATEGORIES=	net parallel
 MASTER_SITES=	http://www.open-mpi.org/software/ompi/v${PORTVERSION:R}/downloads/
 PKGNAMESUFFIX=	2
@@ -13,6 +12,10 @@ COMMENT=	High Performance Message Passing Library
 LICENSE=	BSD3CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
+BROKEN_armv6=		fails to package: pkg-static: mca_patcher_overwrite.la: No such file or directory
+BROKEN_armv7=		fails to package: pkg-static: mca_patcher_overwrite.la: No such file or directory
+BROKEN_sparc64=		fails to compile on sparc64
+
 LIB_DEPENDS=	libhwloc.so:devel/hwloc \
 		libltdl.so:devel/libltdl \
 		libevent.so:devel/libevent \
@@ -21,7 +24,7 @@ LIB_DEPENDS=	libhwloc.so:devel/hwloc \
 HAS_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
 # :keepla because port uses lt_dlopen
-USES=		execinfo fortran gmake libtool:keepla localbase perl5 \
+USES=		fortran gmake libtool:keepla localbase perl5 \
 		pkgconfig tar:bzip2
 USE_PERL5=	build
 
@@ -42,6 +45,7 @@ CONFIGURE_ARGS+=	--prefix=${PREFIX}/${MPIDIR} \
 			--enable-heterogeneous \
 			--enable-mpi-thread-multiple \
 			--with-libevent=external \
+			--with-wrapper-ldflags=-Wl,-rpath=-Wl,-rpath=${LOCALBASE}/lib/gcc${_GCC_VER} \
 			ompi_cv_fortran_ignore_tkr_data=0
 
 USE_LDCONFIG=	${PREFIX}/${MPIDIR}/lib \
@@ -80,8 +84,6 @@ SLURM_PLIST_FILES=	${MPIDIR}/lib/openmpi/mca_ess_slurm.la \
 			${MPIDIR}/lib/openmpi/mca_ras_slurm.so \
 			${MPIDIR}/share/openmpi/help-plm-slurm.txt \
 			${MPIDIR}/share/openmpi/help-ras-slurm.txt
-
-BROKEN_sparc64=		Does not compile on sparc64
 
 post-patch:
 	@${REINPLACE_CMD} -e 's|$$(libdir)/pkgconfig|${PREFIX}/${MPIDIR}/libdata/pkgconfig|g' \

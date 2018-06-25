@@ -2,18 +2,17 @@
 # $FreeBSD$
 
 PORTNAME=	data.table
-PORTVERSION=	1.10.0
+DISTVERSION=	1.11.2
 CATEGORIES=	devel
-DISTNAME=	${PORTNAME}_${PORTVERSION}
+DISTNAME=	${PORTNAME}_${DISTVERSION}
 
 MAINTAINER=	tota@FreeBSD.org
 COMMENT=	Extension of Data.frame
 
-LICENSE=	GPLv3
+LICENSE=	MPL20
+LICENSE_FILE=	${WRKSRC}/LICENSE
 
-CRAN_DEPENDS=	R-cran-chron>0:devel/R-cran-chron
-BUILD_DEPENDS=	${CRAN_DEPENDS}
-RUN_DEPENDS=	${CRAN_DEPENDS}
+LIB_DEPENDS=	libomp.so:devel/openmp
 
 USES=		cran:auto-plist,compiles
 

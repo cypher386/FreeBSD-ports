@@ -3,7 +3,7 @@
 
 PORTNAME=	toycars
 PORTVERSION=	0.3.10
-PORTREVISION=	7
+PORTREVISION=	8
 CATEGORIES=	games
 MASTER_SITES=	SF
 
@@ -19,6 +19,8 @@ USES=		gmake localbase
 GNU_CONFIGURE=	yes
 USE_SDL=	image sdl
 USE_GL=		gl glu
+
+CXXFLAGS+=	-Wno-c++11-narrowing
 
 PLIST_FILES=	bin/toycars \
 		bin/toycars_track_editor \

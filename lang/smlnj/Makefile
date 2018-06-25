@@ -19,6 +19,7 @@ LICENSE_TEXT=	The text of the license can be obtained from the following URL:\
 LICENSE_PERMS=	dist-mirror dist-sell pkg-mirror pkg-sell auto-accept
 
 ONLY_FOR_ARCHS=	i386 amd64
+LLD_UNSAFE=	yes
 
 NO_WRKSUBDIR=	yes
 
@@ -163,15 +164,9 @@ RECOMPILEDIR=	base/system
 RECOMPILEDIR=
 .endif
 
-.if (${ARCH} == "amd64") && (${OSVERSION} < 1000029)
-MLRUNTIMEPATCHES_CMD=	cd ${FILESDIR} && \
-			( ${LS} do-patch-base_runtime_* extra-patch-base_runtime_* 2>&- || \
-			  ${TRUE} )
-.else
 MLRUNTIMEPATCHES_CMD=	cd ${FILESDIR} && \
 			( ${LS} do-patch-base_runtime_* 2>&- || \
 			  ${TRUE} )
-.endif
 MLSTANDARDPATCHES_CMD=	cd ${FILESDIR} && \
 			( for srcdir in ${MLSTDSRCDIRS} ; \
 			  do ${LS} do-patch-$${srcdir}_* 2>&- ; \

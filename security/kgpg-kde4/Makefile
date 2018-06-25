@@ -3,6 +3,7 @@
 
 PORTNAME=	kgpg
 PORTVERSION=	${KDE4_VERSION}
+PORTREVISION=	2
 CATEGORIES=	security kde kde-kde4
 
 MAINTAINER=	kde@FreeBSD.org

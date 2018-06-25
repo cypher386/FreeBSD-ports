@@ -2,10 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	XML_Util
-PORTVERSION=	1.4.2
+PORTVERSION=	1.4.3
 CATEGORIES=	devel www pear
 
-MAINTAINER=	joneum@bsdproject.de
+MAINTAINER=	joneum@FreeBSD.org
 COMMENT=	PEAR XML utility class
 
 LICENSE=	BSD2CLAUSE

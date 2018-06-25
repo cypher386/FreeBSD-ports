@@ -2,11 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	cpuid
-PORTVERSION=	20161201
+DISTVERSION=	20180519
+DISTVERSIONSUFFIX=	.src
 CATEGORIES=	sysutils
 MASTER_SITES=	http://www.etallen.com/cpuid/
 PKGNAMESUFFIX=	${CPUID_SUFFIX}
-DISTNAME=	${PORTNAME}-${PORTVERSION}.src
 
 MAINTAINER=	pkubaj@anongoth.pl
 COMMENT=	Tool to dump x86 CPUID information about the CPU(s)
@@ -14,13 +14,13 @@ COMMENT=	Tool to dump x86 CPUID information about the CPU(s)
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
-ONLY_FOR_ARCHS=	i386 amd64
+ONLY_FOR_ARCHS=	amd64 i386
 ONLY_FOR_ARCHS_REASON=	only works with x86 CPUs
 
 USES=		gmake perl5
 USE_PERL5=	build
 ALL_TARGET=	default
-WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}
+WRKSRC=		${WRKDIR}/${PORTNAME}-${DISTVERSION}
 
 # Renamed to avoid conflict with misc/cpuid
 CPUID_SUFFIX=	-etallen

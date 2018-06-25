@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	Flask
-PORTVERSION=	0.12
-PORTREVISION=	1
+PORTVERSION=	0.12.4
 CATEGORIES=	www python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
@@ -13,12 +12,12 @@ COMMENT=	Micro web framework
 
 LICENSE=	BSD3CLAUSE
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}werkzeug>=0.11:www/py-werkzeug \
-		${PYTHON_PKGNAMEPREFIX}Jinja2>=2.8:devel/py-Jinja2 \
-		${PYTHON_PKGNAMEPREFIX}itsdangerous>=0.24:security/py-itsdangerous \
-		${PYTHON_PKGNAMEPREFIX}click>=6.6:devel/py-click
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}werkzeug>=0.11:www/py-werkzeug@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}Jinja2>=2.8:devel/py-Jinja2@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}itsdangerous>=0.24:security/py-itsdangerous@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}click>=6.6:devel/py-click@${PY_FLAVOR}
 
-USES=	python
+USES=		python
 USE_PYTHON=	distutils concurrent autoplist
 NO_ARCH=	yes
 

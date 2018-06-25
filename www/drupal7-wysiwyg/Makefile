@@ -2,11 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	wysiwyg
-DISTVERSION=	7.x-2.3
-PORTREVISION=	1
+DISTVERSION=	7.x-2.5
 CATEGORIES=	www
 
-MAINTAINER=	joneum@bsdproject.de
+MAINTAINER=	joneum@FreeBSD.org
 COMMENT=	Allows implementation of WYSIWYG editors for editing Drupal content
 
 LICENSE=	GPLv2
@@ -70,7 +69,7 @@ DOC_FILES=	CHANGELOG.txt README.txt LICENSE.txt
 OPTIONS_DEFINE=	TINYMCE CKEDITOR DOCS
 
 CKEDITOR_DESC=	Install CKEditor
-CKEDITOR_RUN_DEPENDS=	CKEditor>0:www/ckeditor
+CKEDITOR_RUN_DEPENDS=	ckeditor>0:www/ckeditor
 CKEDITOR_PLIST_FILES=	${DRUPAL_MODLIB}/ckeditor
 
 TINYMCE_DESC=	Install TinyMCE Editor

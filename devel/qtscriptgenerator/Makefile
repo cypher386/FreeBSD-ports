@@ -3,11 +3,14 @@
 
 PORTNAME=	qtscriptgenerator
 PORTVERSION=	0.2.0
-PORTREVISION=	3
+PORTREVISION=	4
 CATEGORIES=	devel
 
 MAINTAINER=	syncer@gmail.com
 COMMENT=	Tool that generates Qt bindings for Qt Script
+
+BROKEN_armv6=		fails to build: qtscript_QEasingCurve.cpp:332:32: cannot initialize a parameter of type 'QEasingCurve::EasingFunction' with an lvalue of type 'float'
+BROKEN_armv7=		fails to build: qtscript_QEasingCurve.cpp:332:32: cannot initialize a parameter of type 'QEasingCurve::EasingFunction' with an lvalue of type 'float'
 
 USE_GITHUB=	YES
 GH_ACCOUNT=	qt-labs

@@ -13,10 +13,9 @@ LICENSE=	APACHE20
 
 RUN_DEPENDS=	tmux:sysutils/tmux
 
+USES=		cmake compiler:c++11-lang
 USE_GITHUB=	yes
 GH_ACCOUNT=	thewtex
-
-USES=		cmake
 
 PLIST_FILES=	bin/tmux-mem-cpu-load
 

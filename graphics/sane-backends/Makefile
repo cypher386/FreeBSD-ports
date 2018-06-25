@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	sane-backends
-PORTVERSION=	1.0.25
+PORTVERSION=	1.0.27
+PORTREVISION=	3
 CATEGORIES=	graphics
 MASTER_SITES=	https://alioth.debian.org/frs/download.php/file/4146/ \
 		http://fossies.org/linux/misc/
@@ -11,10 +12,12 @@ MAINTAINER=	ports@FreeBSD.org
 COMMENT=	API for access to scanners, digitals camera, frame grabbers etc
 
 LICENSE=	GPLv2+
+LICENSE_FILE=	${WRKSRC}/COPYING
 
-LIB_DEPENDS=	libtiff.so:graphics/tiff
+LIB_DEPENDS=	libpng.so:graphics/png \
+		libtiff.so:graphics/tiff
 
-USES=		gmake libtool localbase pathfix pkgconfig
+USES=		gmake jpeg libtool localbase pathfix pkgconfig
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--with-docdir=${DOCSDIR} \
 		--disable-latex \
@@ -24,6 +27,7 @@ CONFIGURE_ARGS=	--with-docdir=${DOCSDIR} \
 INSTALL_TARGET=	install-strip
 USE_LDCONFIG=	yes
 USE_RC_SUBR=	saned
+WRKSRC=		${WRKDIR}/${PORTNAME}-1.0.25
 
 SUB_FILES=	pkg-message
 

@@ -2,13 +2,12 @@
 # $FreeBSD$
 
 PORTNAME=	zathura-pdf-mupdf
-PORTVERSION=	0.3.1
-PORTREVISION=	2
+PORTVERSION=	0.3.2
 CATEGORIES=	graphics
 MASTER_SITES=	https://pwmt.org/projects/zathura-pdf-mupdf/download/ \
 		http://www.madpilot.net/~mad/pwmt.org/
 
-MAINTAINER=	udvzsolt@gmail.com
+MAINTAINER=	uzsolt@uzsolt.hu
 COMMENT=	MuPDF render PDF plugin for Zathura PDF viewer
 
 LICENSE=	ZLIB
@@ -32,6 +31,6 @@ USE_GNOME=	cairo gdkpixbuf2 glib20 gtk30
 CONFLICTS_INSTALL=	zathura-pdf-poppler-[0-9]*
 
 post-install:
-	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/zathura/pdf.so
+	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/zathura/pdf.so
 
 .include <bsd.port.mk>

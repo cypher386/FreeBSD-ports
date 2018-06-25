@@ -1,2 +1,3 @@
-SHA256 (cabal/yesod-core-1.4.13.tar.gz) = 219bf0858977468d9aa74ab5f2d330e46bbbe95d700c989b3565be5d99d319da
-SIZE (cabal/yesod-core-1.4.13.tar.gz) = 81300
+TIMESTAMP = 1525033997
+SHA256 (cabal/yesod-core-1.6.4.tar.gz) = 8d7e42b70f18ee7a154d351df0bd3b6b025598f593598817ae88d6bb22092727
+SIZE (cabal/yesod-core-1.6.4.tar.gz) = 94604

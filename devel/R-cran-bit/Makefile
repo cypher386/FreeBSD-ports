@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	bit
-DISTVERSION=	1.1-12
+DISTVERSION=	1.1-14
 CATEGORIES=	devel
 DISTNAME=	${PORTNAME}_${DISTVERSION}
 
@@ -11,6 +11,6 @@ COMMENT=	Class for vectors of 1-bit booleans
 
 LICENSE=	GPLv2
 
-USES=	cran:auto-plist
+USES=		cran:auto-plist,compiles
 
 .include <bsd.port.mk>

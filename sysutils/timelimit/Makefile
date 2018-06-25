@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	timelimit
-PORTVERSION=	1.8.1
+PORTVERSION=	1.9.0
 CATEGORIES=	sysutils
-MASTER_SITES=	http://devel.ringlet.net/files/sys/timelimit/ \
+MASTER_SITES=	https://devel.ringlet.net/files/sys/timelimit/ \
 		LOCAL/sunpoet
 
 MAINTAINER=	sunpoet@FreeBSD.org
@@ -12,9 +12,9 @@ COMMENT=	Limit the absolute execution time of a process
 
 LICENSE=	BSD2CLAUSE
 
-CONFLICTS_INSTALL=	netpipes-[0-9]*
+# bin/timelimit man/man1/timelimit.1.gz
+CONFLICTS_INSTALL=	netpipes
 
-NO_ARCH=	yes
 USES=		tar:xz
 
 PLIST_FILES=	bin/timelimit man/man1/timelimit.1.gz

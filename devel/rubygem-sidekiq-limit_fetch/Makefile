@@ -3,6 +3,7 @@
 
 PORTNAME=	sidekiq-limit_fetch
 PORTVERSION=	3.4.0
+PORTREVISION=	2
 CATEGORIES=	devel rubygems
 MASTER_SITES=	RG
 

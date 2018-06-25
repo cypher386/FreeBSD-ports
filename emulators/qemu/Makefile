@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	qemu
-PORTVERSION=	2.8.0
-PORTREVISION=	3
+PORTVERSION=	2.9.0
+PORTREVISION=	1
 CATEGORIES=	emulators
 MASTER_SITES=	http://wiki.qemu.org/download/
 DIST_SUBDIR=	qemu/${PORTVERSION}
@@ -13,8 +13,12 @@ COMMENT?=	QEMU CPU Emulator
 
 LICENSE=	GPLv2
 
+LIB_DEPENDS?=	libnettle.so:security/nettle \
+		libfontconfig.so:x11-fonts/fontconfig \
+		libfreetype.so:print/freetype2
+
 HAS_CONFIGURE=	yes
-USES?=		cpe gmake pkgconfig bison perl5 python:2,build tar:bzip2
+USES?=		cpe gmake pkgconfig bison perl5 python:2.7,build tar:bzip2
 USE_PERL5=	build
 MAKE_ENV+=	BSD_MAKE="${MAKE}" V=1
 .if !defined(PKGNAMESUFFIX) || ${PKGNAMESUFFIX} != "-utils"
@@ -23,8 +27,10 @@ USE_GNOME+=	cairo glib20
 ONLY_FOR_ARCHS=	amd64 i386 powerpc powerpc64 # XXX someone wants to debug sparc64 hosts?
 .endif
 
+BROKEN_powerpc64=	fails to compile: In function aio_bh_poll: internal compiler error: Segmentation fault
+
 OPTIONS_DEFINE=	SAMBA X11 GTK2 OPENGL GNUTLS SASL JPEG PNG CURL \
-		CDROM_DMA PCAP USBREDIR GNS3 X86_TARGETS \
+		VDE CDROM_DMA PCAP USBREDIR GNS3 X86_TARGETS \
 		STATIC_LINK DOCS NCURSES
 SAMBA_DESC=		samba dependency (for -smb)
 GNUTLS_DESC=		gnutls dependency (vnc encryption)
@@ -37,11 +43,12 @@ USBREDIR_DESC=		usb device network redirection (experimental!)
 GNS3_DESC=		gns3 patches (promiscuous multicast)
 X86_TARGETS_DESC=	Build only x86 system targets
 STATIC_LINK_DESC=	Statically link the executables
-OPTIONS_DEFAULT=X11 GTK2 OPENGL GNUTLS SASL JPEG PNG CDROM_DMA CURL PCAP GNS3 NCURSES
+VDE_DESC=		vde dependency (for vde networking)
+OPTIONS_DEFAULT=X11 GTK2 OPENGL GNUTLS SASL JPEG PNG CDROM_DMA CURL PCAP GNS3 NCURSES VDE
 OPTIONS_SUB=	yes
 X11_USE=	SDL=sdl XORG=x11,xext GNOME=gdkpixbuf2
 X11_CONFIGURE_ENABLE=	sdl
-GTK2_USE=	GNOME=gtk20,vte
+GTK2_USE=	GNOME=gtk20,vte,gdkpixbuf2 XORG=x11,xext
 GTK2_USES=	gettext
 GTK2_CONFIGURE_OFF=	--disable-gtk --disable-vte
 GNUTLS_LIB_DEPENDS=	libgnutls.so:security/gnutls
@@ -62,16 +69,20 @@ USBREDIR_CONFIGURE_OFF=	--disable-usb-redir
 PCAP_CONFIGURE_ON=	--enable-pcap
 PCAP_EXTRA_PATCHES=	${FILESDIR}/pcap-patch ${FILESDIR}/pcap-patch-net_net.c \
 			${FILESDIR}/pcap-patch-net_clients.h
+VDE_LIB_DEPENDS=	libvdeplug.so:net/vde2
+VDE_CONFIGURE_OFF=	--disable-vde
 STATIC_LINK_CONFIGURE_ON=	--static
 STATIC_LINK_PREVENTS=		GTK2 X11
 STATIC_LINK_PREVENTS_MSG=	X11 ui cannot be built static
 NCURSES_USES=		ncurses:base
 SAMBA_USES=		samba:run # smbd
+SAMBA_CONFIGURE_ON=	--smbd=${LOCALBASE}/sbin/smbd
 DOCS_BUILD_DEPENDS=	texi2html:textproc/texi2html
 DOCS_USES=		makeinfo
 DOCS_MAKE_ARGS_OFF=	NOPORTDOCS=1
 
-PORTDOCS?=	docs qemu-doc.html qmp-commands.txt
+PORTDOCS?=	docs qemu-doc.html qemu-doc.txt qemu-ga-ref.html qemu-ga-ref.txt \
+	       	qemu-qmp-ref.html qemu-qmp-ref.txt
 
 WITHOUT_CPU_CFLAGS=yes	#to avoid problems with register allocation
 CFLAGS:=	${CFLAGS:C/-fno-tree-vrp//}
@@ -79,12 +90,8 @@ CONFIGURE_ARGS?=--localstatedir=/var --extra-ldflags=-L\"/usr/lib\" \
 		--extra-ldflags=-L\"${LOCALBASE}/lib\" --disable-libssh2 --enable-debug \
 		--prefix=${PREFIX} --cc=${CC} --enable-docs --disable-kvm \
 		--disable-linux-user --disable-linux-aio --disable-xen \
-		--smbd=${LOCALBASE}/sbin/smbd --enable-debug-info --python=${PYTHON_CMD} \
+		--enable-debug-info --python=${PYTHON_CMD} \
 		--extra-cflags=-I${WRKSRC}\ -I${LOCALBASE}/include\ -DPREFIX=\\\"\"${PREFIX}\\\"\"
-
-LIB_DEPENDS?=	libnettle.so:security/nettle \
-		libfontconfig.so:x11-fonts/fontconfig \
-		libfreetype.so:print/freetype2
 
 .include <bsd.port.options.mk>
 
@@ -108,11 +115,11 @@ MAKE_ARGS+=	ARCH=ppc64
 CONFIGURE_ARGS+=	--sparc_cpu=v9
 .endif
 
-# clang in freebsd 10 is unable to assemble linuxboot_dma.bin 
-.if (${OSVERSION} < 1100000) 
-PLIST_SUB+=     LINUXBOOT_DMA="@comment " 
-.else 
-PLIST_SUB+=     LINUXBOOT_DMA="" 
+# clang in freebsd 10 is unable to assemble linuxboot_dma.bin
+.if (${OSVERSION} < 1100000)
+PLIST_SUB+=	LINUXBOOT_DMA="@comment "
+.else
+PLIST_SUB+=	LINUXBOOT_DMA=""
 .endif
 
 # -lprocstat actually only _needs_ -lelf after r249666 or r250870 (MFC)

@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	logstash
-PORTVERSION=	2.3.2
+PORTVERSION=	2.4.1
 CATEGORIES=	sysutils java
 MASTER_SITES=	http://download.elastic.co/logstash/logstash/
 
@@ -10,6 +10,9 @@ MAINTAINER=	enrico.m.crisostomo@gmail.com
 COMMENT=	Tool for managing events and logs
 
 LICENSE=	APACHE20
+
+DEPRECATED=	End of Life was 2018-02-8
+EXPIRATION_DATE=	2018-07-09
 
 RUN_DEPENDS=	${LOCALBASE}/bin/bash:shells/bash
 

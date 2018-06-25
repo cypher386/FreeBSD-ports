@@ -1,7 +1,7 @@
-TIMESTAMP = 1485514860
-SHA256 (centos/libgfortran-4.4.7-17.el6.i686.rpm) = 6c7b68194bc24c90f4d9d619973bb9fa03626bf60e386d53c233821906541882
-SIZE (centos/libgfortran-4.4.7-17.el6.i686.rpm) = 251576
-SHA256 (centos/libgfortran-4.4.7-17.el6.x86_64.rpm) = 30c9de7704d5c598168012e299dbfdebbfa41d28254c457aec4be1c3935df369
-SIZE (centos/libgfortran-4.4.7-17.el6.x86_64.rpm) = 274212
-SHA256 (centos/gcc-4.4.7-17.el6.src.rpm) = 4b14f08c109dce1f43fe4956bbb8f0a3ff1e076950ca3e89a75d28a59465217c
-SIZE (centos/gcc-4.4.7-17.el6.src.rpm) = 52394741
+TIMESTAMP = 1523959319
+SHA256 (centos/libgfortran-4.4.7-18.el6_9.2.i686.rpm) = 793629f077961b575cf9bcee9b4504c9311f9e054289e4dae060251b4f73c4b4
+SIZE (centos/libgfortran-4.4.7-18.el6_9.2.i686.rpm) = 251900
+SHA256 (centos/libgfortran-4.4.7-18.el6_9.2.x86_64.rpm) = e660e4e790812199fdc649ac2dc88d84a22801d8f9ca76aef94e8808e250e602
+SIZE (centos/libgfortran-4.4.7-18.el6_9.2.x86_64.rpm) = 274568
+SHA256 (centos/gcc-4.4.7-18.el6_9.2.src.rpm) = f549ece63b14ce4c9e103999051d1ef4c6664b015440cba13e8dcc8aa2671138
+SIZE (centos/gcc-4.4.7-18.el6_9.2.src.rpm) = 52419010

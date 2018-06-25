@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	Mozilla-CA
-PORTVERSION=	20160104
+PORTVERSION=	20180117
 CATEGORIES=	www perl5
 MASTER_SITES=	CPAN
 PKGNAMEPREFIX=	p5-
@@ -9,7 +9,7 @@ PKGNAMEPREFIX=	p5-
 MAINTAINER=	kuriyama@FreeBSD.org
 COMMENT=	Perl extension for Mozilla CA cert bundle in PEM format
 
-LICENSE=	MPL
+LICENSE=	MPL20
 
 USES=		perl5
 USE_PERL5=	configure

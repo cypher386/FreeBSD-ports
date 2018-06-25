@@ -4,6 +4,7 @@
 PORTNAME=	ascii-invaders
 PORTVERSION=	1.0.1
 DISTVERSIONPREFIX=	v
+PORTREVISION=	1
 CATEGORIES=	games
 
 MAINTAINER=	amdmi3@FreeBSD.org
@@ -16,6 +17,9 @@ USE_GITHUB=	yes
 GH_ACCOUNT=	macdice
 
 USES=		ncurses
+
+CFLAGS+=	-isystem${LOCALBASE}/include -isystem${NCURSESINC}
+LDFLAGS+=	-L${NCURSESLIB} -ltinfo
 
 PLIST_FILES=	bin/ascii_invaders
 

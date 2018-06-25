@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	exactor
-PORTVERSION=	2.2.3
+PORTVERSION=	2.2.4
 CATEGORIES=	devel
 PKGNAMEPREFIX=	elixir-
 
-MAINTAINER=	olgeni@FreeBSD.org
+MAINTAINER=	erlang@FreeBSD.org
 COMMENT=	GenServer helper for Elixir
 
 LICENSE=	MIT

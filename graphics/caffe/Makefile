@@ -1,8 +1,8 @@
 # $FreeBSD$
 
 PORTNAME=	caffe
-PORTVERSION=	1.0.0.r5
-PORTREVISION=	1
+PORTVERSION=	1.0
+PORTREVISION=	12
 CATEGORIES=	graphics
 
 MAINTAINER=	eric@camachat.org
@@ -11,36 +11,39 @@ COMMENT=	Fast open framework for deep learning
 LICENSE=	BSD2CLAUSE
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
+CONFLICTS_INSTALL=	caffe2-*
+
 BUILD_DEPENDS=	${PYNUMPY} \
-		${LOCALBASE}/bin/cython:lang/cython \
 		${LOCALBASE}/include/cblas.h:math/cblas \
 		bash:shells/bash
 LIB_DEPENDS=	libsnappy.so:archivers/snappy \
 		libleveldb.so:databases/leveldb \
 		liblmdb.so:databases/lmdb \
 		libboost_system.so:devel/boost-libs \
-		libboost_python.so:devel/boost-python-libs \
+		${PY_BOOST} \
 		libgflags.so:devel/gflags \
 		libglog.so:devel/glog \
 		libprotobuf.so:devel/protobuf \
-		libopencv_highgui.so:graphics/opencv2 \
-		libopencv_core.so:graphics/opencv2-core \
+		libopencv_highgui.so:graphics/opencv \
+		libopencv_core.so:graphics/opencv-core \
 		libopenblas.so:math/openblas \
 		libhdf5.so:science/hdf5
 RUN_DEPENDS=	${PYNUMPY} \
-		${PYTHON_PKGNAMEPREFIX}protobuf>=2.5.0:devel/py-protobuf \
-		${PYTHON_PKGNAMEPREFIX}scikit-image>=0.12:graphics/py-scikit-image \
-		${PYTHON_PKGNAMEPREFIX}pillow>=1.7:graphics/py-pillow \
-		${PYTHON_PKGNAMEPREFIX}networkx>=1.8:math/py-networkx \
-		${PYTHON_PKGNAMEPREFIX}matplotlib>=1.1:math/py-matplotlib \
-		${PYTHON_PKGNAMEPREFIX}PyWavelets>=0.4:math/py-PyWavelets
+		${PYTHON_PKGNAMEPREFIX}protobuf>=2.5.0:devel/py-protobuf@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}scikit-image>=0.12:graphics/py-scikit-image@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}pillow>=1.7:graphics/py-pillow@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}networkx>=1.8:math/py-networkx@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}matplotlib>=1.1:math/py-matplotlib@${PY_FLAVOR} \
+		${PYTHON_PKGNAMEPREFIX}PyWavelets>=0.4:math/py-PyWavelets@${PY_FLAVOR}
 
 USE_LDCONFIG=	yes
-USES=		gmake python fortran compiler:c++11-lib pkgconfig
+USES=		gmake python:2.7 fortran compiler:c++11-lib pkgconfig
+USE_PYTHON=	flavors cython
 
 CXXFLAGS+=	-DGTEST_USE_OWN_TR1_TUPLE=1
 LDFLAGS+=	-DGTEST_USE_OWN_TR1_TUPLE=1
 LDFLAGS+=	-lboost_thread
+MAKE_ENV+=	PYTHON_LIBRARIES="${PY_BOOST_LIB} ${PYTHON_VERSION}"
 MAKE_ARGS+=	DISTRIBUTE_DIR=${STAGEDIR}${PREFIX}
 ALL_TARGET=	all py
 INSTALL_TARGET=	dist
@@ -49,7 +52,6 @@ PLIST_SUB=	PYTHON_SITELIBDIR=${PYTHON_SITELIBDIR} DATADIR=${DATADIR}
 
 GH_ACCOUNT=	BVLC
 USE_GITHUB=	yes
-GH_TAGNAME=	rc5
 
 post-extract:
 	@${CP} -v ${.CURDIR}/files/Makefile.config ${WRKSRC}/
