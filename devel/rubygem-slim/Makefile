@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	slim
-PORTVERSION=	3.0.7
+PORTVERSION=	3.0.9
 CATEGORIES=	devel rubygems
 MASTER_SITES=	RG
 

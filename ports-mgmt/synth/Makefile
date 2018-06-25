@@ -2,11 +2,12 @@
 # $FreeBSD$
 
 PORTNAME=	synth
-PORTVERSION=	1.66
 DISTVERSIONPREFIX=	v
+DISTVERSION=	2.02
+PORTREVISION=	1
 CATEGORIES=	ports-mgmt
 
-MAINTAINER=	marino@FreeBSD.org
+MAINTAINER=	ericturgeon.bsd@gmail.com
 COMMENT=	Custom package repository builder for FreeBSD and DragonFly
 
 LICENSE=	ISCL
@@ -23,12 +24,18 @@ GH_ACCOUNT=	jrmarino
 GPR=		${LOCALBASE}/lib/gnat
 MAKE_ENV=	NCURSES_LINK=static
 
+OPTIONS_DEFINE=	WATCHDOG
+OPTIONS_DEFAULT=WATCHDOG
+
+WATCHDOG_DESC=	Build with watchdog monitor
+
+WATCHDOG_EXTRA_PATCHES_OFF=	${FILESDIR}/extrapatch-nowatchdog-portscan-buildcycle.adb
+
 .include <bsd.port.pre.mk>
 
 post-extract:
-.if (${OPSYS} == FreeBSD   && ${OSVERSION} < 1000000) || \
-    (${OPSYS} == DragonFly && ${OSVERSION} < 400600)
-	${REINPLACE_CMD} -e 's|"re"|"r"|' ${WRKSRC}/src/unix.adb
+.if ${OPSYS} == DragonFly && ${OSVERSION} < 400600
+	@${REINPLACE_CMD} -e 's|"re"|"r"|' ${WRKSRC}/src/unix.adb
 .endif
 	@${REINPLACE_CMD} -e "s|/usr/local|${LOCALBASE}|" \
 		${WRKSRC}/src/definitions.ads

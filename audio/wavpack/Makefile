@@ -3,6 +3,7 @@
 
 PORTNAME=	wavpack
 PORTVERSION=	5.1.0
+PORTREVISION=	1
 CATEGORIES=	audio
 MASTER_SITES=	http://www.wavpack.com/
 
@@ -22,6 +23,7 @@ INSTALL_TARGET=	install-strip
 OPTIONS_DEFINE=	ASM
 OPTIONS_DEFAULT_amd64=	ASM
 OPTIONS_DEFAULT_armv6=	ASM
+OPTIONS_DEFAULT_armv7=	ASM
 
 ASM_CONFIGURE_OFF=	--disable-asm
 ASM_DESC=	Optimized assembler routines (requires MMX on x86)

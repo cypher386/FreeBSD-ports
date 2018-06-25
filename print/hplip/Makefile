@@ -2,17 +2,16 @@
 # $FreeBSD$
 
 PORTNAME=	hplip
-PORTVERSION=	3.16.11
-PORTREVISION=	1
+PORTVERSION=	3.17.11
 CATEGORIES=	print
 MASTER_SITES=	SF
 
 MAINTAINER=	woodsb02@FreeBSD.org
-COMMENT=	Drivers and utilities for HP Printers and All-in-One devices
+COMMENT=	Drivers and utilities for HP printers and All-in-One devices
 
-LICENSE=	GPLv2 MIT BSD3CLAUSE
+LICENSE=	GPLv2+ MIT BSD3CLAUSE
 LICENSE_COMB=	multi
-LICENSE_FILES=	${WRKSRC}/COPYING
+LICENSE_FILE=	${WRKSRC}/COPYING
 
 LIB_DEPENDS=	libcupsimage.so:print/cups \
 		libdbus-1.so:devel/dbus
@@ -39,34 +38,56 @@ CONFIGURE_ARGS=	--with-cupsbackenddir=${PREFIX}/libexec/cups/backend \
 CPPFLAGS+=	-I${LOCALBASE}/include
 LIBS+=		-L${LOCALBASE}/lib
 
-OPTIONS_DEFINE=	DOCS FAX SNMP SCAN X11 XSANE
-OPTIONS_DEFAULT=SNMP SCAN X11
-OPTIONS_SUB=	yes # FAX SCAN X11
+OPTIONS_DEFINE=		DOCS FAX SCAN SNMP X11 XSANE
+OPTIONS_RADIO=		GUI
+OPTIONS_RADIO_GUI=	QT4 QT5
+OPTIONS_DEFAULT=	QT5 SCAN SNMP X11
+OPTIONS_SUB=		yes
+
+DOCS_CONFIGURE_ENABLE=	doc-build
 
 FAX_DESC=		PC Send Fax support
 FAX_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}reportlab>=0:print/py-reportlab
 FAX_CONFIGURE_ENABLE=	fax-build
-
-SNMP_DESC=		Network/JetDirect support
-SNMP_USES=		ssl
-SNMP_LIB_DEPENDS=	libnetsnmp.so:net-mgmt/net-snmp
-SNMP_CONFIGURE_ENABLE=	network-build
 
 SCAN_DESC=		Scanning support
 SCAN_LIB_DEPENDS=	libsane.so:graphics/sane-backends
 SCAN_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pillow>0:graphics/py-pillow
 SCAN_CONFIGURE_ENABLE=	scan-build
 
-X11_DESC=		Graphical User Interface (Qt 4)
-X11_RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}qt4-gui>=0:x11-toolkits/py-qt4-gui \
-			${PYTHON_PKGNAMEPREFIX}qt4-dbussupport>=0:devel/py-qt4-dbussupport
-X11_CONFIGURE_ENABLE=	qt4 gui-build
+SNMP_DESC=		Network/JetDirect support
+SNMP_USES=		ssl
+SNMP_LIB_DEPENDS=	libnetsnmp.so:net-mgmt/net-snmp
+SNMP_CONFIGURE_ENABLE=	network-build
 
-XSANE_DESC=		Install XSane for scanning (requires SCAN)
+X11_DESC=		Graphical User Interface (Qt)
+X11_CONFIGURE_ENABLE=	gui-build
+
+XSANE_DESC=		Install XSane for scanning (implies SCAN)
 XSANE_IMPLIES=		SCAN
 XSANE_RUN_DEPENDS=	xsane:graphics/xsane
 
-DOCS_CONFIGURE_ENABLE=	doc-build
+.include <bsd.port.options.mk>
+
+.if ${PORT_OPTIONS:MQT4} && ${PORT_OPTIONS:MX11}
+USES+=			pyqt:4
+USE_PYQT=		core_run dbussupport_run gui_run sip
+CONFIGURE_ARGS+=	--enable-qt4
+.else
+CONFIGURE_ARGS+=	--disable-qt4
+.endif
+
+.if ${PORT_OPTIONS:MQT5} && ${PORT_OPTIONS:MX11}
+USES+=			pyqt:5
+USE_PYQT=		core_run dbussupport_run gui_run sip widgets_run
+CONFIGURE_ARGS+=	--enable-qt5
+.else
+CONFIGURE_ARGS+=	--disable-qt5
+.endif
+
+.if ${PORT_OPTIONS:MX11} && ! ${PORT_OPTIONS:MQT4} && ! ${PORT_OPTIONS:MQT5}
+BROKEN=			The X11 option requires one of the QT4 or QT5 options
+.endif
 
 post-patch:
 	@${REINPLACE_CMD} -e 's|-ldld||g;' \
@@ -108,7 +129,8 @@ post-patch:
 		${WRKSRC}/prnt/hpijs/hpcupsfax.cpp \
 		${WRKSRC}/prnt/hpijs/hpijs.cpp \
 		${WRKSRC}/ui/devmgr4.py \
-		${WRKSRC}/ui4/devmgr5.py
+		${WRKSRC}/ui4/devmgr5.py \
+		${WRKSRC}/ui5/devmgr5.py
 	@${REINPLACE_CMD} -e 's/umask(0)/umask(0o022)/' \
 		-e 's/umask(0o111)/umask(0o133)/' \
 		${WRKSRC}/base/os_utils.py \
@@ -122,9 +144,10 @@ post-install:
 		${STAGEDIR}${PREFIX}/etc/hp/hplip.conf.sample
 	${MKDIR} ${STAGEDIR}${DATADIR}/ui4/plugins
 	${MKDIR} ${STAGEDIR}/var/lib/hp
-	${MKDIR} ${STAGEDIR}/var/lib
+
 post-install-SCAN-on:
 	${MKDIR} ${STAGEDIR}${PREFIX}/etc/sane.d/dll.d
-	${MV} ${STAGEDIR}${PREFIX}/etc/sane.d/dll.conf ${STAGEDIR}${PREFIX}/etc/sane.d/dll.d/hpaio
+	${MV} ${STAGEDIR}${PREFIX}/etc/sane.d/dll.conf \
+		${STAGEDIR}${PREFIX}/etc/sane.d/dll.d/hpaio
 
 .include <bsd.port.mk>

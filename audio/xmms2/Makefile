@@ -4,7 +4,7 @@
 PORTNAME?=	xmms2
 PORTVERSION=	0.8
 DISTVERSIONSUFFIX=	DrO_o
-PORTREVISION?=	19
+PORTREVISION?=	23
 CATEGORIES?=	audio
 MASTER_SITES=	SF/${PORTNAME}/${PORTNAME}/${PORTVERSION}%20${DISTVERSIONSUFFIX}
 
@@ -27,8 +27,6 @@ USE_LDCONFIG=	yes
 PLIST_SUB+=	INCLUDEDIR="include/${PORTNAME}" LIBDIR="lib/${PORTNAME}"
 
 CPPFLAGS+=	-I${LOCALBASE}/include
-
-BROKEN_aarch64=		Fails to compile: error in backend: Do not know how to split this operator's operand!
 
 OPTIONS_DEFINE=	AIRPLAY AO APE AVCODEC CDDA CURL ET FAAD FAM FLAC \
 		GME GVFS ICES JACK MAD MDNS MMS \
@@ -56,7 +54,7 @@ XML_DESC=	Support XML based playlists (XSPF, RSS)
 
 OPTIONS_SUB=	yes
 
-AIRPLAY_USE=		OPENSSL=yes
+AIRPLAY_USES=		ssl
 AIRPLAY_CONFIGURE_OFF=	--without-plugins="airplay"
 
 AO_LIB_DEPENDS=		libao.so:audio/libao
@@ -122,7 +120,9 @@ MUSEPACK_CONFIGURE_OFF=	--without-plugins="musepack"
 PULSEAUDIO_LIB_DEPENDS=		libpulse.so:audio/pulseaudio
 PULSEAUDIO_CONFIGURE_OFF=	--without-plugins="pulse"
 
-SAMBA_LIB_DEPENDS=	libsmbclient.so:net/samba-libsmbclient
+SAMBA_USES=	samba:lib
+SAMBA_CPPFLAGS=	-I${SAMBAINCLUDES}
+SAMBA_LDFLAGS=	-L${SAMBALIBS}
 SAMBA_CONFIGURE_OFF=	--without-plugins="samba"
 
 SID_LIB_DEPENDS=	libsidplay2.so:audio/libsidplay2
@@ -158,7 +158,7 @@ XML_CONFIGURE_OFF=	--without-plugins="xml" --without-plugins="rss" \
 
 ET_CONFIGURE_OFF=	--without-optionals="et"
 
-.endif # !XMMS_SLAVE
+.endif # !XMMS2_SLAVE
 
 .include <bsd.port.options.mk>
 
@@ -217,6 +217,8 @@ post-install:
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/*
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/${PORTNAME}/*
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/libxmmsclient*
+.else
+	${RM} -R ${STAGEDIR}${PREFIX}/lib/xmms2
 .endif
 
 .include <bsd.port.post.mk>

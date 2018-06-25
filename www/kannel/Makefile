@@ -3,13 +3,13 @@
 
 PORTNAME=	kannel
 PORTVERSION=	1.4.4
-PORTREVISION=	3
+PORTREVISION=	6
 PORTEPOCH=	1
 CATEGORIES=	www
 MASTER_SITES=	http://www.kannel.org/download/${PORTVERSION}/
 DISTNAME=	gateway-${PORTVERSION}
 
-MAINTAINER=	dbaio@bsd.com.br
+MAINTAINER=	dbaio@FreeBSD.org
 COMMENT=	WAP/SMS gateway
 
 LICENSE=	The_Kannel_Software_License
@@ -24,7 +24,7 @@ PORTSCOUT=	skipv:1.5.0
 USERS=		kannel
 GROUPS=		kannel
 
-USES=		bison gmake iconv ssl tar:bzip2
+USES=		gmake iconv ssl tar:bzip2
 USE_GCC=	yes
 USE_GNOME=	libxml2
 USE_RC_SUBR=	${PORTNAME}_bearerbox ${PORTNAME}_smsbox ${PORTNAME}_wapbox
@@ -43,6 +43,9 @@ MYSQL_CONFIGURE_WITH=	mysql
 
 PGSQL_USES=	pgsql
 PGSQL_CONFIGURE_WITH=	pgsql
+
+post-patch:
+	@${RM} ${WRKSRC}/wmlscript/wsgram.y
 
 post-install:
 .for filename in wapkannel.conf smskannel.conf

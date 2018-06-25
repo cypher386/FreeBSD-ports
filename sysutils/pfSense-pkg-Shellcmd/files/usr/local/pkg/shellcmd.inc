@@ -3,7 +3,7 @@
  * shellcmd.inc
  *
  * part of pfSense (https://www.pfsense.org)
- * Copyright (c) 2015 Rubicon Communications, LLC (Netgate)
+ * Copyright (c) 2015-2017 Rubicon Communications, LLC (Netgate)
  * Copyright (C) 2008 Mark J Crane
  * All rights reserved.
  *
@@ -36,19 +36,19 @@ function shellcmd_delete_php_command() {
 	if ($_GET['act'] == "del") {
 
 		/* System earlyshellcmd commands */
-		$a_earlyshellcmd = &$config['system']['earlyshellcmd'];
+		$a_earlyshellcmd = $config['system']['earlyshellcmd'];
 		if (!is_array($a_earlyshellcmd)) {
 			$a_earlyshellcmd = array();
 		}
 		/* Shellcmd package commands */
-		$a_shellcmd_config = &$config['installedpackages']['shellcmdsettings']['config'];
+		$a_shellcmd_config = $config['installedpackages']['shellcmdsettings']['config'];
 		if (!is_array($a_shellcmd_config)) {
 			$a_shellcmd_config = array();
 		}
 
 		/* First check for a couple of special cases that we do NOT want deleted */
 		$pkg = '';
-		/* pfBlockerNG - function to restore archived aliastables on nanobsd (see pfblockerng.inc) */
+		/* pfBlockerNG - function to restore archived aliastables on systems with /var ramdisk (see pfblockerng.inc) */
 		$pfbcmd = "/usr/local/pkg/pfblockerng/pfblockerng.sh";
 		/* If the entry exists in system config ... */
 		if (in_array($pfbcmd, $a_earlyshellcmd)) {
@@ -67,7 +67,7 @@ function shellcmd_delete_php_command() {
 			}
 		}
 		/* System Patches auto-apply patch feature (see patches.inc) */
-		$spcmd = "/usr/local/bin/php -f /usr/local/bin/apply_patches.php";
+		$spcmd = "/usr/local/bin/php-cgi -f /usr/local/bin/apply_patches.php";
 		if (in_array($spcmd, $a_earlyshellcmd)) {
 			$cntb = 0;
 			foreach ($a_shellcmd_config as $item => $value) {
@@ -112,7 +112,8 @@ function shellcmd_sync_package() {
 	 * See /etc/inc/xmlparse.inc and /etc/inc/xmlreader.inc
 	 */
 	$afterfilterchangeshellcmd = '';
-	$a_shellcmd_config = &$config['installedpackages']['shellcmdsettings']['config'];
+	$tmp = $config['installedpackages']['shellcmdsettings']['config'];
+	$a_shellcmd_config = &$tmp;
 	if (!is_array($a_shellcmd_config)) {
 		$a_shellcmd_config = array();
 	}
@@ -143,23 +144,27 @@ function shellcmd_sync_package() {
 			$i++;
 		}
 	}
-
-	/* Write the new system configuration to config.xml from scratch when done */
-	unset($config['system']['shellcmd']);
-	$config['system']['shellcmd'] = $a_shellcmd;
-	unset($config['system']['earlyshellcmd']);
-	$config['system']['earlyshellcmd'] = $a_earlyshellcmd;
-	unset($config['system']['afterfilterchangeshellcmd']);
-	$config['system']['afterfilterchangeshellcmd'] = $afterfilterchangeshellcmd;
-	write_config("[shellcmd] Successfully (re)synced shellcmd configuration.");
-
+	if (($config['system']['shellcmd'] != $a_shellcmd) ||
+	    ($config['system']['earlyshellcmd'] != $a_earlyshellcmd) ||
+	    ($config['system']['afterfilterchangeshellcmd'] != $afterfilterchangeshellcmd)) {
+		/* Write the new system configuration to config.xml from scratch when done
+		   but only if something changed */
+		unset($config['system']['shellcmd']);
+		$config['system']['shellcmd'] = $a_shellcmd;
+		unset($config['system']['earlyshellcmd']);
+		$config['system']['earlyshellcmd'] = $a_earlyshellcmd;
+		unset($config['system']['afterfilterchangeshellcmd']);
+		$config['system']['afterfilterchangeshellcmd'] = $afterfilterchangeshellcmd;
+		write_config("[shellcmd] Successfully (re)synced shellcmd configuration.");
+	}
 }
 
 
 function shellcmd_import_config() {
 	global $config;
 
-	$shellcmd_config = &$config['installedpackages']['shellcmdsettings']['config'];
+	$tmp = $config['installedpackages']['shellcmdsettings']['config'];
+	$shellcmd_config = &$tmp;
 	if (!is_array($shellcmd_config)) {
 		$shellcmd_config = array();
 	}
@@ -188,9 +193,9 @@ function shellcmd_import_config() {
 	if (is_array($config['system']['earlyshellcmd'])) {
 		$earlyshellcmds = &$config['system']['earlyshellcmd'];
 		$pfbcmd = "/usr/local/pkg/pfblockerng/pfblockerng.sh";
-		$spcmd = "/usr/local/bin/php -f /usr/local/bin/apply_patches.php";
+		$spcmd = "/usr/local/bin/php-cgi -f /usr/local/bin/apply_patches.php";
 		foreach ($earlyshellcmds as $earlyshellcmd) {
-			/* pfBlockerNG - function to restore archived aliastables on nanobsd (see pfblockerng.inc) */
+			/* pfBlockerNG - function to restore archived aliastables on on systems with /var ramdisk (see pfblockerng.inc) */
 			if (stristr($earlyshellcmd, "{$pfbcmd}")) {
 				$shellcmd_config[$i]['cmd'] = $earlyshellcmd;
 				$shellcmd_config[$i]['cmdtype'] = "earlyshellcmd";

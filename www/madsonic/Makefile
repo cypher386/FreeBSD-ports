@@ -2,10 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	madsonic
-PORTVERSION=	6.1.8700
+PORTVERSION=	6.2.9040
 PORTREVISION=	1
 CATEGORIES=	www java
-MASTER_SITES=	http://madsonic.org/download/6.1/
+MASTER_SITES=	http://madsonic.org/download/6.2/
 DISTFILES=	${DISTDATE}_${DISTNAME}-war-tomcat.zip \
 	${DISTDATE}_${DISTNAME}-war-jspc.zip
 
@@ -39,7 +39,7 @@ APE_DESC=	Depend on mac for Monkey's Audio transcoding #'
 OPTIONS_DEFAULT=	FFMPEG JETTY
 OPTIONS_SUB=	yes
 
-RUN_DEPENDS+=	${JAVAJARDIR}/servlet-api.jar:www/servlet-api \
+RUN_DEPENDS+=	${JAVALIBDIR}/servlet-api.jar:www/servlet-api \
 	${LOCALBASE}/lib/alsa-lib/libasound_module_pcm_oss.so:audio/alsa-plugins
 TOMCAT8_BUILD_DEPENDS=	${LOCALBASE}/${SERVERDIR}/bin/bootstrap.jar:www/tomcat8
 TOMCAT8_RUN_DEPENDS=	${LOCALBASE}/${SERVERDIR}/bin/bootstrap.jar:www/tomcat8
@@ -64,7 +64,7 @@ APE_RUN_DEPENDS=	mac:audio/mac
 .include <bsd.port.options.mk>
 
 NO_BUILD=	yes
-DISTDATE=	20160915
+DISTDATE=	20161208
 USE_JAVA=	yes
 JAVA_VERSION=	1.7+
 USES=	zip

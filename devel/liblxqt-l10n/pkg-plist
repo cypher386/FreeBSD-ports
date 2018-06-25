@@ -2,7 +2,6 @@
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_ca.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_cs.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_da.qm
-%%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_da_DK.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_de.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_el.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_eo.qm
@@ -13,11 +12,12 @@
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_fr.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_hu.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_ia.qm
-%%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_id_ID.qm
+%%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_id.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_it.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_ja.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_ko.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_lt.qm
+%%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_lv.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_nl.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_pl.qm
 %%LXQT_TRANSLATIONS%%/liblxqt/liblxqt_pt.qm

@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	xorriso
-PORTVERSION=	1.4.6
-PORTREVISION=	1
+PORTVERSION=	1.4.8
 CATEGORIES=	sysutils
 MASTER_SITES=	http://files.libburnia-project.org/releases/
 DISTNAME=	libisoburn-${PORTVERSION}
@@ -18,8 +17,8 @@ LIB_DEPENDS=	libburn.so:devel/libburn \
 		libisofs.so:devel/libisofs
 
 GNU_CONFIGURE=	yes
-USES=		gmake iconv libtool libedit pathfix pkgconfig shebangfix
-SHEBANG_FILES=	${WRKSRC}/frontend/xorriso-tcltk
+USES=		gmake iconv libtool libedit pathfix pkgconfig shebangfix tk
+SHEBANG_FILES=	frontend/xorriso-tcltk
 USE_LDCONFIG=	yes
 INSTALL_TARGET=	install-strip
 

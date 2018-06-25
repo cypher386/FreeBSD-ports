@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	pioneer
-PORTVERSION=	0.0.${GH_TAGNAME}
+DISTVERSION=	0.0.${GH_TAGNAME}
 CATEGORIES=	games
 
 MAINTAINER=	lightside@gmx.com
@@ -27,18 +27,16 @@ LICENSE_PERMS_IUP=	dist-mirror dist-sell pkg-mirror pkg-sell auto-accept
 LICENSE_PERMS_SIL=	dist-mirror dist-sell pkg-mirror pkg-sell auto-accept
 
 BUILD_DEPENDS=	${LOCALBASE}/include/GL/glu.h:graphics/libGLU
-LIB_DEPENDS=	libcurl.so:ftp/curl \
-		libsigc-2.0.so:devel/libsigc++20 \
+LIB_DEPENDS=	libsigc-2.0.so:devel/libsigc++20 \
 		libfreetype.so:print/freetype2 \
 		libvorbisfile.so:audio/libvorbis \
 		libpng.so:graphics/png \
 		libassimp.so:multimedia/assimp
 
+USES=		autoreconf compiler:c++11-lib gmake pkgconfig
 USE_GITHUB=	yes
 GH_ACCOUNT=	pioneerspacesim
-GH_TAGNAME=	20161129
-
-USES=		autoreconf compiler:c++11-lib gmake pkgconfig
+GH_TAGNAME=	20180203
 USE_GL=		gl
 USE_SDL=	image2 sdl2
 
@@ -59,16 +57,18 @@ DESKTOP_ENTRIES="Pioneer" "${COMMENT}" \
 
 SUB_FILES=	pkg-message
 
-OPTIONS_DEFINE=		DOCS MODELCOMPILER NOGPUJOBS PROFILER
+OPTIONS_DEFINE=		DOCS MODELCOMPILER NOGPUJOBS PROFILER SERVERAGENT
 OPTIONS_DEFAULT=	MODELCOMPILER
-DOCS_SUB_LIST=	QUICKSTART_PATH="${DOCSDIR}"
-DOCS_SUB_LIST_OFF=	\
-		QUICKSTART_PATH="https://raw.githubusercontent.com/${GH_ACCOUNT}/${GH_PROJECT}/${GH_TAGNAME}"
+DOCS_SUB_LIST=		QUICKSTART_PATH="${DOCSDIR}"
+DOCS_SUB_LIST_OFF=	QUICKSTART_PATH="https://raw.githubusercontent.com/${GH_ACCOUNT}/${GH_PROJECT}/${GH_TAGNAME}"
 MODELCOMPILER_DESC=	Build/install modelcompiler tool
 MODELCOMPILER_PLIST_FILES=	bin/${PORTNAME}-modelcompiler
 NOGPUJOBS_DESC=		Disable EnableGPUJobs for config.ini by default
 PROFILER_DESC=		Build with internal profiler
 PROFILER_CONFIGURE_ON=	--enable-profiler
+SERVERAGENT_DESC=	Build with server agent
+SERVERAGENT_CONFIGURE_WITH=	server-agent
+SERVERAGENT_LIB_DEPENDS=	libcurl.so:ftp/curl
 
 .include <bsd.port.pre.mk>
 
@@ -80,10 +80,6 @@ CXXFLAGS+=	-D_GLIBCXX_USE_C99
 post-patch: .SILENT
 	${REINPLACE_CMD} -e '/^OPTIMISE=/d' \
 		${WRKSRC}/configure.ac
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000054
-	${REINPLACE_CMD} -e 's/std::acosh/acosh/g ; s/std::copysign/copysign/g' \
-		${WRKSRC}/src/Orbit.cpp
-.endif
 
 post-patch-MODELCOMPILER-off: .SILENT
 	${REINPLACE_CMD} -e 's/pioneer modelcompiler/pioneer/' \

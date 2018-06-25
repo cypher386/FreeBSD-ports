@@ -1,14 +1,15 @@
 # $FreeBSD$
 
 PORTNAME=	rbenv
-PORTVERSION=	1.1.0
+PORTVERSION=	1.1.1
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel ruby
 
-MAINTAINER=	meta+ports@vmeta.jp
+MAINTAINER=	meta@FreeBSD.org
 COMMENT=	Manage multiple versions of ruby
 
 LICENSE=	MIT
+LICENSE_FILE=	${WRKSRC}/LICENSE
 
 RUN_DEPENDS=	bash:shells/bash
 
@@ -29,8 +30,11 @@ do-install:
 	( ${INSTALL_SCRIPT} ${WRKSRC}/libexec/* ${STAGEDIR}${PREFIX}/libexec/ )
 	@${LN} -sf ../libexec/rbenv ${STAGEDIR}${PREFIX}/bin/rbenv
 	@${MKDIR} ${STAGEDIR}${DATADIR}/completions
-	( cd ${WRKSRC}/completions && ${COPYTREE_BIN} \* ${STAGEDIR}${DATADIR}/completions )
+	( cd ${WRKSRC}/completions && ${COPYTREE_BIN} . ${STAGEDIR}${DATADIR}/completions )
 	@${MKDIR} ${STAGEDIR}${PREFIX}/etc/rbenv.d
-	( cd ${WRKSRC}/rbenv.d && ${COPYTREE_BIN} \* ${STAGEDIR}${PREFIX}/etc/rbenv.d )
+	( cd ${WRKSRC}/rbenv.d && ${COPYTREE_BIN} . ${STAGEDIR}${PREFIX}/etc/rbenv.d )
+
+post-install:
+	${STRIP_CMD} ${STAGEDIR}${PREFIX}/libexec/rbenv-realpath.dylib
 
 .include <bsd.port.mk>

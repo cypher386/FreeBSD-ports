@@ -2,10 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	cython
-PORTVERSION=	0.25.2
+PORTVERSION=	0.26
 CATEGORIES=	lang python
 MASTER_SITES=	http://www.cython.org/release/ \
 		CHEESESHOP
+PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
 DISTNAME=	Cython-${PORTVERSION}
 
 MAINTAINER=	vmagerya@gmail.com
@@ -15,7 +16,7 @@ LICENSE=	APACHE20
 LICENSE_FILE=	${WRKSRC}/LICENSE.txt
 
 USES=		python
-USE_PYTHON=	autoplist distutils
+USE_PYTHON=	autoplist distutils concurrent allflavors
 
 post-install:
 	${FIND} ${STAGEDIR}${PYTHONPREFIX_SITELIBDIR}/Cython \

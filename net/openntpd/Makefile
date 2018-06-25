@@ -1,8 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	openntpd
-PORTVERSION=	6.0p1
-PORTREVISION=	3
+PORTVERSION=	6.2p3
 PORTEPOCH=	2
 CATEGORIES=	net
 MASTER_SITES=	OPENBSD/OpenNTPD
@@ -14,14 +13,18 @@ LICENSE=	ISCL
 
 RUN_DEPENDS=	ca_root_nss>=0:security/ca_root_nss
 
+CONFLICTS=	ntp-[0-9].* ntp-devel-*
+
+USES=		ssl
+
 USE_RC_SUBR=	openntpd
 USERS=		_ntp
 GROUPS=		_ntp
 
-USES=		ssl
-
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--with-cacert=${LOCALBASE}/etc/ssl/cert.pem
+
+SUB_FILES=	480.status-openntpd
 
 pre-build:
 	${REINPLACE_CMD} -e 's,%%PREFIX%%,${PREFIX},g' \
@@ -29,6 +32,9 @@ pre-build:
 
 post-install:
 	cd ${STAGEDIR}${PREFIX}/etc && ${MV} ntpd.conf ntpd.conf.sample
+	${MKDIR} ${STAGEDIR}${PREFIX}/etc/periodic/daily
+	${INSTALL_SCRIPT} ${WRKDIR}/480.status-openntpd \
+		${STAGEDIR}${PREFIX}/etc/periodic/daily
 
 .include <bsd.port.pre.mk>
 
@@ -40,13 +46,6 @@ LDFLAGS+=		-L${OPENSSLLIB}
 BUILD_DEPENDS+=		${NONEXISTENT}:security/libressl:stage
 CPPFLAGS+=		-I${WRKDIR}/libressl/include
 LDFLAGS+=		-L${WRKDIR}/libressl/lib
-# security/libressl ignores implicit SSP_UNSAFE, see Mk/bsd.ssp.mk
-. if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000036 && ${ARCH} == i386
-SSP_CFLAGS?=	-fstack-protector
-CFLAGS+=	${SSP_CFLAGS}
-LDFLAGS+=	-fstack-protector
-LIBS+=		-lssp_nonshared
-. endif
 
 # Don't use COPYTREE_SHARE here as it hard links files, and the original files
 # are owned by root, which creates problems of its own.

@@ -5,7 +5,7 @@
  * part of pfSense (https://www.pfsense.org)
  * Copyright (c) 2004-2016 Rubicon Communications, LLC (Netgate)
  * Copyright (c) 2008-2009 Robert Zelaya
- * Copyright (c) 2016 Bill Meeks
+ * Copyright (c) 2018 Bill Meeks
  * All rights reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -511,7 +511,9 @@ elseif ($_POST['apply']) {
 }
 
 $if_friendly = convert_friendly_interface_to_friendly_descr($a_rule[$id]['interface']);
-$pgtitle = array(gettext("Services"), gettext("Snort"), gettext("Rules"), gettext("{$if_friendly}"));
+if (empty($if_friendly)) {
+	$if_friendly = "None";
+}$pgtitle = array(gettext("Services"), gettext("Snort"), gettext("Rules"), gettext("{$if_friendly}"));
 include("head.inc");
 
 // Display error messages if we have any
@@ -918,10 +920,10 @@ print($section);
 									<tr class="text-nowrap">
 										<td><?=$textss; ?>
 								<?php if ($v['managed'] == 1) : ?>
-											<i {$iconb_class} title='{$title}'</i>{$textse}";
+										<i <?=$iconb_class; ?> title="<?=$title; ?>"</i><?=$textse; ?>
 								<?php else : ?>
-											<a id="rule_<?=$gid; ?>_<?=$sid; ?>" href="#" onClick="doToggle('<?=$gid; ?>', '<?=$sid; ?>');" 
-											<?=$iconb_class; ?> title="<?=$title; ?>"</a><?=$textse; ?>
+										<a id="rule_<?=$gid; ?>_<?=$sid; ?>" href="#" onClick="doToggle('<?=$gid; ?>', '<?=$sid; ?>');" 
+										<?=$iconb_class; ?> title="<?=$title; ?>"></a><?=$textse; ?>
 								<?php endif; ?>
 									       </td>
 									       <td ondblclick="getRuleFileContents('<?=$gid; ?>','<?=$sid; ?>');">

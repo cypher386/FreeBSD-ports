@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	racket
-PORTVERSION=	6.7
+PORTVERSION=	6.12
 CATEGORIES=	lang scheme
 MASTER_SITES=	http://mirror.racket-lang.org/installers/${PORTVERSION}/ \
 		http://www.cs.utah.edu/plt/installers/${PORTVERSION}/ \
@@ -21,8 +21,12 @@ LICENSE=	LGPL3
 
 LIB_DEPENDS=	libffi.so:devel/libffi
 
-BROKEN_aarch64=	does not build: error: Unported platform
-BROKEN_sparc64=	does not build
+BROKEN_armv6=		fails to compile: ./lightning/lightning.h:81:2: error: GNU lightning does not support the current target
+BROKEN_armv7=		fails to compile: ./lightning/lightning.h:81:2: error: GNU lightning does not support the current target
+BROKEN_i386=		fails to build: Seg fault (internal error) at 0x606060a
+BROKEN_powerpc64=	fails to build: jit.c: 'JIT_LOCAL4' undeclared (first use in this function)
+NOT_FOR_ARCHS=		aarch64 aarch64 sparc64
+NOT_FOR_ARCHS_REASON=	not yet ported to this arch
 
 MAKE_JOBS_UNSAFE=yes
 
@@ -55,10 +59,4 @@ JIT_CONFIGURE_ENABLE=	jit
 post-install:
 	${FIND} ${STAGEDIR}${PREFIX} -type d -empty -delete
 
-.include <bsd.port.pre.mk>
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} >= 1000000 && ${ARCH} == i386
-BROKEN=		does not build on i386 (Seg fault (internal error) at 0x606060a)
-.endif
-
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

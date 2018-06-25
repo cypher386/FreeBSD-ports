@@ -63,15 +63,18 @@ function createSlug($string) {
 
 }
 
+$changedesc = gettext("Status: Monitoring:") . " ";
 if($_POST['enable']) {
 	if(($_POST['enable'] === 'false')) {
 		unset($config['rrd']['enable']);
 		$savemsg = "RRD graphing has been disabled.";
+		$changedesc .= gettext("RRD graphing has been disabled.");
 	} else {
 		$config['rrd']['enable'] = true;
 		$savemsg = "RRD graphing has been enabled.";
+		$changedesc .= gettext("RRD graphing has been enabled.");
 	}
-	write_config();
+	write_config($changedesc);
 
 	enable_rrd_graphing();
 }
@@ -86,7 +89,7 @@ if ($_POST['ResetRRD']) {
 //old config that needs to be updated
 if(strpos($config['rrd']['category'], '&resolution') === false) {
 	$config['rrd']['category'] = "left=system-processor&right=&resolution=300&timePeriod=-1d&startDate=&endDate=&startTime=0&endTime=0&graphtype=line&invert=true&refresh-interval=0";
-	write_config();
+	write_config(gettext("Status: Monitoring: updated old configuration."));
 }
 
 //save settings for current view
@@ -125,8 +128,8 @@ if ($_POST['save-view']) {
 	$savemsg = "The current view has been updated.";
 }
 
-//add a new view
-if ($_POST['add-view']) {
+//add a new view and make sure the string isn't empty
+if ($_POST['add-view'] && $_POST['view-title'] != "") {
 
 	$title = $_POST['view-title'];
 
@@ -146,7 +149,7 @@ if ($_POST['add-view']) {
 
 	write_config(gettext("Status Monitoring View Added"));
 
-	$savemsg = "The \"" . $title . "\" view has been added.";
+	$savemsg = "The \"" . htmlspecialchars($title) . "\" view has been added.";
 }
 
 $view_removed = false;
@@ -433,7 +436,7 @@ if (is_array($config['rrd']['savedviews'])) {
 		}
 
 		$view_slug = "/status_monitoring.php?view=" . createSlug($view['title']);
-		$tab_array[] = array($view['title'], $active_tab, $view_slug);
+		$tab_array[] = array(htmlspecialchars($view['title']), $active_tab, $view_slug);
 
 	}
 
@@ -677,7 +680,7 @@ display_top_tabs($tab_array);
 			</div>
 		</div>
 	</div>
-	<input type="hidden" id="view-title" name="view-title" value="<?=$_GET['view']?>">
+	<input type="hidden" id="view-title" name="view-title" value="<?=htmlspecialchars($_GET['view'])?>">
 </form>
 
 <div class="panel panel-default">
@@ -688,7 +691,7 @@ display_top_tabs($tab_array);
 		<div class="alert alert-info" id="loading-msg">Loading Graph...</div>
 		<div id="chart-error" class="alert alert-danger" style="display: none;"></div>
 		<div id="monitoring-chart" class="d3-chart">
-			<svg></svg>
+			<svg id="monitoring-svg"></svg>
 		</div>
 	</div>
 </div>
@@ -772,8 +775,11 @@ events.push(function() {
 		"86400": "%Y-%m-%d",
 		"43200": "%Y-%m-%d",
 		"3600": "%m/%d %H:%M",
+		"1800": "%m/%d %H:%M",
 		"300": "%H:%M:%S",
-		"60": "%H:%M:%S"
+		"150": "%H:%M:%S",
+		"60": "%H:%M:%S",
+		"30": "%H:%M:%S"
 	};
 
 	//lookup human readable time based on number of seconds
@@ -992,7 +998,7 @@ events.push(function() {
 			if(!start || !end) {
 				error = "Invalid Date/Time in Custom Period."
 				$("#monitoring-chart").hide();
-				$("#chart-error").show().html('<strong>Error</strong>: ' + error);
+				$("#chart-error").show().text('Error: ' + error);
 				console.warn(error);
 				return false;
 			}
@@ -1155,7 +1161,9 @@ events.push(function() {
 	    do {
 
 			view_title=prompt("Enter a unique title for your view:");
-
+			if(view_title == null){
+				break;
+			}
 	        var title_slug = createSlug(view_title);
 
 	        if(jQuery.inArray(title_slug, current_titles) !== -1) {
@@ -1210,13 +1218,13 @@ events.push(function() {
 
 				if (error) {
 					$("#monitoring-chart").hide();
-					$("#chart-error").show().html('<strong>Error</strong>: ' + error);
+					$("#chart-error").show().text('Error: ' + error);
 					return console.warn(error);
 				}
 
 				if (json.error) {
 					$("#monitoring-chart").hide();
-					$("#chart-error").show().html('<strong>Error</strong>: ' + json.error);
+					$("#chart-error").show().text('Error: ' + json.error);
 					return console.warn(json.error);
 				}
 
@@ -1282,9 +1290,9 @@ events.push(function() {
 			$("#monitoring-chart").show();
 			$("#loading-msg").hide();
 
-			d3.select("svg").remove(); //delete previous svg so it can be drawn from scratch
+			d3.select("#monitoring-svg").remove(); //delete previous svg so it can be drawn from scratch
 			d3.select("div[id^=nvtooltip-]").remove(); //delete previous tooltip in case it gets hung
-			d3.select('#monitoring-chart').append('svg'); //re-add blank svg so it and be drawn on
+			d3.select('#monitoring-chart').append('svg').attr('id', 'monitoring-svg'); //re-add blank svg so it and be drawn on
 
 			if (error) {
 				if(String(error).startsWith("SyntaxError")) {
@@ -1292,13 +1300,13 @@ events.push(function() {
 				}
 
 				$("#monitoring-chart").hide();
-				$("#chart-error").show().html('<strong>Error</strong>: ' + error);
+				$("#chart-error").show().text('Error: ' + error);
 				return console.warn(error);
 			}
 
 			if (json.error) {
 				$("#monitoring-chart").hide();
-				$("#chart-error").show().html('<strong>Error</strong>: ' + json.error);
+				$("#chart-error").show().text('Error: ' + json.error);
 				return console.warn(json.error);
 			}
 

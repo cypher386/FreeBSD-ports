@@ -18,8 +18,7 @@ CONFLICTS=	ZendFramework-1.*
 NO_ARCH=	yes
 NO_BUILD=	yes
 USE_PHP=	spl
-WANT_PHP_WEB=	yes
-USES=		gettext tar:tgz
+USES=		gettext php:web tar:tgz
 
 SUB_FILES=	pkg-message
 
@@ -52,8 +51,7 @@ USE_PHP+=	bcmath bitset json posix
 .endif
 
 .if ${PORT_OPTIONS:MMEMCACHE}
-USE_PHP+=	memcache
-RUN_DEPENDS+=	pecl-memcached>=0:databases/pecl-memcached
+USE_PHP+=	memcache memcached
 .endif
 
 .if ${PORT_OPTIONS:MMYSQL}

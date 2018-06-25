@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	Flask-Compress
-PORTVERSION=	1.3.2
+PORTVERSION=	1.4.0
 CATEGORIES=	www python
 MASTER_SITES=	CHEESESHOP
 PKGNAMEPREFIX=	${PYTHON_PKGNAMEPREFIX}
@@ -12,8 +12,8 @@ COMMENT=	Extension for Flask that compresses responses with gzip
 LICENSE=	MIT
 LICENSE_FILE=	${WRKSRC}/LICENSE.txt
 
-RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}Flask>=0.11:www/py-flask
-TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pytest>0:devel/py-pytest
+RUN_DEPENDS=	${PYTHON_PKGNAMEPREFIX}Flask>=0.11:www/py-flask@${FLAVOR}
+TEST_DEPENDS=	${PYTHON_PKGNAMEPREFIX}pytest>0:devel/py-pytest@${FLAVOR}
 
 USES=		python
 USE_PYTHON=	autoplist distutils

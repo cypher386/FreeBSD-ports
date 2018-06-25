@@ -5,8 +5,7 @@ PORTNAME=	ntraceroute
 PORTVERSION=	6.4.2
 PORTREVISION=	3
 CATEGORIES=	net
-MASTER_SITES=	NETBSD/traceroute-nanog \
-		http://mirrors.rit.edu/zi/
+MASTER_SITES=	ZI/ntraceroute
 DISTNAME=	traceroute.c
 EXTRACT_SUFX=
 DIST_SUBDIR=	${PORTNAME}
@@ -24,7 +23,7 @@ PLIST_FILES=	sbin/${PORTNAME}
 
 .include <bsd.port.pre.mk>
 
-.if ${OSVERSION} >= 1100030
+.if ${OPSYS} == FreeBSD && ${OSVERSION} >= 1100030
 BUILD_FLAGS=	-DBYTESWAP_IP_FLAGS -DBYTESWAP_IP_LEN
 .endif
 

@@ -3,7 +3,7 @@
 PORTNAME=	grafana
 PORTVERSION=	2.6.0
 DISTVERSIONPREFIX=	v
-PORTREVISION=	1
+PORTREVISION=	3
 CATEGORIES=	www
 MASTER_SITES=	http://files.bartelmess.io/public/:static_assets
 PKGNAMESUFFIX=	2
@@ -81,8 +81,8 @@ post-extract:
 	${RM} ${WRKSRC}/src/github.com/${PORTNAME}/${PORTNAME}/public/app/._.DS_Store
 
 do-build:
-	cd ${WRKSRC}/src/github.com/${PORTNAME}/${PORTNAME}; \
-	${SETENV} ${BUILD_ENV} GOPATH=${WRKSRC} go run build.go build
+	@cd ${WRKSRC}/src/github.com/${PORTNAME}/${PORTNAME}; \
+		${SETENV} ${MAKE_ENV} ${BUILD_ENV} GOPATH=${WRKSRC} go run build.go build
 
 do-install:
 	${INSTALL_PROGRAM} ${WRKSRC}/src/github.com/${PORTNAME}/${PORTNAME}/bin/grafana-server \

@@ -2,10 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	openfire
-PORTVERSION=	4.0.4
+PORTVERSION=	4.2.2
+PORTREVISION=	0
 PORTEPOCH=	1
 CATEGORIES=	net-im java
-MASTER_SITES=	http://download.igniterealtime.org/openfire/
+MASTER_SITES=	https://github.com/igniterealtime/${PORTNAME}/releases/download/v${PORTVERSION}/
 DISTNAME=	${PORTNAME}_src_${PORTVERSION:S/./_/g}
 
 MAINTAINER=	gahr@FreeBSD.org
@@ -21,7 +22,7 @@ OPTIONS_DEFAULT=PLUGINS
 OPTIONS_SUB=	yes
 PLUGINS_DESC=	Install bundled plugins
 
-USES=		cpe dos2unix zip
+USES=		cpe dos2unix
 DOS2UNIX_FILES=	src/java/org/jivesoftware/openfire/server/ServerDialback.java
 USE_LDCONFIG=	yes
 USE_ANT=	yes
@@ -31,18 +32,18 @@ NO_ARCH=	yes
 
 CPE_VENDOR=	igniterealtime
 
-ALL_TARGET=	openfire
-USE_RC_SUBR=	openfire
+ALL_TARGET=	${PORTNAME}
+USE_RC_SUBR=	${PORTNAME}
 SUB_FILES+=	pkg-message
 
 WRKSRC=		${WRKDIR}/${PORTNAME}_src
 BUILD_WRKSRC=	${WRKSRC}/build
-INSTALL_WRKSRC=	${WRKSRC}/target/openfire
+INSTALL_WRKSRC=	${WRKSRC}/target/${PORTNAME}
 DATADIR=	${JAVASHAREDIR}/${PORTNAME}
 PORTDOCS=	*
-VARLOG=		/var/log/openfire
-VARDB=		/var/db/openfire
-USERS=		openfire
+VARLOG=		/var/log/${PORTNAME}
+VARDB=		/var/db/${PORTNAME}
+USERS=		${PORTNAME}
 GROUPS=		${USERS}
 PLIST_SUB+=	VARLOG=${VARLOG} \
 		VARDB=${VARDB}
@@ -71,8 +72,8 @@ do-install:
 	${LN} -sf ${ETCDIR} ${STAGEDIR}${DATADIR}/resources/security
 	${LN} -sf ${VARDB} ${STAGEDIR}${DATADIR}/embedded-db
 	${LN} -sf ${VARLOG} ${STAGEDIR}${DATADIR}/logs
-	${INSTALL_DATA} ${INSTALL_WRKSRC}/conf/openfire.xml \
-		${STAGEDIR}${ETCDIR}/openfire.xml.sample
+	${INSTALL_DATA} ${INSTALL_WRKSRC}/conf/${PORTNAME}.xml \
+		${STAGEDIR}${ETCDIR}/${PORTNAME}.xml.sample
 	${INSTALL} -m 600 ${INSTALL_WRKSRC}/resources/security/truststore \
 		${STAGEDIR}${ETCDIR}/truststore.sample
 	${INSTALL} -m 600 ${INSTALL_WRKSRC}/resources/security/keystore \
@@ -86,8 +87,6 @@ do-install-PLUGINS-on:
 
 do-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}
-	(cd ${WRKSRC} && ${INSTALL_DATA} LICENSE.html README.html changelog.html \
-	    ${STAGEDIR}${DOCSDIR})
 	(cd ${WRKSRC}/documentation/docs && ${FIND} . \! -path ./javadoc\* \
 	| ${CPIO} -pdmu -R ${SHAREOWN}:${SHAREGRP} ${STAGEDIR}${DOCSDIR} > /dev/null 2>&1 )
 

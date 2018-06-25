@@ -2,8 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	m4
-PORTVERSION=	1.4.17
-PORTREVISION=	1
+PORTVERSION=	1.4.18
 PORTEPOCH=	1
 CATEGORIES=	devel
 MASTER_SITES=	GNU
@@ -18,7 +17,11 @@ OPTIONS_DEFINE=	LIBSIGSEGV EXAMPLES
 LIBSIGSEGV_DESC=Use alternative page fault handler (GNU libsigsegv)
 
 CONFIGURE_ARGS=	--program-prefix=g
-CONFIGURE_ENV=	MAKEINFO="makeinfo --no-split"
+CONFIGURE_ENV=	MAKEINFO="${MAKEINFO} --no-split"
+.ifdef QEMU_EMULATING
+# XXX bug 224740: configure hangs
+CONFIGURE_ENV+=	gl_cv_func_printf_enomem=no
+.endif
 GNU_CONFIGURE=	yes
 USES=		makeinfo tar:xz
 

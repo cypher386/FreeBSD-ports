@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	afflib
-PORTVERSION=	3.7.10
+PORTVERSION=	3.7.16
 DISTVERSIONPREFIX=	v
 CATEGORIES=	sysutils
 
@@ -19,10 +19,10 @@ USE_GITHUB=	yes
 GH_ACCOUNT=	sshock
 GH_PROJECT=	AFFLIBv3
 
-USE_LDCONFIG=	yes
-USES=		autoreconf fuse libtool pathfix readline ssl
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--enable-s3=yes
+USES=		autoreconf fuse libtool pathfix readline ssl
+USE_LDCONFIG=	yes
 INSTALL_TARGET=	install-strip
 
 .include <bsd.port.mk>

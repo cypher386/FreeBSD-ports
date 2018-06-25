@@ -2,10 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	zathura
-PORTVERSION=	0.3.6
-PORTREVISION=	3
+PORTVERSION=	0.3.8
 CATEGORIES=	graphics print
-MASTER_SITES=	http://pwmt.org/projects/zathura/download/
+MASTER_SITES=	https://pwmt.org/projects/zathura/download/ \
+		http://www.madpilot.net/~mad/pwmt.org/
 
 MAINTAINER=	quentin.stievenart@gmail.com
 COMMENT=	Customizable lightweight pdf viewer
@@ -19,14 +19,13 @@ LIB_DEPENDS=	libcairo.so:graphics/cairo \
 
 BUILD_DEPENDS+=	rst2html:textproc/py-docutils
 
-USE_GNOME=	glib20 gtk30 gdkpixbuf2
 USES=		compiler:c11 gmake pathfix pkgconfig
+USE_GNOME=	glib20 gtk30 gdkpixbuf2
 PATHFIX_MAKEFILEIN=	Makefile
 MAKE_ENV=	SFLAGS="${STRIP}" \
 		RSTTOMAN=${LOCALBASE}/bin/rst2man \
-		ZLIB_INC= \
-		ZLIB_LIB=-lz \
 		WITH_SYNCTEX=1
+MAKE_ARGS+=	APPDATAPREFIX=${LOCALBASE}/share/appdata
 
 CPPFLAGS+=	-DWITH_SYNCTEX
 
@@ -43,7 +42,7 @@ post-patch:	.SILENT
 		${WRKSRC}/Makefile
 	${REINPLACE_CMD} -e 's|PLUGINDIR ?= .*$$|PLUGINDIR ?= ${PREFIX}/lib/zathura|'\
 		${WRKSRC}/config.mk
-	${REINPLACE_CMD} -e '/^CC  /d'\
+	${REINPLACE_CMD} -e '/^TPUT_AVAILABLE/d'\
 		${WRKSRC}/colors.mk
 	${REINPLACE_CMD} -e 's|/usr/include|${LOCALBASE}/include|' \
 		-e 's/-lc//' \

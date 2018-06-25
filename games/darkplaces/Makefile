@@ -3,7 +3,7 @@
 
 PORTNAME=	darkplaces
 PORTVERSION=	20140513
-PORTREVISION=	2
+PORTREVISION=	3
 CATEGORIES=	games
 MASTER_SITES=	http://icculus.org/twilight/darkplaces/files/
 DISTNAME=	${PORTNAME}engine${PORTVERSION}
@@ -40,10 +40,6 @@ SERVER_DESC=	Build dedicated server
 .include "${.CURDIR}/../quake-data/Makefile.include"
 
 .include <bsd.port.options.mk>
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000000
-USE_GCC=	yes # internal compiler error on base gcc
-.endif
 
 .if ${PORT_OPTIONS:MGLX} || ${PORT_OPTIONS:MSDL}
 USE_GL=		glu

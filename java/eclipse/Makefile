@@ -3,6 +3,7 @@
 
 PORTNAME=	eclipse
 PORTVERSION=	4.6
+PORTREVISION=	2
 CATEGORIES=	java devel
 MASTER_SITES=	https://s3.amazonaws.com/freebsd-eclipse-dist/
 DISTFILES=	eclipse.platform.releng.aggregator-${PORTVERSION}.xz \
@@ -43,10 +44,6 @@ OPTIONS_DEFAULT=	FULL_SDK
 
 .include <bsd.port.options.mk>
 
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000000
-PATCH_DEPENDS+=	gpatch:devel/patch
-PATCH=		gpatch
-.endif
 PATCH_STRIP=	-p1
 
 .if ${PORT_OPTIONS:MSWT_GTK3_SUPPORT}

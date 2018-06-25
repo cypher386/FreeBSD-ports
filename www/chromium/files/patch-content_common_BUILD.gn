@@ -1,28 +1,16 @@
---- content/common/BUILD.gn.orig	2017-03-09 20:04:32 UTC
-+++ content/common/BUILD.gn
-@@ -498,7 +498,7 @@ source_set("common") {
+--- content/common/BUILD.gn.orig	2018-03-20 23:05:24.000000000 +0100
++++ content/common/BUILD.gn	2018-03-29 12:47:23.480593000 +0200
+@@ -431,6 +431,13 @@
+     libs += [ "android" ]
    }
  
-   if (!use_seccomp_bpf) {
--    if (is_linux) {
-+    if (is_linux || is_bsd) {
-       sources -= [
-         "sandbox_linux/bpf_cros_arm_gpu_policy_linux.cc",
-         "sandbox_linux/bpf_cros_arm_gpu_policy_linux.h",
-@@ -512,6 +512,16 @@ source_set("common") {
-         "sandbox_linux/bpf_utility_policy_linux.h",
-         "sandbox_linux/sandbox_bpf_base_policy_linux.cc",
-         "sandbox_linux/sandbox_bpf_base_policy_linux.h",
-+        "sandbox_linux/sandbox_seccomp_bpf_linux.cc",
-+        "sandbox_linux/sandbox_seccomp_bpf_linux.h",
-+      ]
-+    }
-+    if (is_bsd) {
-+      sources -= [
-+        "quarantine/quarantine_linux.cc",
-+        "sandbox_linux/sandbox_linux.cc",
-+        "sandbox_linux/sandbox_linux.h",
-+        "sandbox_linux/sandbox_init_linux.cc",
-       ]
-     }
-     if (is_android) {
++  if (is_bsd) {
++    sources -= [
++      "quarantine/quarantine_linux.cc",
++      "sandbox_init_linux.cc",
++    ]
++  }
++
+   if (is_debug && !is_component_build && enable_plugins) {
+     # Content depends on the PPAPI message logging stuff; if this isn't here,
+     # some unit test binaries won't compile. This only worked in release mode

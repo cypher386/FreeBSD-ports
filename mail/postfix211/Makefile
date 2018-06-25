@@ -2,7 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	postfix
-PORTVERSION=	2.11.8
+PORTVERSION=	2.11.11
+PORTREVISION=	1
 PORTEPOCH=	1
 CATEGORIES=	mail ipv6
 MASTER_SITES=	ftp://ftp.porcupine.org/mirrors/postfix-release/ \
@@ -23,9 +24,11 @@ LICENSE_NAME=	IBM PUBLIC LICENSE VERSION 1.0
 LICENSE_FILE=	${WRKSRC}/LICENSE
 LICENSE_PERMS=	dist-mirror dist-sell pkg-mirror pkg-sell auto-accept
 
+DEPRECATED=	No longer supported
+EXPIRATION_DATE=2018-06-22
+
 PORTSCOUT=	limit:^2\.11\.
 
-VDAVERSION=	2.10.0
 CONFLICTS_INSTALL?=	courier-0.* opensmtpd-[0-9]* \
 		sendmail-8.* sendmail+*-8.* smail-3.* zmailer-2.* \
 		postfix2?-* postfix-3.* postfix-current-*
@@ -239,8 +242,7 @@ _REQUIRE+=		ypserv
 .endif
 
 .if ${PORT_OPTIONS:MVDA}
-PATCH_SITES+=		http://vda.sourceforge.net/VDA/:vda
-PATCHFILES+=		postfix-vda-v13-${VDAVERSION}.patch:-p1:vda
+EXTRA_PATCHES+=		${FILESDIR}/extra-patch-postfix-vda-v13-2.11.x
 .endif
 
 .if ${PORT_OPTIONS:MTEST}
@@ -283,7 +285,7 @@ pre-patch:
 	fi
 .endif
 
-	@${ECHO} '<HTML><BODY>See <A HREF="header_checks.5.html">header_checks.5.html</A></BODY></HTML>' \
+	@${ECHO_CMD} '<HTML><BODY>See <A HREF="header_checks.5.html">header_checks.5.html</A></BODY></HTML>' \
 		> ${WRKSRC}/html/body_checks.5.html
 	@${REINPLACE_CMD} -E -e 's!^(#define DEF_SGID_GROUP[^"]+)"postdrop"$$!\1"maildrop"!' \
 		${WRKSRC}/src/global/mail_params.h
@@ -293,22 +295,22 @@ pre-patch:
 
 post-patch:
 .for f in ${HTML1}
-	@${ECHO} '$$html_directory/$f:f:root:-:644' \
+	@${ECHO_CMD} '$$html_directory/$f:f:root:-:644' \
 		>> ${WRKSRC}/conf/postfix-files
 .endfor
-	@${ECHO} '$$manpage_directory/man1/posttls-finger.1:f:root:-:644' \
+	@${ECHO_CMD} '$$manpage_directory/man1/posttls-finger.1:f:root:-:644' \
 		>> ${WRKSRC}/conf/postfix-files
-	@${ECHO} '$$command_directory/posttls-finger:f:root:-:755' \
+	@${ECHO_CMD} '$$command_directory/posttls-finger:f:root:-:755' \
 		>> ${WRKSRC}/conf/postfix-files
 
 post-patch-SPF-on:
-	@${ECHO} '$$readme_directory/SPF_README:f:root:-:644' \
+	@${ECHO_CMD} '$$readme_directory/SPF_README:f:root:-:644' \
 		>> ${WRKSRC}/conf/postfix-files
 	@${REINPLACE_CMD} -E -e '${REINPLACE}' \
 		${WRKSRC}/README_FILES/SPF_README
 
 post-patch-VDA-on:
-	@${ECHO} '$$readme_directory/VDA_README:f:root:-:644' \
+	@${ECHO_CMD} '$$readme_directory/VDA_README:f:root:-:644' \
 		>> ${WRKSRC}/conf/postfix-files
 	@${REINPLACE_CMD} -E -e '${REINPLACE}' \
 		${WRKSRC}/README_FILES/VDA_README
@@ -317,7 +319,10 @@ do-configure:
 	(cd ${WRKSRC} && ${MAKE} -f Makefile.init makefiles \
 	${MAKEFILEFLAGS} CCARGS="${POSTFIX_CCARGS}" \
 	AUXLIBS="${POSTFIX_AUXLIBS}" && \
-	${ECHO} "all: default" >> Makefile)
+	${ECHO_CMD} "all: default" >> Makefile)
+
+post-stage-VDA-on:
+	${HEAD} -n 17 ${FILESDIR}/extra-patch-postfix-vda-v13-2.11.x >> ${WRKDIR}/pkg-message
 
 pre-install-INST_BASE-on:
 	${MKDIR} ${STAGEDIR}/etc/rc.d

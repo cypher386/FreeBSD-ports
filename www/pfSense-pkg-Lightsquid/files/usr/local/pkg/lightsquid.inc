@@ -103,9 +103,7 @@ function lightsquid_install() {
 function lightsquid_deinstall() {
 	// remove cronjobs
 	lightsquid_setup_cron(false);
-	rmdir_recursive("/usr/local/www/sqstat/");
 	rmdir_recursive("/var/etc/lightsquid/");
-	unlink_if_exists('/usr/local/sbin/lighttpd_ls');
 }
 
 function lightsquid_write_rcfile() {

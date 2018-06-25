@@ -3,7 +3,7 @@
 
 PORTNAME=	libcaca
 DISTVERSION=	0.99.beta19
-PORTREVISION=	1
+PORTREVISION=	2
 CATEGORIES=	graphics
 MASTER_SITES=	http://caca.zoy.org/raw-attachment/wiki/libcaca/
 
@@ -26,8 +26,6 @@ INSTALL_TARGET=	install-strip
 
 DOCS=		AUTHORS COPYING COPYING.GPL COPYING.LGPL ChangeLog NEWS \
 		NOTES README THANKS
-
-BROKEN_aarch64=		Fails to compile: error in backend: Do not know how to split this operator's operand!
 
 OPTIONS_DEFINE=	X11 IMLIB2 FTGL SLANG DOCS
 OPTIONS_DEFAULT=	X11 IMLIB2

@@ -14,8 +14,7 @@ COMMENT=	The most popular open source Internet Relay Chat bot
 
 LICENSE=	GPLv2
 
-USES=		tcl:85+
-USE_OPENSSL=	yes
+USES=		tcl:85+ ssl
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS+=--with-tcllib=${LOCALBASE}/lib/libtcl${TCL_SHLIB_VER}.so \
 		--with-tclinc=${LOCALBASE}/include/tcl${TCL_VER}/tcl.h
@@ -26,6 +25,7 @@ GH_PROJECT=	${PORTNAME}-1.8
 GH_TAGNAME=	2bf3950
 
 MAKE_JOBS_UNSAFE=	yes
+LLD_UNSAFE=	yes
 
 SUB_FILES=	pkg-message
 

@@ -1,4 +1,4 @@
---- as_setup.py.orig	2016-09-07 08:44:22 UTC
+--- as_setup.py.orig	2017-08-26 13:56:41 UTC
 +++ as_setup.py
 @@ -45,6 +45,8 @@ import tarfile
  import compileall
@@ -17,7 +17,7 @@
        self._print(self._fmt_title % _('Extraction'))
        if kargs.get('external')<>None:
           self._call_external(**kargs)
-@@ -518,6 +521,52 @@ class SETUP:
+@@ -518,6 +521,76 @@ class SETUP:
        if iextr_as:
           self.Clean(to_delete=path)
  
@@ -29,6 +29,14 @@
 +         nl = string.find(ligne, "uselib_store='SYS', lib='dl'")
 +         if nl > 0:
 +            ligne =ligne.replace("self.check_cc", "# self.check_cc")
++         sys.stdout.write(ligne)
++      file2patch = os.path.join(self.workdir, self.content, 'bibcxx/wscript')
++      self._print('FreeBSD patch: explicit link with libc++ required since Gcc 4.9 => modify ' + file2patch)
++      for ligne in fileinput.input(file2patch, inplace=1):
++         nl = 0
++         nl = string.find(ligne, "uselib_store='CXX', lib='stdc++'")
++         if nl > 0:
++            ligne =ligne.replace("lib='stdc++'", "lib='c++ stdc++'")
 +         sys.stdout.write(ligne)
 +      file2patch = os.path.join(self.workdir, self.content, 'waftools/scotch.py')
 +      self._print('FreeBSD patch: int64_t missing => modify ' + file2patch)
@@ -64,6 +72,22 @@
 +         nl = string.find(ligne, "opts.hdf5_libs = 'hdf5'")
 +         if nl > 0:
 +            ligne =ligne.replace("'hdf5'", "'hdf5-18'")
++         sys.stdout.write(ligne)
++      file2patch = os.path.join(self.workdir, self.content, 'waf')
++      self._print('FreeBSD patch: /bin/bash => modify ' + file2patch)
++      for ligne in fileinput.input(file2patch, inplace=1):
++         nl = 0
++         nl = string.find(ligne, "/bin/bash")
++         if nl > 0:
++            ligne =ligne.replace("/bin/bash", " %%LOCALBASE%%/bin/bash")
++         sys.stdout.write(ligne)
++      file2patch = os.path.join(self.workdir, self.content, 'waftools/mathematics.py')
++      self._print('FreeBSD patch: nproc => gnproc ' + file2patch)
++      for ligne in fileinput.input(file2patch, inplace=1):
++         nl = 0
++         nl = string.find(ligne, "'nproc'")
++         if nl > 0:
++            ligne =ligne.replace("'nproc'", "'gnproc'")
 +         sys.stdout.write(ligne)
 +      # End of FreeBSD patches
 +

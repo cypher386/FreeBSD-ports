@@ -3,7 +3,7 @@
 
 PORTNAME=	remmina
 DISTVERSIONPREFIX=v
-DISTVERSION=	1.2.0-rcgit.17
+DISTVERSION=	1.2.0-rcgit.27
 CATEGORIES=	net gnome
 
 MAINTAINER=	woodsb02@FreeBSD.org
@@ -12,14 +12,18 @@ COMMENT=	GTK+ Remote Desktop Client
 LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
+LIB_DEPENDS=	libjson-glib-1.0.so:devel/json-glib \
+		libsoup-2.4.so:devel/libsoup
+
 USE_GITHUB=	yes
 GH_ACCOUNT=	FreeRDP
 GH_PROJECT=	Remmina
 
-USES=		cmake:outsource gettext localbase:ldflags pathfix pkgconfig
+USES=		cmake:outsource desktop-file-utils gettext localbase:ldflags pathfix \
+		pkgconfig shared-mime-info ssl
 USE_GNOME=	atk cairo gdkpixbuf2 glib20 gtk30 pango
 USE_XORG=	ice sm x11 xext
-PATHFIX_WRKSRC=		${WRKSRC}/remmina
+PATHFIX_WRKSRC=	${WRKSRC}/remmina
 INSTALLS_ICONS=	yes
 CMAKE_ARGS=	--build=build \
 		-DWITH_APPINDICATOR:BOOL=false
@@ -49,13 +53,6 @@ SSH_CMAKE_BOOL=		WITH_LIBSSH
 TERM_USE=		gnome=vte3
 TERM_CMAKE_BOOL=	WITH_VTE
 
-.include <bsd.port.pre.mk>
-
-# utimensat(5) only available in FreeBSD from 10.3-RELEASE
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1002506
-EXTRA_PATCHES=	${FILESDIR}/extrapatch-remmina_src_remmina__file.c
-.endif
-
 post-patch:
 	# do not build plugins and locales , they are provided by separated ports
 	${REINPLACE_CMD} -e's|add_subdirectory(remmina-plugins)||' \
@@ -66,4 +63,4 @@ post-patch:
 		-e 's,FreeBSD,FreeBSD|DragonFly,' \
 		${WRKSRC}/remmina/CMakeLists.txt
 
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

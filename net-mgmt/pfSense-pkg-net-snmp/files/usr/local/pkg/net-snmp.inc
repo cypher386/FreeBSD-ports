@@ -138,7 +138,7 @@ function netsnmp_cert_get_keyid($cert) {
 
 /* Write snmpd config file */
 function netsnmp_resync() {
-	global $config, $snmpd_config_file, $snmpd_users_file, $snmpd_cert_dir, $snmpd_certkey_dir;
+	global $config, $g, $snmpd_config_file, $snmpd_users_file, $snmpd_cert_dir, $snmpd_certkey_dir;
 
 	/* Global Settings tab */
 	$nsettings = &$config['installedpackages']['netsnmp']['config'][0];
@@ -208,7 +208,7 @@ function netsnmp_resync() {
 
 	/* Dump custom options into the configuration as-is */
 	if (!empty($nsettings['custom_options'])) {
-		$snmpd_config .= "{$nsettings['custom_options']}\n";
+		$snmpd_config .= "\n" . str_replace("\r", "", base64_decode($nsettings['custom_options'])) . "\n";
 	}
 
 /*
@@ -304,11 +304,14 @@ function netsnmp_resync() {
 		$nhisettings['row'] = array();
 	}
 	foreach ($nhisettings['row'] as $extend) {
-		$snmpd_config .= "{$extend['ext_type']} " .
-				 "{$extend['ext_miboid']} " .
-				 "{$extend['ext_name']} " .
-				 "{$extend['ext_prog']} " .
-				 "{$extend['ext_args']}\n";
+		$extend_parameters = "{$extend['ext_miboid']} " .
+					"{$extend['ext_name']} " .
+					"{$extend['ext_prog']} " .
+					"{$extend['ext_args']} ";
+		if (!empty(trim($extend_parameters))) {
+			$snmpd_config .= "{$extend['ext_type']} " .
+					"{$extend_parameters}\n";
+		}
 	}
 
 	/* SNMPv3 Users */
@@ -570,6 +573,7 @@ function netsnmp_resync() {
 
 	/* When stopping the daemon, use the PID file to locate and kill the process */
 	$rc_file_stop = <<<EOF
+echo "Stopping net-snmpd..."
 if [ -e /var/run/net_snmpd.pid ]; then
 	/bin/kill -9 `/bin/cat /var/run/net_snmpd.pid`
 	/bin/rm -f /var/run/net_snmpd.pid
@@ -578,11 +582,12 @@ EOF;
 
 	/* When starting the daemon, reap any leftover processes and then start */
 	$rc_file_start = <<<EOF
+echo "Starting net-snmpd..."
 # Ensure no other copies of the daemons are running or it breaks.
 /usr/bin/killall -9 snmpd 2>/dev/null
 sleep 1
 
-/usr/local/sbin/snmpd -Ls d \
+/usr/local/sbin/snmpd -LF 0-4 d \
 			-p /var/run/net_snmpd.pid \
 			-M /usr/share/snmp/mibs/:/usr/local/share/snmp/mibs \
 			-C \
@@ -597,6 +602,10 @@ EOF;
 
 	/* Restart the service with the new configuration. */
 	restart_service('net-snmpd');
+
+	if (file_exists("{$g['tmp_path']}/.rc.start_packages.running")) {
+		netsnmp_resync_snmptrapd();
+	}
 }
 
 /***************************************************************************
@@ -617,6 +626,7 @@ function netsnmp_resync_snmptrapd() {
 	}
 
 	$snmptrapd_config = "";
+	$snmptrapd_daemon_options = "";
 
 	/* The protocol and interface binding for snmptrapd works the same as snmpd */
 	$agentaddresses = array();
@@ -791,15 +801,21 @@ function netsnmp_resync_snmptrapd() {
 			$snmptrapd_config .= "forward {$forward['destination']} " . implode(',', $agentaddresses) . "\n";
 		}
 	}
+
+	if ($nsettings['snmptrapd_subagent']) {
+		$snmptrapd_daemon_options .= "-X ";
+	}
+
 	/* Dump custom options into the configuration as-is */
 	if (!empty($nsettings['custom_options'])) {
-		$snmptrapd_config .= "{$nsettings['custom_options']}\n";
+		$snmptrapd_config .= "\n" . str_replace("\r", "", base64_decode($nsettings['custom_options'])) . "\n";
 	}
 
 	file_put_contents($snmptrapd_config_file, $snmptrapd_config);
 
 	/* When stopping the daemon, use the PID file to locate and kill the process */
 	$rc_file_stop = <<<EOF
+echo "Stopping net-snmptrapd..."
 if [ -e /var/run/snmptrapd.pid ]; then
 	/bin/kill -9 `/bin/cat /var/run/snmptrapd.pid`
 	/bin/rm -f /var/run/snmptrapd.pid
@@ -807,13 +823,14 @@ fi
 EOF;
 	/* When starting the daemon, reap any leftover processes and then start */
 	$rc_file_start = <<<EOF
+echo "Starting net-snmptrapd..."
 # Ensure no other copies of the daemons are running or it breaks.
 /usr/bin/killall -9 snmptrapd 2>/dev/null
 sleep 1
 
 /usr/local/sbin/snmptrapd -p /var/run/snmptrapd.pid \
 			-M /usr/share/snmp/mibs/:/usr/local/share/snmp/mibs \
-			-C \
+			-C {$snmptrapd_daemon_options} \
 			-c {$snmptrapd_config_file}
 EOF;
 	write_rcfile(array(

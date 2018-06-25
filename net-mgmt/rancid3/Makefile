@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	rancid
-PORTVERSION=	3.6.2
-PORTREVISION=	1
+PORTVERSION=	3.7
+PORTREVISION=	0
 CATEGORIES=	net-mgmt
 MASTER_SITES=	ftp://ftp.shrubbery.net/pub/rancid/
 PKGNAMESUFFIX=	3
@@ -53,9 +53,7 @@ CONFIGURE_ARGS+=	--with-svn
 BUILD_DEPENDS+=		svn:devel/subversion
 .else
 CONFIGURE_ARGS+=	--without-svn
-.if ${OPSYS} == FreeBSD && ${OSVERSION} >= 1000000
-RUN_DEPENDS+=	cvs>0:devel/cvs
-.endif
+RUN_DEPENDS+=		cvs:devel/cvs
 .endif
 
 pre-everything::

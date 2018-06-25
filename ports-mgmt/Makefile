@@ -3,19 +3,19 @@
 
     COMMENT = Ports for managing, installing, and developing FreeBSD ports and packages
 
+    SUBDIR += bsdadminscripts
+    SUBDIR += bsdadminscripts2
     SUBDIR += chucky
     SUBDIR += create-rb-port
     SUBDIR += dialog4ports
     SUBDIR += dialog4ports-static
     SUBDIR += distilator
     SUBDIR += fastest_sites
-    SUBDIR += fbsdmon
     SUBDIR += freebsd-bugzilla-cli
     SUBDIR += genpatch
     SUBDIR += genplist
     SUBDIR += hs-porte
     SUBDIR += jailaudit
-    SUBDIR += kpackagekit
     SUBDIR += lsknobs
     SUBDIR += managepkg
     SUBDIR += mkreadmes
@@ -24,11 +24,11 @@
     SUBDIR += p5-FreeBSD-Ports
     SUBDIR += p5-FreeBSD-Ports-INDEXhash
     SUBDIR += packagekit
-    SUBDIR += packagekit-qt4
     SUBDIR += pchecker
     SUBDIR += pkg
     SUBDIR += pkg-devel
     SUBDIR += pkg-plist
+    SUBDIR += pkg-provides
     SUBDIR += pkg-rmleaf
     SUBDIR += pkg_cleanup
     SUBDIR += pkg_cutleaves
@@ -48,10 +48,12 @@
     SUBDIR += portell
     SUBDIR += portest
     SUBDIR += portfind
+    SUBDIR += portgraph
     SUBDIR += portless
     SUBDIR += portlint
     SUBDIR += portmaster
     SUBDIR += portrac
+    SUBDIR += ports-tools
     SUBDIR += portscout
     SUBDIR += portsearch
     SUBDIR += portshaker
@@ -67,7 +69,6 @@
     SUBDIR += psearch
     SUBDIR += py-pytoport
     SUBDIR += py-skog
-    SUBDIR += redports-node
     SUBDIR += symports
     SUBDIR += synth
     SUBDIR += tinderbox

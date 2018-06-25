@@ -4,7 +4,6 @@
 PORTNAME=	lshell
 PORTVERSION=	0.9.18.20160916
 CATEGORIES=	shells
-DISTNAME=	${PORTNAME}_0.9.18
 
 MAINTAINER=	dam@my.gd
 COMMENT=	Shell environment to limited sets of commands to users
@@ -15,10 +14,8 @@ GH_ACCOUNT=	ghantoos
 GH_PROJECT=	lshell
 GH_TAGNAME=	279d7ab
 
-WRKSRC=		${WRKDIR}/${PORTNAME}-${GH_TAGNAME}
-
 NO_ARCH=	yes
-USES=		python
+USES=		python:2.7
 USE_GITHUB=	yes
 USE_PYTHON=	distutils
 

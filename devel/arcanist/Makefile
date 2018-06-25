@@ -1,9 +1,10 @@
 # $FreeBSD$
 
 PORTNAME=	arcanist
-PORTVERSION=	20161003
+PORTVERSION=	20170630
+PORTREVISION=	1
 CATEGORIES=	devel
-PKGNAMEPREFIX=	php5-
+PKGNAMEPREFIX=	php-
 
 MAINTAINER=	grembo@FreeBSD.org
 COMMENT=	Command line interface for Phabricator
@@ -11,17 +12,19 @@ COMMENT=	Command line interface for Phabricator
 LICENSE=	APACHE20
 LICENSE_FILE=	${WRKSRC}/LICENSE
 
+RUN_DEPENDS=	php-libphutil>0:devel/libphutil
+
 CONFLICTS=	arc-*
 
 PHP_DESTDIR=	lib/php/arcanist
-RUN_DEPENDS=	php5-libphutil>0:devel/libphutil
-USES=		php
-USE_PHP=	curl dom json simplexml
+USES=		php python:2.7,env shebangfix
+SHEBANG_FILES=	scripts/breakout.py
+USE_PHP=	curl dom hash json simplexml
 USE_GITHUB=	yes
 NO_BUILD=	yes
 NO_ARCH=	yes
 GH_ACCOUNT=	phacility
-GH_TAGNAME=	483e985
+GH_TAGNAME=	c04f141
 
 OPTIONS_DEFINE=	ENCODINGS
 OPTIONS_DEFAULT=ENCODINGS

@@ -4,7 +4,7 @@
 PORTNAME=	xorp
 PORTVERSION=	1.8.5
 DISTVERSIONPREFIX=	${PORTNAME}-
-PORTREVISION=	3
+PORTREVISION=	7
 CATEGORIES=	net
 
 MAINTAINER=	hrs@FreeBSD.org
@@ -15,18 +15,20 @@ LICENSE=	GPLv2
 LIB_DEPENDS=	libboost_regex.so:devel/boost-libs \
 		libpcap.so.1:net/libpcap	# avoid base libpcap
 
-USES=		ncurses scons shebangfix ssl compiler:env python:2,build
+USES=		ncurses scons shebangfix ssl compiler:env python:2.7,build
 USE_GITHUB=	yes
 USE_RC_SUBR=	xorp
 GH_ACCOUNT=	greearb
 GH_PROJECT=	${PORTNAME}.ct
 SHEBANG_FILES=	xrl/scripts/clnt-gen xrl/scripts/tgt-gen
 python_OLD_CMD=	.*python
-WRKSRC=		${WRKDIR}/${GH_PROJECT}-${DISTVERSIONPREFIX}${DISTVERSION}/${PORTNAME}
+WRKSRC_SUBDIR=	${PORTNAME}
 MAKE_ARGS=	prefix=${PREFIX} enable_boost=1
 SUB_FILES=	pkg-message
 GROUPS=		xorp
-BROKEN_sparc64=		Does not compile on sparc64
+
+BROKEN_armv6=		does not compile: recursive template instantiation exceeded maximum depth of 25
+BROKEN_sparc64=		does not compile on sparc64
 
 OPTIONS_DEFINE=	OPTIMIZE ORIGIN SHARED STRIP TCP_RPC
 OPTIONS_DEFAULT=	OPTIMIZE ORIGIN SHARED STRIP

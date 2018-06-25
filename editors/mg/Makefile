@@ -2,11 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	mg
-PORTVERSION=	20161005
+PORTVERSION=	20171014
 CATEGORIES=	editors
 MASTER_SITES=	http://homepage.boetes.org/software/mg/
 
-MAINTAINER=	t@tobik.me
+MAINTAINER=	tobik@FreeBSD.org
 COMMENT=	Small, fast Emacs-like editor
 
 LICENSE=	PD
@@ -18,10 +18,6 @@ PORTDOCS=	README tutorial
 OPTIONS_DEFINE=	DOCS
 
 .include <bsd.port.options.mk>
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1002506
-BROKEN=	does not build, requires futimens system call
-.endif
 
 .if ${OPSYS} != FreeBSD || (${OSVERSION} >= 1002506 && ${OSVERSION} < 1100072)
 EXTRA_PATCHES=	${FILESDIR}/extra-patch-def.h

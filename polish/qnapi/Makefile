@@ -2,10 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	qnapi
-PORTVERSION=	0.2.2
+PORTVERSION=	0.2.3
+PORTREVISION=	3
 CATEGORIES=	polish multimedia
 
-MAINTAINER=	pawel@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Qt5 based subtitle downloader
 
 LICENSE=	GPLv2
@@ -24,13 +25,13 @@ USE_GL=		gl
 USE_QT5=	buildtools_build core gui network widgets xml
 
 CXXFLAGS+=	-I${LOCALBASE}/include/maia
-QMAKE_ARGS=	LIBS=-lmaia
 
 post-patch:
-	@${REINPLACE_CMD} 's|/usr|${PREFIX}|; s|share/man|man|; /doc \\/d' \
+	@${REINPLACE_CMD} 's|/usr|${PREFIX}|; s|share/man|man|' \
 		${WRKSRC}/qnapi.pro
 
 post-install:
+	@${STRIP_CMD} ${STAGEDIR}${PREFIX}/bin/qnapi
 	(cd ${WRKSRC}/doc && ${INSTALL_DATA} qnapi-download.desktop \
 		qnapi-scan.desktop ${STAGEDIR}${DESKTOPDIR})
 

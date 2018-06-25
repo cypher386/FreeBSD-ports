@@ -49,7 +49,7 @@
 	<service>
 		<name>net-snmptrapd</name>
 		<rcfile>net-snmptrapd.sh</rcfile>
-		<executable>snmpdtrapd</executable>
+		<executable>snmptrapd</executable>
 		<description><![CDATA[NET-SNMP Trap Listening Daemon]]></description>
 	</service>
 	<tabs>
@@ -263,6 +263,7 @@
 			<cols>78</cols>
 			<rows>5</rows>
 			<advancedfield/>
+			<encoding>base64</encoding>
 		</field>
 	</fields>
 	<custom_php_install_command>

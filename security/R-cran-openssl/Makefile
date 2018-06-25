@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	openssl
-PORTVERSION=	0.9.6
+PORTVERSION=	1.0.1
 CATEGORIES=	security
 DISTNAME=	${PORTNAME}_${PORTVERSION}
 
@@ -11,21 +11,15 @@ COMMENT=	Toolkit for Encryption, Signatures and Certificates Based on OpenSSL
 
 LICENSE=	MIT
 
-USES=		cran:auto-plist,compiles ssl
+TEST_DEPENDS=	bash:shells/bash
+
+USES=		cran:auto-plist,compiles shebangfix ssl
+
+SHEBANG_FILES=	${WRKSRC}/tests/google.dk/generate.bash
 
 R_POSTCMD_INSTALL_OPTIONS+=	--configure-vars="INCLUDE_DIR=${OPENSSLINC} LIB_DIR=${OPENSSLLIB}"
 
 post-patch:
 	${REINPLACE_CMD} -e '1,5d' ${WRKSRC}/src/ssl.c
 
-.include <bsd.port.pre.mk>
-
-.if ${SSL_DEFAULT:Mlibressl*}
-IGNORE=	Detected LibreSSL (missing RSA_get0_key and others)
-.else
-. if ${OSVERSION} < 1000015 && ${SSL_DEFAULT:Mbase}
-IGNORE=	Need a more recent version of OpenSSL.
-. endif
-.endif
-
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

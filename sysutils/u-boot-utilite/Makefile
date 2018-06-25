@@ -2,7 +2,7 @@
 
 PORTNAME=	u-boot
 PORTVERSION=	2015.07
-PORTREVISION=	2
+PORTREVISION=	3
 CATEGORIES=	sysutils
 MASTER_SITES=	ftp://ftp.denx.de/pub/u-boot/:source1 \
 		http://www.compulab.co.il/wp-content/uploads/2015/10/:source2
@@ -16,6 +16,8 @@ COMMENT=	Cross-build U-Boot loader for Utilite (and Utilite Pro)
 LICENSE=	GPLv2
 
 BUILD_DEPENDS=	${CROSS_GCC}:devel/arm-none-eabi-gcc492
+
+BROKEN_powerpc64=	fails to compile: cmd_mem.c: internal compiler error: Segmentation fault
 
 CROSS_GCC=	arm-none-eabi-gcc-4.9.2
 

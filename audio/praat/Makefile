@@ -1,4 +1,3 @@
-# Created by: Jason Bacon <bacon4000@gmail.com>
 # $FreeBSD$
 
 PORTNAME=	praat
@@ -7,10 +6,12 @@ DISTVERSIONPREFIX=	v
 PORTREVISION=	3
 CATEGORIES=	audio science
 
-MAINTAINER=	bacon4000@gmail.com
+MAINTAINER=	jwb@FreeBSD.org
 COMMENT=	Phonetics by Computer
 
 LICENSE=	GPLv2
+
+BROKEN_powerpc64=	fails to compile: cc1plus: unrecognized command line option "-std=gnu++11"
 
 USE_GITHUB=	yes
 DOS2UNIX_REGEX=	.*Makefile
@@ -18,13 +19,6 @@ USES=		dos2unix iconv pkgconfig
 USE_GNOME=	gtk20
 MAKEFILE=	makefile
 PLIST_FILES=	bin/praat man/man1/praat.1.gz
-
-.include <bsd.port.pre.mk>
-
-.if ${OSVERSION} < 1000000
-# Requires std=g++11
-USE_GCC=	yes
-.endif
 
 post-patch:
 	@${FIND} ${WRKSRC} -name Makefile -exec \
@@ -46,4 +40,4 @@ do-install:
 	${INSTALL_PROGRAM} ${WRKSRC}/praat ${STAGEDIR}${PREFIX}/bin
 	${INSTALL_MAN} ${FILESDIR}/praat.1 ${STAGEDIR}${PREFIX}/man/man1
 
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

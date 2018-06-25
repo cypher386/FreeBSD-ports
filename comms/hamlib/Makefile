@@ -3,6 +3,7 @@
 
 PORTNAME=	hamlib
 PORTVERSION=	3.1
+PORTREVISION=	1
 CATEGORIES=	comms hamradio
 MASTER_SITES=	SF
 
@@ -11,7 +12,7 @@ COMMENT=	Shared libraries for Amateur Radio Equipment Control Applications
 
 LICENSE=	LGPL20
 
-BUILD_DEPENDS=	swig:devel/swig13
+BUILD_DEPENDS=	swig3.0:devel/swig30
 LIB_DEPENDS=	libltdl.so:devel/libltdl
 
 INFO=		hamlib
@@ -30,6 +31,7 @@ CONFIGURE_ARGS=	--with-perl-binding \
 		--with-python-binding --without-rigmatrix
 PLIST_SUB=	VER=${PORTVERSION} TCL_VER=${TCL_VER}
 INSTALL_TARGET=	install-strip
+BINARY_ALIAS=	swig=swig3.0
 
 OPTIONS_DEFINE=	DOCS
 

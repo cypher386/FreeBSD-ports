@@ -4,6 +4,7 @@
 PORTNAME=	mozc
 PORTVERSION=	2.20.2677.102.02
 DISTVERSIONPREFIX=	v
+PORTREVISION=	8
 CATEGORIES=	japanese
 
 MAINTAINER=	hrs@FreeBSD.org
@@ -15,13 +16,17 @@ LICENSE_FILE=	${WRKSRC}/LICENSE
 BUILD_DEPENDS=	ninja:devel/ninja \
 		gyp:devel/py-gyp
 EXTRACT_DEPENDS=${PYTHON_CMD}:${PYTHON_PORTSDIR}
-LIB_DEPENDS=	libprotobuf.so.11:devel/protobuf \
+LIB_DEPENDS=	libprotobuf.so:devel/protobuf \
 		libzinnia.so:japanese/zinnia
 RUN_DEPENDS=	xdg-open:devel/xdg-utils
 
+BROKEN_powerpc=		fails to compile: segfault
+BROKEN_powerpc64=	fails to install: gyp: Call to 'which clang' returned exit status 1 while in client/client.gyp
+BROKEN_sparc64=		fails to compile: segfault
+
 USE_GITHUB=	yes
-GH_TUPLE=	hrs-allbsd:${PORTNAME}:${DISTVERSIONPREFIX}${DISTVERSION} \
-		hiroyuki-komatsu:japanese-usage-dictionary:e5b3425:udic
+GH_ACCOUNT=	hrs-allbsd
+GH_TUPLE=	hiroyuki-komatsu:japanese-usage-dictionary:e5b3425:udic
 
 USES=		compiler:c++11-lang pkgconfig gmake \
 		tar:bzip2 python:2.7,build shebangfix
@@ -52,7 +57,7 @@ USE_GNOME=	cairo gdkpixbuf2 glib20 gtk20
 LIB_DEPENDS+=	libfontconfig.so:x11-fonts/fontconfig \
 		libfreetype.so:print/freetype2
 .elif ${BUILD_MOZC_LIST:Mmozc_el} == "mozc_el"
-USE_EMACS=	yes
+USES+=		emacs
 .elif ${BUILD_MOZC_LIST:Mfcitx_mozc}
 USES+=		gettext-tools
 .endif
@@ -67,10 +72,6 @@ _CCTYPE=	gcc
 
 .include <bsd.port.pre.mk>
 
-.if ${ARCH} == "ia64" || ${ARCH} == "powerpc" || ${ARCH} == "sparc64"
-BROKEN=		Does not compile: segfault
-.endif
-
 GYP_DEFINES=	use_libprotobuf=1 \
 		channel_dev=0 \
 		enable_unittest=0 \
@@ -84,6 +85,7 @@ BUILD_MODE=	Release
 BUILD_CMD=	${SETENV} ${MAKE_ENV} PATH=/bin:/usr/bin:${PATH} ${MAKE_CMD}
 BUILD_MOZC_CMD=	cd ${BUILD_WRKSRC} && \
 		${SETENV} BUILD_COMMAND="${BUILD_WRKSRC}/mozcmake" \
+		    PATH="${PATH}" \
 		    GYP_DEFINES="${GYP_DEFINES}" \
 		    PYTHONPATH=${PYTHON_SITELIBDIR}/gyp \
 		    CC_host="${CC}" \

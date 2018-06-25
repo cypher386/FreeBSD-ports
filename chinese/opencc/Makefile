@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	opencc
-PORTVERSION=	1.0.4
+PORTVERSION=	1.0.5
 DISTVERSIONPREFIX=	ver.
 CATEGORIES=	chinese converters
 

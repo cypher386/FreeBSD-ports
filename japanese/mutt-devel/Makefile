@@ -47,7 +47,9 @@ LICENSE=	GPLv2
 RUN_DEPENDS=	urlview:textproc/urlview \
 		${LOCALBASE}/etc/mime.types:misc/mime-support
 
-BROKEN_aarch64=	Fails to compile: error: conflicting types for __wcwidth
+BROKEN_aarch64=		fails to compile: conflicting types for __wcwidth
+BROKEN_armv6=		fails to compile: conflicting types for __wcwidth
+BROKEN_armv7=		fails to compile: conflicting types for __wcwidth
 
 CONFLICTS=	ja-mutt-[0-9]* mutt-[0-9]* mutt-devel-[0-9]* mutt-devel-lite-[0-9]* mutt-lite-[0-9]* zh-mutt-devel-[0-9]*
 
@@ -81,6 +83,8 @@ OPTIONS_DEFINE=	CYRUS_SASL2 IMAP_HEADER_CACHE IDN MAILDIR_HEADER_CACHE NLS DOCS
 CYRUS_SASL2_DESC=	SASL2 authentication
 IMAP_HEADER_CACHE_DESC=	imap header cache
 MAILDIR_HEADER_CACHE_DESC=	maildir header cache
+
+DOCS_EXTRA_PATCHES_OFF=	${PATCHDIR}/extra-patch-nodoc-contrib
 
 .include <bsd.port.options.mk>
 
@@ -129,17 +133,6 @@ post-patch:
 	@${REINPLACE_CMD} -E ${CONFIGURE_SED} \
 		${CONFIGURE_WRKSRC}/${CONFIGURE_SCRIPT}.ac
 .endif
-.if ! ${PORT_OPTIONS:MDOCS}
-	${PATCH} ${PATCH_ARGS} < ${PATCHDIR}/extra-patch-nodoc-contrib
-.endif
-
-post-configure:
-	@${REINPLACE_CMD} -E "\
-		s|^(s%\@ACLOCAL\@%).+(%g)|\1${ACLOCAL}\2|; \
-		s|^(s%\@AUTOCONF\@%).+(%g)|\1${AUTOCONF}\2|; \
-		s|^(s%\@AUTOMAKE\@%).+(%g)|\1${AUTOMAKE}\2|; \
-		s|^(s%\@AUTOHEADER\@%).+(%g)|\1${AUTOHEADER}\2|" \
-		${BUILD_WRKSRC}/config.status
 
 .if ${PORT_OPTIONS:MDOCS}
 post-install:

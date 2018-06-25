@@ -1,10 +1,12 @@
 # $FreeBSD$
 
 PORTNAME=	libsearpc
-PORTVERSION=	3.1.0
+PORTVERSION=	3.0.8
+PORTREVISION=	1
+PORTEPOCH=	1
 CATEGORIES=	devel
 
-MAINTAINER=	ultima1252@gmail.com
+MAINTAINER=	ultima@FreeBSD.org
 COMMENT=	Simple RPC framework based on GObject System in C
 
 LICENSE=	APACHE20
@@ -15,30 +17,13 @@ LIB_DEPENDS=	libjansson.so:devel/jansson \
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	haiwen
-GH_TAGNAME=	v3.1-latest
+GH_TAGNAME=	12a0126
 
-USES=		autoreconf gettext libtool pathfix pkgconfig python:2
+USES=		autoreconf gettext libtool pathfix pkgconfig python:2.7 shebangfix
+SHEBANG_FILES=	lib/searpc-codegen.py
 USE_LDCONFIG=	yes
 
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
-
-HAIWENDIR=	www/haiwen
-SEAFILE_SERVER=	${HAIWENDIR}/seafile-server
-SEALIB=		${SEAFILE_SERVER}/seafile/lib
-
-USERS=		seafile
-GROUPS=		${USERS}
-
-PLIST_SUB=	USERS=${USERS} \
-		GROUPS=${GROUPS} \
-		SEAFILE_SERVER=${SEAFILE_SERVER} \
-		HAIWENDIR=${HAIWENDIR}
-
-post-install:
-	@${MKDIR} ${STAGEDIR}${SEALIB}
-	(cd ${STAGEDIR}${PREFIX}/lib && \
-		${COPYTREE_SHARE} ${PYTHON_VERSION} ${STAGEDIR}${PREFIX}/${SEALIB})
-	${RM} -r ${STAGEDIR}${PREFIX}/lib/${PYTHON_VERSION}
 
 .include <bsd.port.mk>

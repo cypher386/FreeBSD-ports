@@ -15,11 +15,11 @@ COMMENT=	Local/remote mirroring+incremental backup
 LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
-LIB_DEPENDS=	librsync.so:net/librsync1
+LIB_DEPENDS=	librsync.so:net/librsync2
 
 CONFLICTS=	rdiff-backup-[0-9]*
 
-USES=		python
+USES=		python:2.7
 USE_PYTHON=	distutils
 
 MAN1S=		rdiff-backup.1 rdiff-backup-statistics.1

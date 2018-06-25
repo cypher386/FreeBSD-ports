@@ -2,11 +2,11 @@
 # $FreeBSD$
 
 PORTNAME=	extract_url
-PORTVERSION=	1.6.1
+PORTVERSION=	1.6.2
 DISTVERSIONPREFIX=	v
 CATEGORIES=	textproc
 
-MAINTAINER=	dbaio@bsd.com.br
+MAINTAINER=	dbaio@FreeBSD.org
 COMMENT=	Perl script that extracts URLs from email in MIME or plain text format
 
 LICENSE=	BSD2CLAUSE
@@ -17,13 +17,14 @@ BUILD_DEPENDS=	p5-MIME-Tools>=0:mail/p5-MIME-Tools \
 RUN_DEPENDS:=	${BUILD_DEPENDS}
 
 USES=		gmake perl5
-MAKE_ARGS=	all prefix=${PREFIX} man_prefix=${PREFIX}
-SUB_FILES=	pkg-message
-NO_ARCH=	yes
 
 USE_GITHUB=	yes
 GH_ACCOUNT=	m3m0ryh0l3
 GH_PROJECT=	extracturl
+
+MAKE_ARGS=	all prefix=${PREFIX} man_prefix=${PREFIX}
+SUB_FILES=	pkg-message
+NO_ARCH=	yes
 
 PLIST_FILES=	bin/extract_url \
 		share/extract_url/extract_urlview.sample \

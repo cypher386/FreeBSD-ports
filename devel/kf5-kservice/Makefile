@@ -1,8 +1,7 @@
-# Created by: tcberner
 # $FreeBSD$
 
 PORTNAME=	kservice
-PORTVERSION=	${KDE_FRAMEWORKS_VERSION}
+DISTVERSION=	${KDE_FRAMEWORKS_VERSION}
 CATEGORIES=	devel kde kde-frameworks
 
 MAINTAINER=	kde@FreeBSD.org
@@ -16,10 +15,4 @@ USE_QT5=	buildtools_build core dbus gui qmake_build xml
 # Make the applications.menu file not conflict with KDE4.
 CMAKE_ARGS=	-DAPPLICATIONS_MENU_NAME:STRING="kf5-applications.menu"
 
-.include <bsd.port.pre.mk>
-# Flex on FreeBSD 9 and older 10 is too old
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000033
-BUILD_DEPENDS+=	${LOCALBASE}/bin/flex:textproc/flex
-.endif
-
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

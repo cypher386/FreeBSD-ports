@@ -28,14 +28,10 @@ require_once("util.inc");
 require_once("pfsense-utils.inc");
 
 global $current_openvpn_version, $current_openvpn_version_rev, $legacy_openvpn_version, $legacy_openvpn_version_rev;
-$current_openvpn_version = "2.4.1";
+$current_openvpn_version = "2.4.4";
 $current_openvpn_version_rev = "01";
-$legacy_openvpn_version = "2.3.14";
-$legacy_openvpn_version_rev = "02";
-
-function openvpn_client_export_deinstall() {
-	exec("/bin/rm -r /usr/local/share/openvpn/client-export");
-}
+$legacy_openvpn_version = "2.3.18";
+$legacy_openvpn_version_rev = "01";
 
 function get_openvpnserver_by_id($srvid) {
 	global $config;
@@ -351,9 +347,10 @@ EOF;
 	// Extra protection for the server cert, if it's supported
 	if (function_exists("cert_get_purpose")) {
 		if (is_array($server_cert) && ($server_cert['crt'])) {
-			$purpose = cert_get_purpose($server_cert['crt'], true);
-			if ($purpose['server'] == 'Yes') {
-				$conf .= "ns-cert-type server{$nl}";
+			$crt_details = openssl_x509_parse(base64_decode($server_cert['crt']));
+			$eku_list = explode(',', $crt_details['extensions']['extendedKeyUsage']);
+			if (in_array('TLS Web Server Authentication', $eku_list)) {
+				$conf .= "remote-cert-tls server{$nl}";
 			}
 		}
 	}

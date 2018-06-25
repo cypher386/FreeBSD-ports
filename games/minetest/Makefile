@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	minetest
-PORTVERSION=	0.4.15
+PORTVERSION=	0.4.16
 CATEGORIES=	games
 
 MAINTAINER=	amdmi3@FreeBSD.org
@@ -18,6 +18,7 @@ USE_GITHUB=	yes
 GH_ACCOUNT=	minetest
 
 USES=		cmake iconv:wchar_t
+LLD_UNSAFE=	yes
 CMAKE_ARGS=	-DCUSTOM_MANDIR="${PREFIX}/man" \
 		-DCUSTOM_EXAMPLE_CONF_DIR="${PREFIX}/etc"
 
@@ -57,7 +58,7 @@ REDIS_CMAKE_BOOL=	ENABLE_REDIS
 REDIS_LIB_DEPENDS=	libhiredis.so:databases/hiredis
 FREETYPE_CMAKE_BOOL=	ENABLE_FREETYPE
 FREETYPE_LIB_DEPENDS=	libfreetype.so:print/freetype2
-LUAJIT_CMAKE_BOOL=	ENABLE_LUAJIT
+LUAJIT_CMAKE_BOOL=	ENABLE_LUAJIT REQUIRE_LUAJIT
 LUAJIT_LIB_DEPENDS=	libluajit-5.1.so:lang/luajit
 SPATIAL_LIB_DEPENDS=	libspatialindex.so:devel/spatialindex
 SPATIAL_CMAKE_BOOL=	ENABLE_SPATIAL
@@ -84,10 +85,6 @@ BUILD_DEPENDS+=	${NONEXISTENT}:x11-toolkits/irrlicht:patch
 IRRLICHT_INCLUDE_DIR=	`${MAKE} -C ${PORTSDIR}/x11-toolkits/irrlicht -V WRKSRC`/include
 CMAKE_ARGS+=	-DIRRLICHT_INCLUDE_DIR:STRING="${IRRLICHT_INCLUDE_DIR}"
 EXTRA_PATCHES+=	${FILESDIR}/extra-patch-irrlichtdepend
-.endif
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000000
-EXTRA_PATCHES+=	${FILESDIR}/extra-patch-src_unittest_test__serialization.cpp
 .endif
 
 post-patch:

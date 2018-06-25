@@ -1,10 +1,17 @@
-To reduce the height of tabs, create ~/.config/gtk-3.0/gtk.css file with
-the following content:
+Some options could need manual change to ~/.config/xfce4/terminal/terminalrc:
 
-TerminalWindow GtkNotebook.notebook {
-        padding-top: 0;
-        padding-bottom: 0;
-}
+To reduce the height of tabs, add the hidden 'MiscSlimTabs' option:
 
-Don't active the hidden MiscSlimTabs option in terminalrc. It requires
-Gtk+ >= 3.20
+MiscSlimTabs=TRUE
+
+By default this option is not defined.
+
+If you have configured a custom color cursor you will also need to add:
+
+ColorCursorUseDefault=FALSE
+
+to have such configuration still working, otherwise reconfigure the color
+in the GUI.
+
+Keep in mind, when you change an option in Preferences window, this file
+is overwritten. 

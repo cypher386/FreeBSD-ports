@@ -3,7 +3,7 @@
 
 PORTNAME=	aegisub
 PORTVERSION=	3.2.2
-PORTREVISION=	15
+PORTREVISION=	26
 CATEGORIES=	multimedia
 MASTER_SITES=	http://ftp.aegisub.org/pub/archives/releases/source/ \
 		ftp://ftp.aegisub.org/pub/archives/releases/source/ \
@@ -28,6 +28,7 @@ WX_CONF_ARGS=	absolute
 USE_GL=		gl
 USE_CSTD=	c99
 USE_CXXSTD=	c++11
+CPPFLAGS+=	-DU_USING_ICU_NAMESPACE=1
 CXXFLAGS+=	-D_GLIBCXX_USE_C99 # XXX ports/193528
 LDFLAGS+=	-Wl,--as-needed # freetype
 GNU_CONFIGURE=	yes
@@ -63,6 +64,8 @@ PORTAUDIO_CONFIGURE_OFF=\
 PULSEAUDIO_LIB_DEPENDS=	libpulse.so:audio/pulseaudio
 PULSEAUDIO_CONFIGURE_OFF=\
 			--without-libpulse
+
+BROKEN_aarch64=		Fails to compile: no support for this architecture (yet)
 
 # src/audio_display.o: undefined reference to symbol '__atomic_load_8@@LIBATOMIC_1.0'
 .if empty(CFLAGS:M-march=*)

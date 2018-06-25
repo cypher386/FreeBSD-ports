@@ -1,6 +1,6 @@
---- media/capture/BUILD.gn.orig	2017-03-09 20:04:34 UTC
+--- media/capture/BUILD.gn.orig	2017-06-05 19:03:08 UTC
 +++ media/capture/BUILD.gn
-@@ -135,6 +135,16 @@ component("capture") {
+@@ -160,6 +160,16 @@ component("capture_lib") {
      ]
    }
  
@@ -15,5 +15,5 @@
 +  }
 +
    if (is_win) {
-     deps += [
-       "//media/base",  # For media_switches.
+     deps += [ "//media/base/win" ]
+     libs = [

@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	phonon
-PORTVERSION=	4.9.0
+PORTVERSION=	4.9.1
 PORTREVISION=	1
 CATEGORIES=	multimedia
 MASTER_SITES=	KDE/stable/${PORTNAME}/${PORTVERSION}
@@ -13,7 +13,6 @@ MAINTAINER=	kde@FreeBSD.org
 COMMENT=	Phonon 4 transitional library for Qt 5
 
 LICENSE=	LGPL21
-
 
 USES=		cmake:outsource kde:5 pathfix tar:xz
 USE_KDE=	ecm

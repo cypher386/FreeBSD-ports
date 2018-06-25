@@ -1,8 +1,8 @@
 # $FreeBSD$
 
 PORTNAME=	pfSense-pkg-suricata
-PORTVERSION=	3.1.2
-PORTREVISION=	2
+PORTVERSION=	4.0.5
+PORTREVISION=	1
 CATEGORIES=	security
 MASTER_SITES=	# empty
 DISTFILES=	# empty
@@ -13,7 +13,7 @@ COMMENT=	pfSense package suricata
 
 LICENSE=	APACHE20
 
-RUN_DEPENDS=	suricata>=3.1.2:security/suricata \
+RUN_DEPENDS=	suricata>=4.0.0:security/suricata \
 		barnyard2:security/barnyard2
 
 NO_BUILD=	yes

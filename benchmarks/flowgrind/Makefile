@@ -4,9 +4,10 @@
 PORTNAME=	flowgrind
 PORTVERSION=	0.8.0
 DISTVERSIONPREFIX=	${PORTNAME}-
+PORTREVISION=	2
 CATEGORIES=	benchmarks
 
-MAINTAINER=	dbaio@bsd.com.br
+MAINTAINER=	dbaio@FreeBSD.org
 COMMENT=	Measure throughput and other metrics for TCP
 
 LICENSE=	GPLv3+
@@ -18,9 +19,10 @@ LIB_DEPENDS=	libgsl.so:math/gsl \
 		libwwwxml.so:www/libwww \
 		libuuid.so:misc/e2fsprogs-libuuid
 
+USES=		autoreconf ssl
+
 USE_GITHUB=	yes
 
-USES=		autoreconf ssl
 GNU_CONFIGURE=	yes
 CONFIGURE_ENV=	LIBS="${LIBS} -lpcap"
 

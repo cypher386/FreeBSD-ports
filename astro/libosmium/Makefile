@@ -2,9 +2,9 @@
 # $FreeBSD$
 
 PORTNAME=	libosmium
-PORTVERSION=	2.10.3
+PORTVERSION=	2.13.1
 DISTVERSIONPREFIX=	v
-PORTREVISION=	2
+PORTREVISION=	4
 CATEGORIES=	astro geography devel
 
 MAINTAINER=	amdmi3@FreeBSD.org
@@ -12,6 +12,8 @@ COMMENT=	Fast and flexible C++ library for working with OpenStreetMap data
 
 LICENSE=	BSL
 LICENSE_FILE=	${WRKSRC}/LICENSE.txt
+
+BROKEN_powerpc64=	fails to compile: types_from_string.hpp: error: 'strtoll' is not a member of 'std'
 
 LIB_DEPENDS=	libgdal.so:graphics/gdal \
 		libboost_regex.so:devel/boost-libs \

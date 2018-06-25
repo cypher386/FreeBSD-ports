@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	libtasn1
-PORTVERSION=	4.9
+PORTVERSION=	4.13
 CATEGORIES=	security
 MASTER_SITES=	GNU
 
@@ -12,10 +12,9 @@ COMMENT=	ASN.1 structure parser library
 LICENSE=	LGPL21+
 LICENSE_FILE=	${WRKSRC}/COPYING.LIB
 
-USE_LDCONFIG=	yes
 USES=		cpe pkgconfig pathfix gmake libtool
+USE_LDCONFIG=	yes
 GNU_CONFIGURE=	yes
-CONFIGURE_ARGS+=	--disable-gcc-warnings
 INSTALL_TARGET=	install-strip
 CPE_VENDOR=	gnu
 

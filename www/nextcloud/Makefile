@@ -1,16 +1,16 @@
 # $FreeBSD$
 
 PORTNAME=	nextcloud
-PORTVERSION=	11.0.0
+DISTVERSION=	13.0.0
 CATEGORIES=	www
-MASTER_SITES=	https://download.nextcloud.com/server/releases/
+MASTER_SITES=	https://download.nextcloud.com/server/prereleases/
 
 MAINTAINER=	loic.blot@unix-experience.fr
 COMMENT=	Personal cloud which runs on your own server
 
 LICENSE=	AGPLv3
 
-USES=		cpe php:web tar:bzip2 ssl
+USES=		cpe gettext-runtime php:web tar:bzip2 ssl
 USE_PHP=	bz2 ctype curl dom fileinfo filter gd hash iconv json \
 		mbstring pdo posix session simplexml xml xmlreader xmlwriter \
 		xsl wddx zip zlib
@@ -30,6 +30,7 @@ OPTIONS_MULTI=	DB
 OPTIONS_MULTI_DB=	MYSQL PGSQL SQLITE
 OPTIONS_DEFAULT=	EXIF LDAP MYSQL SMB SSL
 
+DB_DESC=	Database backend(s)
 EXIF_DESC=	Image rotation support
 
 EXIF_USE=	PHP=exif
@@ -39,21 +40,16 @@ MYSQL_USE=	PHP=pdo_mysql
 PGSQL_USES=	pgsql
 PGSQL_USE=	PHP=pdo_pgsql,pgsql
 SQLITE_USE=	PHP=pdo_sqlite,sqlite3
-SMB_RUN_DEPENDS=	pecl-smbclient>=0.8.0:net/pecl-smbclient
+SMB_RUN_DEPENDS=	${PECL_PKGNAMEPREFIX}smbclient>=0.8.0:net/pecl-smbclient@${PHP_FLAVOR}
 SSL_USE=	PHP=openssl
 
-.include <bsd.port.options.mk>
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1002000
-WITH_OPENSSL_PORT=	yes
-.endif
-
-post-stage:
-	${RM} ${STAGEDIR}${WWWDIR}/updater/updater.phar
+post-patch:
+	@${REINPLACE_CMD} -e 's|/var/www/|${WWWDIR}|' ${WRKSRC}/config/config.sample.php
 
 do-install:
 	@${MKDIR} -m 0755 ${STAGEDIR}${WWWDIR}
 	@cd ${WRKSRC} && ${COPYTREE_SHARE} . ${STAGEDIR}${WWWDIR}
+	@${RM} ${STAGEDIR}${WWWDIR}/updater/updater.phar
 	@${MKDIR} ${STAGEDIR}${WWWDIR}/data
 
 .include <bsd.port.mk>

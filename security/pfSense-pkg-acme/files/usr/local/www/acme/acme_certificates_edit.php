@@ -56,7 +56,7 @@ if (!is_numeric($id))
 global $simplefields;
 $simplefields = array(
 	"name","desc","status",
-	"acmeaccount","keylength",
+	"acmeaccount","keylength","ocspstaple",
 	"dnssleep","renewafter"
 );
 
@@ -146,18 +146,15 @@ function customdrawcell_actions($object, $item, $itemvalue, $editable, $itemname
 		echo $itemvalue;
 	}
 }
+
 if (isset($id) && $a_certificates[$id]) {
 	$a_domains = $a_certificates[$id]['a_domainlist']['item'];
 	$a_actions = $a_certificates[$id]['a_actionlist']['item'];
 
 	$pconfig["lastrenewal"] = $a_certificates[$id]["lastrenewal"];
+	$pconfig['keypaste'] = base64_decode($a_certificates[$id]['keypaste']);
 	foreach($simplefields as $stat) {
 		$pconfig[$stat] = $a_certificates[$id][$stat];
-	}
-	
-	$a_errorfiles = &$a_certificates[$id]['errorfiles']['item'];
-	if (!is_array($a_errorfiles)) {
-		$a_errorfiles = array();
 	}
 }
 
@@ -183,6 +180,24 @@ if ($_POST) {
 		$input_errors[] = "The field 'Name' contains invalid characters.";
 	}
 	
+	// If the "Custom..." option was selected in the "Private Key" dropdown...
+	if ($_POST['keylength'] == 'custom') {
+		// ...then the "Custom Private Key" field is required.
+		$reqdfields = explode(' ', 'keypaste');
+		$reqdfieldsn = explode(',', 'Custom Private Key');
+		do_input_validation($_POST, $reqdfields, $reqdfieldsn, $input_errors);
+
+		if (   isset($_POST['keypaste'])
+			&& (   strpos($_POST['keypaste'], 'BEGIN PRIVATE KEY') === false
+			    || strpos($_POST['keypaste'], 'END PRIVATE KEY') === false)) {
+			$input_errors[] = "The Custom Private Key does not appear to be valid.";
+		}
+	} else {
+		// ...otherwise, the "Custom Private Key" field will be ignored, so
+		// clear its contents to avoid triggering update_if_changed() below.
+		$_POST['keypaste'] = '';
+	}
+
 	if ($_POST['stats_enabled']) {
 		$reqdfields = explode(" ", "name stats_uri");
 		$reqdfieldsn = explode(",", "Name,Stats Uri");		
@@ -203,8 +218,17 @@ if ($_POST) {
 	$a_domains = $domainslist->acme_htmllist_get_values();
 	foreach($a_domains as $server){
 		$domain_name = $server['name'];
-		if (!is_hostname($domain_name)) {
+		if (!is_hostname($domain_name, true)) {
 			$input_errors[] = "The field 'Domainname' does not contain a valid hostname.";
+		} elseif (!is_hostname($domain_name)) {
+			if (strtolower(substr($server['method'], 0, 3)) != "dns") {
+				$input_errors[] = "Wildcard 'Domainname' validation requires a DNS-based method.";
+			}
+			/* If the hostname is valid when allowing wildcards, but not without, then it must be a wildcard */
+			$account = get_accountkey($_POST['acmeaccount']);
+			if (substr($account['acmeserver'], -2, 2) != '-2') {
+				$input_errors[] = "A wildcard 'Domainname' is present but the ACME Account key is not registered to an ACME v2 server.";
+			}
 		}
 	}
 	$a_actions = $actionslist->acme_htmllist_get_values();
@@ -233,10 +257,12 @@ if ($_POST) {
 	$certificate['a_domainlist']['item'] = $a_domains;
 	$certificate['a_actionlist']['item'] = $a_actions;
 
+	$certificate['keypaste'] = base64_encode($_POST['keypaste']);
 	global $simplefields;
 	foreach($simplefields as $stat) {
 		update_if_changed($stat, $certificate[$stat], $_POST[$stat]);
 	}
+
 	if (isset($id) && $a_certificates[$id]) {
 		$a_certificates[$id] = $certificate;
 	} else {
@@ -333,21 +359,35 @@ $section->addInput(new \Form_Select(
 	form_name_array($a_accountkeys)
 ));
 
-$a_accountkeys = &$config['installedpackages']['acme']['accountkeys']['item'];
 $section->addInput(new \Form_Select(
 	'keylength',
-	'Key Size',
+	'Private Key',
 	$pconfig['keylength'],
-	form_name_array($a_keylength)
+	form_keyvalue_array($a_keylength)
 ));
+
+$section->addInput(new \Form_Textarea(
+	'keypaste',
+	'Custom Private Key',
+	$pconfig['keypaste']
+))->setNoWrap()
+	->setAttribute('placeholder', "-----BEGIN PRIVATE KEY-----\nBASE64-ENCODED DATA\n-----END PRIVATE KEY-----")
+	->setHelp('Paste a private key in X.509 PEM format here.');
+
+$section->addInput(new \Form_Checkbox(
+	'ocspstaple',
+	'OCSP Must Staple',
+	'Add the OCSP Must Staple extension to the certificate.',
+	$pconfig['ocspstaple']
+))->setHelp('Do not enable this option unless the software using the certificate also supports OCSP stapling.');
 
 $section->addInput(new \Form_StaticText(
 	'Domain SAN list', 
 	"List all domain names that should be included in the certificate here, and how to validate ownership by use of a webroot or dns challenge<br/>"
 	. "Examples:<br/>"
 	. "Domainname: www.example.com<br/>"
-	. "Method: Webroot ,Rootfolder: /usr/local/www/.well-known/acme-challenge/<br/>"
-	. "Method: Webroot ,Rootfolder: /tmp/haproxy_chroot/haproxywebroot/.well-known/acme-challenge/"
+	. "Method: Webroot, Rootfolder: /usr/local/www/.well-known/acme-challenge/<br/>"
+	. "Method: Webroot, Rootfolder: /tmp/haproxy_chroot/haproxywebroot/.well-known/acme-challenge/"
 	. $domainslist->Draw($a_domains)
 ));
 
@@ -357,12 +397,17 @@ $section->addInput(new \Form_Input(
 	'number',
 	$pconfig['dnssleep'],
 	['min' => '1', 'max' => '3600']
-))->setHelp('When using a DNS validation method configure how much time to wait before atempting verification after the txt records are added. Defaults to 120 seconds.');
+))->setHelp('When using a DNS validation method configure how much time to wait before attempting verification after the txt records are added. Defaults to 120 seconds.');
 
 
 $section->addInput(new \Form_StaticText(
 	'Actions list', 
-	"Used to restart webserver processes after this certificate has been renewed<br/>Examples:<br/>/etc/rc.restart_webgui<br/>/usr/local/etc/rc.d/haproxy.sh restart".
+	"Used to restart webserver processes after this certificate has been renewed<br/>" .
+	"Examples:<br/>" .
+	"<br/>Restart the GUI on this firewall: Select \"Shell Command\" and enter <i>/etc/rc.restart_webgui</i>" .
+	"<br/>Restart HAProxy on this firewall: Select \"Shell Command\" and enter <i>/usr/local/etc/rc.d/haproxy.sh restart</i>" .
+	"<br/>Restart a local captive portal instance: Select \"Restart Local Service\" and enter <i>captiveportal zonename</i> replacing <i>zonename</i> with the zone to restart." .
+	"<br/>Restart the GUI of an HA peer: Select \"Restart Remote Service\" and enter <i>webgui</i>. This utilizes the system default HA XMLRPC Sync Settings." .
 	$actionslist->Draw($a_actions)
 ));
 
@@ -445,6 +490,20 @@ events.push(function() {
 	*/
 	$('[id^=table_domainsmethod]').change();
 	updatevisibility();
+
+	// Update visibility of Custom Private Key field,
+	// based upon selection in Private Key drop-down
+	function keylength_change() {
+		hideInput('keypaste', $('#keylength').val() != "custom");
+	}
+
+	// Update page display state on keylength selection change
+	$('#keylength').change(function () {
+		keylength_change();
+	});
+
+	// Set initial page display state
+	keylength_change();
 });
 //]]>
 </script>

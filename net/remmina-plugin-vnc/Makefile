@@ -2,7 +2,6 @@
 # $FreeBSD$
 
 PKGNAMESUFFIX=	-vnc
-PORTREVISION=	1
 
 COMMENT=	Remmina plugin for VNC protocol
 
@@ -14,7 +13,5 @@ USES=		jpeg
 USE_GNOME+=	cairo
 
 MASTERDIR=	${.CURDIR}/../remmina-plugins
-
-PLIST_SUB+=	ICONS="" SSH=""
 
 .include "${MASTERDIR}/Makefile"

@@ -13,10 +13,11 @@ COMMENT=	Connect and transmit data to an Icecast media streaming server
 LICENSE=	LGPL20
 LICENSE_FILE=	${WRKSRC}/COPYING
 
+BROKEN_SSL=	openssl-devel
+BROKEN_SSL_REASON_openssl-devel=	undefined reference to `SSLeay_add_all_algorithms'
+
 LIB_DEPENDS=	libogg.so:audio/libogg \
 		libvorbis.so:audio/libvorbis
-
-CONFLICTS=	libshout2-[0-9]*
 
 OPTIONS_DEFINE=	DOCS SPEEX THEORA
 OPTIONS_DEFAULT=SPEEX THEORA

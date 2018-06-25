@@ -2,10 +2,10 @@
 # $FreeBSD$
 
 PORTNAME=	yed
-PORTVERSION=	3.16.2.1
+DISTVERSION=	3.17.2
 CATEGORIES=	graphics java
 MASTER_SITES=	#
-DISTNAME=	yEd-${PORTVERSION}
+DISTNAME=	yEd-${DISTVERSION}
 
 MAINTAINER=	myc@barev.net
 COMMENT=	Editor for graphs and diagrams
@@ -20,10 +20,11 @@ USES=		zip
 USE_JAVA=	yes
 JAVA_VERSION=	1.8+
 NO_BUILD=	yes
+NO_ARCH=	yes
 RESTRICTED=	Downloading requires acceptance of license agreement
 DESKTOP_ENTRIES="yEd" "${COMMENT}" "" "yed" "Graphics;" false
 
-WRKSRC=	${WRKDIR}/${PORTNAME}-${PORTVERSION}
+WRKSRC=	${WRKDIR}/${PORTNAME}-${DISTVERSION}
 
 SUB_FILES=	${PORTNAME}
 

@@ -28,6 +28,7 @@ class acme_sh {
 	private $name;
 	private $debug = true;
 	public $dnssleep;
+	public $ocspstaple;
 	
 	private function execacmesh($command, $envvariables = null) {
 		$command = "/usr/local/pkg/acme/acme.sh " . $command;
@@ -69,7 +70,7 @@ class acme_sh {
 	}
 	
 	function init($ca, $name) {
-		$conf = "API='{$ca}'\n";
+		$conf = "ACME_DIRECTORY='{$ca}/directory'\n";
 		$cahost = parse_url($ca, PHP_URL_HOST);
 		$acmeconf = "/tmp/acme/{$name}/";
 		$this->acmeconf = $acmeconf;
@@ -127,30 +128,38 @@ class acme_sh {
 	
 	function signCertificate($action, $accountkey, $certificatepsk, $domainstosign, $api = null, $envvariables = null, $extras = null) {
 		// $action = issue / renew
+		global $acme_domain_validation_method;
 		file_put_contents("{$this->path_account}/account.key", base64_decode($accountkey));
 		$cmdparameters = "";
 		if ($api && substr($api, 0, 4 ) === "dns_") {
 			if ($api == "dns_manual") {
 				$cmdapi = "";
+				$cmdparameters .= " --yes-I-know-dns-manual-mode-enough-go-ahead-please ";
 			} else {
 				$cmdapi = escapeshellarg($api);
 			}
-			$cmdparameters = " --dns {$cmdapi} ";
+			$cmdparameters .= " --dns {$cmdapi} ";
 		} elseif ($api == "standalone") {
 			$port = empty($envvariables['port']) ? 80 : $envvariables['port'];
-			$cmdparameters = " --standalone --httpport " . escapeshellarg($port);
+			$listen = ($envvariables['ipv6'] == "yes") ? "--listen-v6" : "--listen-v4";
+			$cmdparameters = " --standalone {$listen} --httpport " . escapeshellarg($port);
 		} elseif ($api == "standalonetls") {
 			$port = empty($envvariables['port']) ? 443 : $envvariables['port'];
-			$cmdparameters = " --tls --tlsport " . escapeshellarg($port);
+			$listen = ($envvariables['ipv6'] == "yes") ? "--listen-v6" : "--listen-v4";
+			$cmdparameters = " --tls {$listen} --tlsport " . escapeshellarg($port);
 		} else {
 			$cmdparameters = " --webroot pfSenseacme";
 		}
 		if (is_numericint($this->dnssleep)) {
 			$cmdparameters .= " --dnssleep " . escapeshellarg($this->dnssleep);
 		}
+		if ($this->ocspstaple == "yes") {
+			$cmdparameters .= " --ocsp-must-staple ";
+		}
 		
 		$Le_Domain = $domainstosign[0];
 		$certpath = "{$this->acmeconf}{$Le_Domain}/";
+		safe_mkdir($certpath);
 		$CERT_KEY_PATH = "{$certpath}{$Le_Domain}.key";
 		$CERT_PATH = "{$certpath}{$Le_Domain}.cer";
 		$CA_CERT_PATH = "{$certpath}ca.cer";
@@ -170,35 +179,25 @@ class acme_sh {
 			/* Prefix to use as a base for server/key/private files */
 			$nsupdatefileprefix = "{$certpath}nsupdate";
 			foreach (array_keys($extras) as $nsupdatedomain) {
-				file_put_contents("{$nsupdatefileprefix}_acme-challenge.{$nsupdatedomain}.server", $extras[$nsupdatedomain]['NSUPDATE_SERVER']);
+				$acmechalengedom = (substr($nsupdatedomain, 0, 2) === "*.") ? substr($nsupdatedomain, 2) : $nsupdatedomain;
+				file_put_contents("{$nsupdatefileprefix}_acme-challenge.{$acmechalengedom}.server", $extras[$nsupdatedomain]['NSUPDATE_SERVER']);
 				$envvariables['NSUPDATE_SERVER'] = $nsupdatefileprefix;
 				$nsupdatekey = base64_decode($extras[$nsupdatedomain]['NSUPDATE_KEY']);
 
-				/* Use the same .key/.private format as RFC2136 Dynamic DNS (See /etc/inc/services.inc (services_dnsupdate_process() */
-				$key_type = $extras[$nsupdatedomain]['NSUPDATE_KEYTYPE'];
-				switch ($extras[$nsupdatedomain]['NSUPDATE_KEYTYPE']) {
-					case "zone":
-						$flags = 257;
-						$proto = 3;
-						break;
-					case "user":
-						$flags = 0;
-						$proto = 2;
-						break;
-					case "host":
-					default:
-						$flags = 513;
-						$proto = 3;
-				}
-				$key_algo = empty($extras[$nsupdatedomain]['NSUPDATE_KEYALGO']) ? '157' : $extras[$nsupdatedomain]['NSUPDATE_KEYALGO'];
-				file_put_contents("{$nsupdatefileprefix}_acme-challenge.{$nsupdatedomain}.key", "_acme-challenge.{$nsupdatedomain} IN KEY {$flags} {$proto} {$key_algo} {$nsupdatekey}\n");
-				$privkey = <<<EOD
-Private-key-format: v1.3
-Algorithm: {$key_algo}
-Key: {$nsupdatekey}
+				/* Set a default key algo of HMAC-MD5 if the key type is invalid. */
+				$key_algo = empty($extras[$nsupdatedomain]['NSUPDATE_KEYALGO']) || !array_key_exists($extras[$nsupdatedomain]['NSUPDATE_KEYALGO'], $acme_domain_validation_method['dns_nsupdate']['fields']['NSUPDATE_KEYALGO']['items']) ? '157' : $extras[$nsupdatedomain]['NSUPDATE_KEYALGO'];
+
+				$key_name = empty($extras[$nsupdatedomain]['NSUPDATE_KEYNAME']) ? "_acme-challenge.{$acmechalengedom}" : rtrim($extras[$nsupdatedomain]['NSUPDATE_KEYNAME'], '.');
+
+				/* Use ddns-confgen format key */
+				$keydata = <<<EOD
+key "{$key_name}." {
+	algorithm {$acme_domain_validation_method['dns_nsupdate']['fields']['NSUPDATE_KEYALGO']['items'][$key_algo]['name']};
+	secret "{$nsupdatekey}";
+};
 
 EOD;
-				file_put_contents("{$nsupdatefileprefix}_acme-challenge.{$nsupdatedomain}.private", $privkey);
+				file_put_contents("{$nsupdatefileprefix}_acme-challenge.{$acmechalengedom}.key", $keydata);
 			}
 			$envvariables['NSUPDATE_KEY'] = $nsupdatefileprefix;
 		}
@@ -237,6 +236,10 @@ EOF;
 			, $envvariables);
 		$cer = "{$certpath}/{$domainstosign[0]}.cer";
 		if (file_exists($cer)) {
+			if ($action == "renew") {
+				/* Renew action will not automatically run the reload command! */
+				mwexec("{$this->acmeconf}reloadcmd.sh");
+			}
 			return $cer;
 		}
 		return false;

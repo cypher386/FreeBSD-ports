@@ -1,9 +1,8 @@
 # $FreeBSD$
 
 PORTNAME=	zoneminder-h264
-PORTVERSION=	1.30.20161104
-DISTVERSIONSUFFIX=	a2f782d
-PORTREVISION=	1
+PORTVERSION=	1.30.20170222
+PORTREVISION=	3
 CATEGORIES=	multimedia
 
 MAINTAINER=	bsd@abinet.ru
@@ -11,13 +10,15 @@ COMMENT=	Complete security camera solution, fully web based with image analysis
 
 LICENSE=	GPLv2
 
+CONFLICTS_INSTALL=	zoneminder
+
 ZM_DEPENDS=	p5-DBI>=0:databases/p5-DBI \
 		p5-DBD-mysql>=0:databases/p5-DBD-mysql \
 		p5-Date-Manip>=0:devel/p5-Date-Manip \
 		p5-Test-LWP-UserAgent>=0:www/p5-Test-LWP-UserAgent \
 		p5-Sys-Mmap>=0:devel/p5-Sys-Mmap \
 		p5-LWP-Protocol-https>=0:www/p5-LWP-Protocol-https \
-		p5-Sys-CPU>=0:devel/p5-Sys-Cpu \
+		p5-Sys-CPU>=0:devel/p5-Sys-CPU \
 		p5-Sys-MemInfo>=0:devel/p5-Sys-MemInfo \
 		p5-Data-Dump>=0:devel/p5-Data-Dump \
 		p5-SOAP-WSDL>=0:devel/p5-SOAP-WSDL \
@@ -33,17 +34,16 @@ LIB_DEPENDS=	libx264.so:multimedia/libx264 \
 RUN_DEPENDS=	${ZM_DEPENDS} \
 		p5-MIME-Tools>=0:mail/p5-MIME-Tools \
 		sudo:security/sudo \
+		p5-Device-SerialPort>=0:comms/p5-Device-SerialPort \
 		zip:archivers/zip
 
 USE_GITHUB=	yes
-GH_TUPLE=	zoneminder:zoneminder:a2f782d \
+GH_TUPLE=	zoneminder:ZoneMinder:e723b6d \
 		FriendsOfCake:crud:c3976f1:crud
 
-WRKSRC=		${WRKDIR}/ZoneMinder-${DISTVERSIONSUFFIX}
-
-USES=		cmake jpeg mysql perl5 php shebangfix ssl
+USES=		cmake:noninja jpeg mysql perl5 php shebangfix ssl
 USE_RC_SUBR=	zoneminder
-USE_PHP=	json pdo_mysql session gd sockets
+USE_PHP=	json pdo_mysql session gd sockets ctype
 
 ONLY_FOR_ARCHS=	amd64 i386
 
@@ -53,7 +53,6 @@ NLS_USES=	gettext
 NLS_CONFIGURE_ENABLE=	nls
 V4L_BUILD_DEPENDS=	${LOCALBASE}/include/linux/videodev2.h:multimedia/v4l_compat
 V4L_LIB_DEPENDS=	libv4l2.so:multimedia/libv4l
-OPTIONS_DEFAULT=	NLS
 
 PLIST_SUB=	WWWOWN="${WWWOWN}" WWWGRP="${WWWGRP}"
 
@@ -86,17 +85,6 @@ CMAKE_ARGS+=	-DZM_PERL_MM_PARMS=INSTALLDIRS=site \
 		-DGNUTLS_LIBRARIES=0 \
 		-DCMAKE_REQUIRED_INCLUDES:STRING="${LOCALBASE}/include"
 
-.include <bsd.port.pre.mk>
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000000 && ${ARCH} == i386
-CFLAGS+=	-msse
-.endif
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000000
-LIB_DEPENDS+=	libexecinfo.so:devel/libexecinfo
-LDFLAGS+=	-L${LOCALBASE}/lib
-.endif
-
 PKGMESSAGE=	${WRKDIR}/pkg-message
 
 post-extract:
@@ -119,6 +107,6 @@ post-install:
 
 post-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}
-	cd ${WRKSRC} && ${INSTALL_MAN} ${PORTDOCS} ${STAGEDIR}${DOCSDIR}
+	cd ${WRKSRC} && ${INSTALL_DATA} ${PORTDOCS} ${STAGEDIR}${DOCSDIR}
 
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

@@ -3,7 +3,7 @@
 
 PORTNAME=	LPRng
 PORTVERSION=	3.8.C
-PORTREVISION=	3
+PORTREVISION=	4
 PORTEPOCH=	1
 CATEGORIES=	sysutils print
 MASTER_SITES=	SF/${PORTNAME:tl}/${PORTNAME:tl}
@@ -19,8 +19,7 @@ LIB_DEPENDS=	libgdbm.so:databases/gdbm
 
 BROKEN_aarch64=	Fails to link: missing sbrk
 
-USES=		gmake
-USE_OPENSSL=	yes
+USES=		gmake ssl
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--with-config_subdir="" \
 		--with-filterdir=${PREFIX}/libexec/filters \

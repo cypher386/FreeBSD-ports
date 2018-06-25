@@ -4,9 +4,10 @@
 PORTNAME=	freetalk
 PORTVERSION=	4.1
 DISTVERSIONPREFIX=	v
+PORTREVISION=	3
 CATEGORIES=	net-im
 
-MAINTAINER=	olevole@olevole.ru
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	GNU console based Jabber client
 
 LICENSE=	GPLv3+

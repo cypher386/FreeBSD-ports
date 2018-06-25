@@ -2,7 +2,7 @@
 
 PORTNAME=	amavisd-new
 PORTVERSION=	2.11.0
-PORTREVISION=	1
+PORTREVISION=	2
 PORTEPOCH=	1
 CATEGORIES=	security
 MASTER_SITES=	http://www.ijs.si/software/amavisd/ \
@@ -46,7 +46,7 @@ OPTIONS_DEFINE=	IPV6 BDB SNMP SQLITE MYSQL PGSQL LDAP SASL SPAMASSASSIN P0F ALTE
 		FILE RAR UNRAR ARJ UNARJ LHA ARC NOMARCH CAB RPM ZOO UNZOO LZOP FREEZE \
 		P7ZIP MSWORD TNEF DOCS
 OPTIONS_DEFAULT=	BDB SPAMASSASSIN FILE UNRAR ARJ LHA ARC CAB RPM ZOO LZOP \
-			FREEZE P7ZIP MSWORD
+			P7ZIP MSWORD
 BDB_DESC=		Use BerkeleyDB for nanny/cache/snmp
 SNMP_DESC=		Install amavisd snmp subagent
 SQLITE_DESC=		Use SQLite for lookups
@@ -147,16 +147,14 @@ RUN_DEPENDS+=	${LOCALBASE}/bin/altermime:mail/altermime
 RUN_DEPENDS+=	file>=4.21:sysutils/file
 .endif
 
-# archviers/rar is a 32-bit binary port, we don't want the install to fail
+# archivers/rar is a 32-bit binary port, we don't want the install to fail
 # at that port, therefore we will block instantly here if the platform does
 # not suit rar.
-
 .if ${PORT_OPTIONS:MRAR}
-# support for archivers/rar is broken on ia64
-.if ${ARCH} == "i386" || ${ARCH} == "amd64"
+.if ${ARCH} == "i386"
 RUN_DEPENDS+=	${LOCALBASE}/bin/rar:archivers/rar
 .else
-IGNORE=	archviers/rar is a 32-bit binary port and is not compatible with ${ARCH}
+IGNORE=	archivers/rar is a 32-bit binary port and is not compatible with ${ARCH}
 .endif
 .endif
 

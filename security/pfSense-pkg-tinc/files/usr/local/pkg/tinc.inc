@@ -25,6 +25,34 @@ require_once('service-utils.inc');
 require_once('util.inc');
 require_once('system.inc');
 
+function tinc_plugin_carp($pluginparams) {
+	// $pluginparams['type'] = 'carp';
+	// $pluginparams['event'] = 'rc.carpmaster';
+	// $pluginparams['interface'] = $argument;
+	log_error("[tinc] got carp event ");
+	if ($pluginparams['type'] == 'carp') {
+		if ($pluginparams['event'] == 'rc.carpmaster') {
+			// start
+			log_error("[tinc] got CARP:MASTER -> starting");
+			if (is_service_running('tinc')) {
+				log_error("[tinc] already running");
+			} else {
+				start_service("tinc");
+			}
+		}
+		if ($pluginparams['event'] == 'rc.carpbackup') {
+			// stop
+			log_error("[tinc] got CARP:BACKUP -> stopping");
+			if (!is_service_running('tinc')) {
+				log_error("[tinc] already stopped");
+			} else {
+				stop_service("tinc");
+			}
+		}
+	}
+}
+
+
 function tinc_save() {
 	global $config, $configpath;
 	$configpath = '/usr/local/etc/tinc';
@@ -146,7 +174,7 @@ function tinc_save() {
 function tinc_write_rcfile() {
 	$rc['file'] = 'tinc.sh';
 	$rc['start'] .= "/usr/local/sbin/tincd --config=/usr/local/etc/tinc\n\t";
-	$rc['stop'] .= "/usr/local/sbin/tincd --kill \n\t";
+	$rc['stop'] .= "/usr/local/sbin/tincd --kill && sleep 2\n\t";
 	write_rcfile($rc);
 }
 
@@ -156,7 +184,10 @@ function tinc_install() {
 	safe_mkdir("/usr/local/etc/tinc/hosts");
 	tinc_write_rcfile();
 	unlink_if_exists("/usr/local/etc/rc.d/tincd");
-	clear_log_file("/var/log/tinc.log");
+
+	if (!is_array($config['ifgroups'])) {
+		$config['ifgroups'] = array();
+	}
 
 	/* Create Interface Group */
 	if (!is_array($config['ifgroups']['ifgroupentry'])) {
@@ -190,6 +221,10 @@ function tinc_install() {
 function tinc_deinstall() {
 	global $g, $config;
 
+	if (!is_array($config['ifgroups'])) {
+		$config['ifgroups'] = array();
+	}
+	
 	/* Remove Interface Group */
 	if (!is_array($config['ifgroups']['ifgroupentry'])) {
 		$config['ifgroups']['ifgroupentry'] = array();

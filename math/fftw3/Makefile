@@ -1,20 +1,19 @@
 # Created by: Lars Koeller <Lars.Koeller@Uni-Bielefeld.DE>
 # $FreeBSD$
-#    $MCom: ports-experimental/math/fftw3/Makefile,v 1.1 2006/03/28 00:08:57 ahze Exp $
 
 PORTNAME=	fftw3
-PORTVERSION=	3.3.5
+DISTVERSION=	3.3.7
 PORTREVISION?=	0
 CATEGORIES=	math
 MASTER_SITES=	http://www.fftw.org/ \
 		ftp://ftp.fftw.org/pub/fftw/
 PKGNAMESUFFIX=	${FFTW3_PKGNAMESUFFIX}
-DISTNAME=	fftw-${PORTVERSION}
+DISTNAME=	fftw-${DISTVERSION}
 
 MAINTAINER=	jhale@FreeBSD.org
 COMMENT?=	Fast C routines to compute the Discrete Fourier Transform
 
-LICENSE=	GPLv2
+LICENSE=	GPLv2+
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 #current flavors: default, float, long, and quad
@@ -23,7 +22,9 @@ FFTW3_SUFX=
 
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
-USES=		libtool pathfix perl5 pkgconfig
+TEST_TARGET=	smallcheck #bigcheck check exhaustive-check paranoid-check
+TEST_WRKSRC=	${WRKSRC}/tests
+USES=		gmake libtool makeinfo pathfix perl5 pkgconfig
 USE_PERL5=	build
 USE_LDCONFIG=	yes
 
@@ -35,7 +36,7 @@ INFO=	fftw3
 .else
 #For non-default flavors, build and install the flavor-dependent components
 #only, so that these flavors may coexist with the default flavor
-INSTALL_TARGET=	install-pkgconfigDATA install-libLTLIBRARIES install-exec
+INSTALL_TARGET=	install-cmakeDATA install-pkgconfigDATA install-libLTLIBRARIES install-exec
 .endif
 
 OPTIONS_DEFINE=		G77_WRAPPERS OPENMP OPENMPI OPTIMIZED_CFLAGS SIMD
@@ -123,6 +124,9 @@ CFLAGS+=	-fomit-frame-pointer
 .  if ${ARCH} == "i386" && (${COMPILER_TYPE} == "gcc" || !empty(USE_GCC)) && !${PORT_OPTIONS:MOPENMPI}
 CFLAGS+=	-malign-double
 .  endif
+.  if ${ARCH} == "armv6" && ${OPSYS} == FreeBSD && ${OSVERSION} < 1200032
+CFLAGS+=	-fno-unsafe-math-optimizations
+.  endif
 WITHOUT_NO_STRICT_ALIASING=	yes
 .endif # end OPTIMIZED_CFLAGS
 
@@ -156,11 +160,5 @@ post-install:
 	${INSTALL_MAN} ${WRKSRC}/tools/fftw${FFTW3_SUFX}-wisdom.1 ${STAGEDIR}${PREFIX}/man/man1
 	${STRIP_CMD} ${STAGEDIR}${PREFIX}/lib/lib*.so
 .endif
-
-regression-test test: smallcheck
-
-bigcheck check exhaustive-check paranoid-check smallcheck: build
-	${SETENV} ${MAKE_ENV} ${MAKE_CMD} -C ${WRKSRC}/tests \
-		${MAKE_ARGS} $@
 
 .include <bsd.port.post.mk>

@@ -2,8 +2,8 @@
 # $FreeBSD$
 
 PORTNAME=	encfs
-PORTVERSION=	1.9.1
 DISTVERSIONPREFIX=	v
+DISTVERSION=	1.9.4
 CATEGORIES=	sysutils
 PKGNAMEPREFIX=	fusefs-
 
@@ -12,8 +12,6 @@ COMMENT=	Encrypted pass-through FUSE filesystem
 
 LICENSE=	GPLv3
 LICENSE_FILE=	${WRKSRC}/COPYING
-
-BROKEN_powerpc64=	does not build
 
 USES=		cmake:outsource compiler:c++11-lib fuse ssl
 USE_GITHUB=	yes

@@ -1,7 +1,7 @@
 # $FreeBSD$
 
 PORTNAME=	Crypt-SMIME
-PORTVERSION=	0.19
+PORTVERSION=	0.25
 CATEGORIES=	security perl5
 MASTER_SITES=	CPAN
 PKGNAMEPREFIX=	p5-
@@ -31,10 +31,6 @@ post-install:
 
 .if ${SSL_DEFAULT:Mlibressl*}
 IGNORE=	Required CMS is disabled on LibreSSL
-.else
-. if ${OSVERSION} < 1000015 && ${SSL_DEFAULT:Mbase}
-IGNORE=	Need a more recent version of OpenSSL.
-. endif
 .endif
 
 .include <bsd.port.post.mk>

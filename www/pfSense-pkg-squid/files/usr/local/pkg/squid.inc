@@ -337,7 +337,10 @@ function squid_write_rcfile() {
 	$rc['file'] = 'squid.sh';
 	$rc['start'] = <<< EOD
 #/sbin/sysctl net.inet.ip.portrange.reservedhigh=0
-if [ -z "`/bin/ps auxw | /usr/bin/grep "[s]quid " | /usr/bin/awk '{print $2}'`" ]; then
+SQUID_ENABLED=$(/usr/local/sbin/read_xml_tag.sh string installedpackages/squid/config/enable_squid)
+if [ "\${SQUID_ENABLED}" != "on" ]; then
+	exit 0
+elif [ -z "`/bin/ps auxw | /usr/bin/grep "[s]quid " | /usr/bin/awk '{print $2}'`" ]; then
 	{$squid_base}/sbin/squid -f {$squid_conffile_var}
 fi
 
@@ -708,7 +711,7 @@ function squid_upgrade_config() {
 
 	/* migrate reverse proxy settings */
 	squid_reverse_upgrade_config();
-	
+
 	/* unset broken antivirus settings */
 	squid_antivirus_upgrade_config();
 
@@ -786,7 +789,7 @@ function squid_validate_general($post, &$input_errors) {
 		$input_errors[] = "You can not run Squid on the same port as the pfSense WebGUI";
 	}
 	unset($port, $webgui_port);
-	
+
 	if ($post['transparent_proxy'] == 'on') {
 		if (empty($post['transparent_active_interface'])) {
 			$input_errors[] = "You must select at least one interface under 'Transparent Proxy Interface(s)' when 'Transparent HTTP Proxy' is enabled.";
@@ -808,6 +811,14 @@ function squid_validate_general($post, &$input_errors) {
 	if ($post['ssl_proxy'] == 'on') {
 		if ($post['dca'] == 'none') {
 			$input_errors[] = "SSL interception cannot be enabled without a CA.";
+		} else {
+			$dca = lookup_ca($post['dca']);
+			if (!$dca) {
+				$input_errors[] = "Invalid SSL interception CA.";
+			}
+			if (empty($dca['prv'])) {
+				$input_errors[] = "The SSL interception CA must have a private key (internal CA, not external)";
+			}
 		}
 		if (empty($post['ssl_active_interface'])) {
 			$input_errors[] = "You must select at least one interface under 'SSL Intercept Interface(s)' when 'HTTPS/SSL Interception' is enabled.";
@@ -835,7 +846,7 @@ function squid_validate_general($post, &$input_errors) {
 		}
 	}
 	unset($host, $hosts);
-	
+
 	foreach (array('defined_ip_proxy_off_dest') as $hosts) {
 		foreach (explode(";", $post[$hosts]) as $host) {
 			$host = trim($host);
@@ -934,6 +945,10 @@ function squid_validate_cache($post, &$input_errors) {
 	if ($post['donotcache'] != "") {
 		foreach (split("\n", $post['donotcache']) as $host) {
 			$host = trim($host);
+			// Allow matching all subdomains, like .example.com
+			if (strpos($host, '.') === 0) {
+				$host = substr($host, 1);
+			}
 			if (!is_ipaddr($host) && !is_domain($host)) {
 				$input_errors[] = "The host '$host' is not a valid IP or hostname.";
 			}
@@ -1136,15 +1151,14 @@ function squid_resync_general() {
 				$crt_pk = SQUID_CONFBASE . "/serverkey.pem";
 				$crt_capath = SQUID_LOCALBASE . "/share/certs/";
 				$sslproxy_options = "NO_SSLv2,NO_SSLv3";
-				/* XXX: Bug #4453, Bug #6592, Feature #6593
+				/* XXX: Bug #4453, Bug #6592, Feature #6593, Bug #6563
 				 * http://wiki.squid-cache.org/ConfigExamples/Intercept/SslBumpExplicit#Modern_DH.2FEDH_ciphers_usage
 				 */
-				if (!empty($settings['sslproxy_compatibility_mode']) && ($settings['sslproxy_compatibility_mode'] == 'modern')) {
+				if (empty($settings['sslproxy_compatibility_mode']) || ($settings['sslproxy_compatibility_mode'] == 'modern')) {
 					// Modern cipher suites
-					$sslproxy_cipher = "EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS";
+					$sslproxy_cipher = "EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:!RC4:!aNULL:!eNULL:!LOW:!3DES:!SHA1:!MD5:!EXP:!PSK:!SRP:!DSS";
 					$sslproxy_options .= ",NO_TLSv1";
 				} else {
-					// Use intermediate cipher suites by default to match port versions <0.4.29 behavior on upgrade
 					$sslproxy_cipher = "EECDH+ECDSA+AESGCM:EECDH+aRSA+AESGCM:EECDH+ECDSA+SHA384:EECDH+ECDSA+SHA256:EECDH+aRSA+SHA384:EECDH+aRSA+SHA256:EECDH+aRSA+RC4:EECDH:EDH+aRSA:HIGH:!RC4:!aNULL:!eNULL:!LOW:!3DES:!MD5:!EXP:!PSK:!SRP:!DSS";
 				}
 				if (!empty($settings["dhparams_size"])) {
@@ -1280,9 +1294,18 @@ function squid_resync_general() {
 	 * This avoids periods when Squid is unresponsive due to digest generation.
 	 */
 	$digest_generation = "off";
+	if (!is_array($config['installedpackages'])) {
+		$config['installedpackages'] = array();
+	}
+
+	if (!is_array($config['installedpackages']['squidremote'])) {
+		$config['installedpackages']['squidremote'] = array();
+	}
+
 	if (!is_array($config['installedpackages']['squidremote']['config'])) {
 		$config['installedpackages']['squidremote']['config'] = array();
 	}
+
 	foreach ($config['installedpackages']['squidremote']['config'] as $settings) {
 		if ($settings['enable'] == 'on' && $settings['hierarchy'] == 'sibling') {
 			$digest_generation = "on";
@@ -1471,6 +1494,14 @@ EOD;
 function squid_resync_upstream() {
 	global $config;
 
+	if (!is_array($config['installedpackages'])) {
+		$config['installedpackages'] = array();
+	}
+
+	if (!is_array($config['installedpackages']['squidremote'])) {
+		$config['installedpackages']['squidremote'] = array();
+	}
+
 	if (!is_array($config['installedpackages']['squidremote']['config'])) {
 		$config['installedpackages']['squidremote']['config'] = array();
 	}
@@ -1572,7 +1603,7 @@ acl step3 at_step SslBump3
 
 EOD;
 	}
-	
+
 	$allowed_subnets = preg_replace("/\s+/"," ", sq_text_area_decode($settings['allowed_subnets']));
 	if (!empty($allowed_subnets)) {
 		$conf .= "acl allowed_subnets src $allowed_subnets\n";
@@ -2401,4 +2432,20 @@ function squid_do_xmlrpc_sync($sync_to_ip, $port, $protocol, $username, $passwor
 			log_error("[squid] XMLRPC reload data success with {$url}:{$port} (pfsense.exec_php).");
 		}
 	}
+}
+
+/* Get a listing of CA entries which are valid for use with MITM/Splice.
+ * They MUST have a private key present!
+ */
+function squid_list_ssl_ca() {
+	global $config;
+	$prvca_list = array();
+	if (isset($config['ca']) && is_array($config['ca'])) {
+		foreach ($config['ca'] as $ca) {
+			if (!empty($ca['prv'])) {
+				$prvca_list[] = $ca;
+			}
+		}
+	}
+	return $prvca_list;
 }

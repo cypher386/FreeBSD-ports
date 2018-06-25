@@ -3,35 +3,37 @@
 
 PORTNAME=	boinc-astropulse
 PORTVERSION=	6.01
-PORTREVISION=	11
+PORTREVISION=	12
 CATEGORIES=	astro
 MASTER_SITES=	LOCAL/rene
 DISTNAME=	astropulse-svn-1702 # modified archive, see leftout in top directory
 
-MAINTAINER=	ports@FreeBSD.org
+MAINTAINER=	ler@FreeBSD.org
 COMMENT=	Astropulse for BOINC
 
 LICENSE=	GPLv2
 LICENSE_FILE=	${WRKSRC}/COPYING
 
 BUILD_DEPENDS=	${LOCALBASE}/include/fftw3.h:math/fftw3 \
-		${NONEXISTENT}:astro/boinc-setiathome-v7:patch
+		${NONEXISTENT}:astro/boinc-setiathome:patch
 RUN_DEPENDS=	boinc_client:net/boinc-client
 LIB_DEPENDS=	libfftw3f.so:math/fftw3-float
+
+BROKEN_armv6=		fails to compile: call to abs is ambiguous
 
 GNU_CONFIGURE=	yes
 USES=		autoreconf gmake libtool pkgconfig tar:xz
 WRKSRC_SUBDIR=		client
 
 CPPFLAGS+=	-I${LOCALBASE}/include/boinc -I${LOCALBASE}/include
-LIBS+=		-L${LOCALBASE}/lib
+LIBS+=		-L${LOCALBASE}/lib -lexecinfo
 
 # these must match settings in ${PORTSDIR}/net/boinc-client/Makefile
 BOINC_CLIENT_USER?=	boinc
 BOINC_CLIENT_GROUP?=	boinc
 BOINC_CLIENT_HOME?=	/var/db/boinc
 
-SETI_WORK!=	cd ${.CURDIR}/../boinc-setiathome-v7 && ${MAKE} -V WRKSRC
+SETI_WORK!=	cd ${.CURDIR}/../boinc-setiathome && ${MAKE} -V WRKSRC
 CONFIGURE_ENV=	BOINCDIR="${NONEXISTENT}" \
 		BOINC_DIR="${NONEXISTENT}" \
 		SETI_BOINC_DIR="${SETI_WORK}"

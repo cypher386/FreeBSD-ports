@@ -1,11 +1,11 @@
 # $FreeBSD$
 
 PORTNAME=	libgit2
-PORTVERSION=	0.24.0
+PORTVERSION=	0.27.1
 DISTVERSIONPREFIX=	v
 CATEGORIES=	devel
 
-MAINTAINER=	wg@FreeBSD.org
+MAINTAINER=	mfechner@FreeBSD.org
 COMMENT=	Portable, pure C implementation of the Git core
 
 LICENSE=	GPLv2
@@ -13,9 +13,8 @@ LICENSE=	GPLv2
 USE_GITHUB=	yes
 GH_ACCOUNT=	libgit2
 
-USES=		cmake pathfix pkgconfig python:build
+USES=		cmake pathfix pkgconfig python:build ssl
 USE_LDCONFIG=	yes
-USE_OPENSSL=	yes
 
 PLIST_SUB=	PORTVERSION=${PORTVERSION} SHLIB_VER=${PORTVERSION:R:E}
 
@@ -39,7 +38,7 @@ post-patch:
 	@${REINPLACE_CMD} -e "/LIBGIT2_PC_REQUIRES.*zlib/ d" ${WRKSRC}/CMakeLists.txt
 .if ${SSL_DEFAULT} == base
 	@${REINPLACE_CMD} -e "/LIBGIT2_PC_REQUIRES.*openssl/ d" \
-		${WRKSRC}/CMakeLists.txt
+		${WRKSRC}/src/CMakeLists.txt
 .endif
 
 .include <bsd.port.post.mk>

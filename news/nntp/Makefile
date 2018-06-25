@@ -3,7 +3,7 @@
 
 PORTNAME=	nntp
 PORTVERSION=	1.5.12.2
-PORTREVISION=	8
+PORTREVISION=	9
 CATEGORIES=	news
 MASTER_SITES=	ftp://ftp.dinoex.org/pub/c-news/
 DISTNAME=	${PORTNAME}.${PORTVERSION}
@@ -48,7 +48,6 @@ ALONE=	-e 's|\#define.ALONE|\#undef	ALONE|'
 
 post-extract:
 	${CP} ${WRKSRC}/conf.h.dist ${WRKSRC}/conf.h
-
 
 post-patch:
 	${REINPLACE_CMD} \

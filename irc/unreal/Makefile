@@ -7,7 +7,7 @@ CATEGORIES=	irc ipv6
 MASTER_SITES=	http://www.unrealircd.com/downloads/
 DISTNAME=	${PORTNAME}${PORTVERSION}
 
-MAINTAINER=	mat@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Unreal - the next generation ircd
 
 LICENSE=	GPLv2
@@ -71,7 +71,7 @@ NOSPOOF_CONFIGURE_ENABLE=	nospoof
 ZIPLINKS_CONFIGURE_ENABLE=	ziplinks
 IPV6_CONFIGURE_ENABLE=	inet6
 SSL_CONFIGURE_ENABLE=	ssl
-SSL_USE=	OPENSSL=yes
+SSL_USES=		ssl
 REMOTE_LIB_DEPENDS=	libcurl.so:ftp/curl
 REMOTE_CONFIGURE_ENABLE=	--enable-libcurl=${LOCALBASE}
 PREFIXAQ_CONFIGURE_ENABLE=	prefixaq

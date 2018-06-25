@@ -19,10 +19,10 @@ LIB_DEPENDS=	libboost_regex.so:devel/boost-libs \
 		libmythes-1.2.so:textproc/mythes
 
 MAJOR_VERSION=	2.2
-MINOR_VERSION=	2
+MINOR_VERSION=	3
 
-USES=		desktop-file-utils execinfo gmake iconv pkgconfig perl5 \
-		python:2 tar:xz
+USES=		desktop-file-utils gmake iconv pkgconfig perl5 \
+		python:2.7 shebangfix tar:xz
 USE_QT5=	core concurrent gui svg widgets buildtools_build qmake_build
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--without-included-boost \
@@ -31,9 +31,10 @@ CONFIGURE_ARGS=	--without-included-boost \
 		--with-qt-dir=${LOCALBASE}/lib/qt5 \
 		${ICONV_CONFIGURE_ARG} \
 		--with-extra-prefix=${LOCALBASE}
+SHEBANG_FILES=	lib/configure.py \
+		lib/lyx2lyx/lyx2lyx \
+		lib/scripts/listerrors
 
-CPPFLAGS+=	${EXECINFO_CPPFLAGS}
-LDFLAGS+=	${EXECINFO_LDFLAGS}
 LIBS+=		-lexecinfo
 
 OPTIONS_DEFINE=		ASPELL ENCHANT HUNSPELL NLS
@@ -50,10 +51,4 @@ HUNSPELL_LIB_DEPENDS=	libhunspell-1.6.so:textproc/hunspell
 NLS_CONFIGURE_OFF=	--disable-nls
 NLS_USES=		gettext
 
-.include <bsd.port.pre.mk>
-
-.if ${OPSYS} == FreeBSD && (${OSVERSION} >= 1000000 && ${OSVERSION} < 1002000)
-EXTRA_PATCHES=		${FILESDIR}/extrapatch-src_frontends_qt4_GuiWorkArea.cpp
-.endif
-
-.include <bsd.port.post.mk>
+.include <bsd.port.mk>

@@ -1,22 +1,32 @@
---- content/browser/child_process_launcher_helper_linux.cc.orig	2017-03-09 20:04:32 UTC
-+++ content/browser/child_process_launcher_helper_linux.cc
-@@ -95,6 +95,7 @@ ChildProcessLauncherHelper::LaunchProces
+--- content/browser/child_process_launcher_helper_linux.cc.orig	2018-03-20 23:05:23.000000000 +0100
++++ content/browser/child_process_launcher_helper_linux.cc	2018-03-24 23:20:38.539917000 +0100
+@@ -17,7 +17,9 @@
+ #include "content/public/common/content_switches.h"
+ #include "content/public/common/result_codes.h"
+ #include "content/public/common/sandboxed_process_launcher_delegate.h"
++#if !defined(OS_BSD)
+ #include "content/public/common/zygote_handle.h"
++#endif
+ #include "gpu/config/gpu_switches.h"
+ #include "services/service_manager/sandbox/linux/sandbox_linux.h"
+ 
+@@ -70,6 +72,7 @@
      int* launch_result) {
    *is_synchronous_launch = true;
  
 +#if !defined(OS_BSD)
-   ZygoteHandle* zygote_handle =
-       base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kNoZygote) ?
-       nullptr : delegate_->GetZygote();
-@@ -114,6 +115,7 @@ ChildProcessLauncherHelper::LaunchProces
-     process.zygote = *zygote_handle;
+   ZygoteHandle zygote_handle =
+       base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kNoZygote)
+           ? nullptr
+@@ -101,6 +104,7 @@
+     process.zygote = zygote_handle;
      return process;
    }
 +#endif
  
    Process process;
    process.process = base::LaunchProcess(*command_line(), options);
-@@ -133,10 +135,12 @@ base::TerminationStatus ChildProcessLaun
+@@ -118,10 +122,12 @@
      const ChildProcessLauncherHelper::Process& process,
      bool known_dead,
      int* exit_code) {
@@ -29,7 +39,7 @@
    if (known_dead) {
      return base::GetKnownDeadTerminationStatus(
          process.process.Handle(), exit_code);
-@@ -155,13 +159,17 @@ void ChildProcessLauncherHelper::ForceNo
+@@ -140,13 +146,17 @@
      ChildProcessLauncherHelper::Process process) {
    process.process.Terminate(RESULT_CODE_NORMAL_EXIT, false);
    // On POSIX, we must additionally reap the child.
@@ -46,4 +56,4 @@
 +#endif
  }
  
- // static
+ void ChildProcessLauncherHelper::SetProcessPriorityOnLauncherThread(

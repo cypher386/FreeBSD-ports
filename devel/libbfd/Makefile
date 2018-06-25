@@ -15,7 +15,7 @@ CONFLICTS=	mingw-binutils-[0-9]* binutils-[0-9]*
 
 WRKSRC=		${WRKDIR}/binutils-${PORTVERSION}/bfd
 
-USES=		gmake libtool tar:bzip2
+USES=		libtool tar:bzip2
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--enable-install-libbfd \
 		--disable-nls \
@@ -27,6 +27,7 @@ INFO=		bfd
 
 BROKEN_aarch64=		Fails to configure: machine aarch64-portbld not recognized
 BROKEN_armv6=		Fails to configure: BFD does not support target armv6-portbld-freebsd12.0
+BROKEN_armv7=		Fails to configure: BFD does not support target armv7-portbld-freebsd12.0
 BROKEN_mips64=		Fails to configure: BFD does not support target mips64-portbld-freebsd12.0
 
 pre-configure:

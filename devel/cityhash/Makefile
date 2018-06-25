@@ -5,10 +5,8 @@ PORTNAME=	cityhash
 PORTVERSION=	1.1.1
 PORTREVISION=	1
 CATEGORIES=	devel
-USE_GITHUB=	yes
-GH_TUPLE=	google:cityhash:8af9b8c
 
-MAINTAINER=	vg@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	Family of hash functions
 
 LICENSE=	MIT
@@ -18,5 +16,9 @@ USES=		cpe libtool
 CPE_VENDOR=	google
 GNU_CONFIGURE=	yes
 USE_LDCONFIG=	yes
+
+USE_GITHUB=	yes
+GH_ACCOUNT=	google
+GH_TAGNAME=	8af9b8c
 
 .include <bsd.port.mk>

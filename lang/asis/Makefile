@@ -3,11 +3,12 @@
 
 PORTNAME=	asis
 PORTVERSION=	2016
+PORTREVISION=	1
 CATEGORIES=	lang
 MASTER_SITES=	http://downloads.dragonlace.net/src/
 DISTNAME=	${PORTNAME}-gpl-${PORTVERSION}-src
 
-MAINTAINER=	marino@FreeBSD.org
+MAINTAINER=	ports@FreeBSD.org
 COMMENT=	GNAT implementation of Ada Semantic Interface Specification
 
 LICENSE=	GPLv2

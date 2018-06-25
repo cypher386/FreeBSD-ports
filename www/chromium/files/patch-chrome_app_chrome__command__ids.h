@@ -1,6 +1,6 @@
---- chrome/app/chrome_command_ids.h.orig	2017-01-26 00:49:07 UTC
+--- chrome/app/chrome_command_ids.h.orig	2017-06-05 19:03:01 UTC
 +++ chrome/app/chrome_command_ids.h
-@@ -75,7 +75,7 @@
+@@ -67,7 +67,7 @@
  #define IDC_VISIT_DESKTOP_OF_LRU_USER_2 34049
  #define IDC_VISIT_DESKTOP_OF_LRU_USER_3 34050
  

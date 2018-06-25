@@ -2,7 +2,7 @@
 # $FreeBSD$
 
 PORTNAME=	global
-PORTVERSION=	6.5.6
+PORTVERSION=	6.6.2
 CATEGORIES=	devel
 MASTER_SITES=	GNU
 
@@ -17,13 +17,16 @@ OPTIONS_DEFINE=	DOCS
 GNU_CONFIGURE=	yes
 INSTALL_TARGET=	install-strip
 TEST_TARGET=	check
-USES=		libtool ncurses perl5
+USES=		libtool ncurses perl5 shebangfix
 
 INFO=		global
-PORTDOCS=	AUTHORS COPYING ChangeLog FAQ INSTALL LICENSE NEWS README THANKS
+PORTDOCS=	AUTHORS ChangeLog FAQ INSTALL LICENSE NEWS README THANKS
+
+SHEBANG_GLOB=	*.pl
 
 post-patch:
 	@${REINPLACE_CMD} -e '/^gtags_DATA = / s|AUTHOR.*THANKS||' ${WRKSRC}/Makefile.in
+	@${REINPLACE_CMD} -e '1d' ${WRKSRC}/plugin-factory/pygments_parser.py.in
 
 post-install-DOCS-on:
 	${MKDIR} ${STAGEDIR}${DOCSDIR}/

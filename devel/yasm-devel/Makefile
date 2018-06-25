@@ -19,6 +19,7 @@ OPTIONS_DEFINE=	DEBUG NLS
 
 GNU_CONFIGURE=		yes
 CONFIGURE_ARGS+=	--disable-python --disable-python-bindings
+TEST_TARGET=		check
 
 NLS_USES=		gettext iconv
 NLS_CONFIGURE_ENABLE=	nls
@@ -34,12 +35,5 @@ CONFLICTS_INSTALL=	yasm-[0-9]*
 .if ${PORT_OPTIONS:MDEBUG} || defined(WITH_DEBUG)
 CONFIGURE_ARGS+=	--enable-debug
 .endif
-
-.if ${ARCH} == "ia64"
-CFLAGS:=	${CFLAGS:C/-O[0-9]//g}
-.endif
-
-regression-test: build
-	@cd ${WRKSRC} && ${MAKE} check
 
 .include <bsd.port.mk>

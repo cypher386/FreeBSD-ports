@@ -3,9 +3,8 @@
 
 PORTNAME=	hexchat
 PORTVERSION=	2.12.4
+DISTVERSIONPREFIX=	v
 CATEGORIES=	irc gnome ipv6
-MASTER_SITES=	https://github.com/${PORTNAME}/${PORTNAME}/archive/
-DISTNAME=	v${PORTVERSION}
 
 MAINTAINER=	pkubaj@anongoth.pl
 COMMENT=	IRC chat program with GTK and Text Frontend
@@ -19,11 +18,10 @@ LIB_DEPENDS=	libproxy.so:net/libproxy \
 		libdbus-1.so:devel/dbus \
 		libfreetype.so:print/freetype2
 
-WRKSRC=		${WRKDIR}/${PORTNAME}-${PORTVERSION}
-
 USES=		autoreconf gmake desktop-file-utils libtool pkgconfig ssl
 USE_GNOME=	cairo gtk20 intltool libxml2
 USE_XORG=	x11
+USE_GITHUB=	yes
 GNU_CONFIGURE=	yes
 CONFIGURE_ARGS=	--enable-openssl --enable-gtkfe --disable-sysinfo \
 		--with-pkgconfigdir=${LOCALBASE}/libdata/pkgconfig \
@@ -77,10 +75,6 @@ SOCKS_CONFIGURE_ENABLE=	socks
 TEXTFE_CONFIGURE_ENABLE=textfe
 
 .include <bsd.port.options.mk>
-
-.if ${OPSYS} == FreeBSD && ${OSVERSION} < 1000000
-WITH_OPENSSL_PORT=	yes
-.endif
 
 .if ${PORT_OPTIONS:MCA_BUNDLE}
 CA_BUNDLE=	"${LOCALBASE}/share/certs/ca-root-nss.crt"
